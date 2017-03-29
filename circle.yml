@@ -10,4 +10,4 @@ deployment:
   master:
     branch: master
     commands:
-      - bash public codesplain-lambda-functions/dev
+      - bash publish codesplain-lambda-functions/dev
