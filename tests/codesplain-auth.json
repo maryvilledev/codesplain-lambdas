@@ -1,0 +1,61 @@
+{
+	"variables": [],
+	"info": {
+		"name": "codesplain-auth",
+		"_postman_id": "88d95c5b-22d3-17a7-9632-e4b38ae3c71d",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "auth",
+			"description": "Folder for auth",
+			"item": [
+				{
+					"name": "POST to /auth",
+					"request": {
+						"url": "{{url}}/auth",
+						"method": "POST",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "OPTIONS to /auth",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"// Helper funcs and vars",
+									"const getHeader = (h) => postman.getResponseHeader(h); // Have to do it this way or won't run in newman",
+									"const ACAH = 'Access-Control-Allow-Headers';",
+									"const ACAM = 'Access-Control-Allow-Methods';",
+									"const ACAO = 'Access-Control-Allow-Origin';",
+									"",
+									"// Tests",
+									"tests['Status code is 200'] = responseCode.code === 200;",
+									"tests['Body is empty']      = responseBody      === '';",
+									"tests[`${ACAH} is present`] = getHeader(ACAH);",
+									"tests[`${ACAM} is present`] = getHeader(ACAM);",
+									"tests[`${ACAO} is present`] = getHeader(ACAO);"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/auth",
+						"method": "OPTIONS",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

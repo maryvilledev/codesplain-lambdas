@@ -1,0 +1,374 @@
+{
+	"variables": [],
+	"info": {
+		"name": "codesplain-users",
+		"_postman_id": "c8cf7bd3-02aa-1ba1-f8ec-4d035c8ad1c9",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "users",
+			"description": "Folder for users",
+			"item": [
+				{
+					"name": "GET to /users/{{user_id}}/snippets",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"// Helper funcs and vars",
+									"// responseBody = '[{ \"snippetName\":\"\", \"language\":\"\", \"lastEdited\":\"\", \"private\":\"\" },'+",
+									"//               ' { \"snippetName\":\"\", \"language\":\"\", \"lastEdited\":\"\", \"private\":\"\" }]';",
+									"const schema = {",
+									"    title: 'Array of Meta Data',",
+									"    type: 'array',",
+									"    items: {",
+									"        title: 'Snippet Meta Data',",
+									"        type: 'object',",
+									"        properties: {",
+									"            snippetName: 'string',",
+									"            language: 'string',",
+									"            lastEdited: 'string', // should be a timestamp",
+									"            'private': 'boolean',",
+									"        },",
+									"        required: ['snippetName', 'language', 'lastEdited', 'private'],",
+									"    }",
+									"}",
+									"const isValidJSON = (str) => {",
+									"    try {",
+									"        JSON.parse(str);",
+									"    } catch (e) {",
+									"        return false;",
+									"    }",
+									"    return true;",
+									"};",
+									"const bodyIsValidJSON = isValidJSON(responseBody);",
+									"",
+									"// Tests",
+									"tests['Status code is 200'] = responseCode.code === 200;",
+									"tests['Body is valid JSON'] = bodyIsValidJSON;",
+									"",
+									"// Only run these tests if response is valid JSON",
+									"if (bodyIsValidJSON) {",
+									"    const body = JSON.parse(responseBody);",
+									"    tests['Body is valid array of snippet meta-data objects'] =",
+									"      tv4.validate(JSON.parse(responseBody), schema);",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/users/{{user_id}}/snippets",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "POST to /users/{{user_id}}/snippets",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"// Helper funcs and vars",
+									"const getHeader = (h) => postman.getResponseHeader(h); // Have to do it this way or won't run in newman",
+									"const isValidJSON = (str) => {",
+									"    try {",
+									"        JSON.parse(str);",
+									"    } catch (e) {",
+									"        return false;",
+									"    }",
+									"    return true;",
+									"};",
+									"const bodyIsValidJSON = isValidJSON(responseBody);",
+									"const ACAO = 'Access-Control-Allow-Origin';",
+									"",
+									"// Tests",
+									"tests['Status code is 200']  = responseCode.code === 200;",
+									"tests[`${ACAO} is present`] = getHeader(ACAO);",
+									"tests['Body is valid JSON'] = bodyIsValidJSON;",
+									"",
+									"// Only run these tests if response is valid JSON",
+									"if (bodyIsValidJSON) {",
+									"    const body = JSON.parse(responseBody);",
+									"    // Response's \"key\" should be the snippet title, with",
+									"    // spaces converted to underscores and converted to",
+									"    // lowercase.",
+									"    const expectedKey = JSON.parse(environment.snippet)",
+									"                            .snippetTitle",
+									"                            .replace(' ', '_')",
+									"                            .toLowerCase();",
+									"    postman.setEnvironmentVariable('snippet_id', expectedKey);",
+									"    tests['Body contains \"key\"'] = body.key;",
+									"    tests['\"key\" is correct']    = body.key === expectedKey;",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/users/{{user_id}}/snippets",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{{snippet}}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "OPTIONS to /users/{{user_id}}/snippets",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"// Helper funcs and vars",
+									"const getHeader = (h) => postman.getResponseHeader(h); // Have to do it this way or won't run in newman",
+									"const ACAH = 'Access-Control-Allow-Headers';",
+									"const ACAM = 'Access-Control-Allow-Methods';",
+									"const ACAO = 'Access-Control-Allow-Origin';",
+									"",
+									"// Tests",
+									"tests['Status code is 200'] = responseCode.code === 200;",
+									"tests['Body is empty']      = responseBody      === '';",
+									"tests[`${ACAH} is present`] = getHeader(ACAH);",
+									"tests[`${ACAM} is present`] = getHeader(ACAM);",
+									"tests[`${ACAO} is present`] = getHeader(ACAO);"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/users/{{user_id}}/snippets",
+						"method": "OPTIONS",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "GET to /users/{{user_id}}/snippets/{{snippet_id}}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"// Helper funcs and vars",
+									"const isValidJSON = (str) => {",
+									"    try {",
+									"        JSON.parse(str);",
+									"    } catch (e) {",
+									"        return false;",
+									"    }",
+									"    return true;",
+									"};",
+									"const bodyIsValidJSON = isValidJSON(responseBody);",
+									"",
+									"// Tests",
+									"tests['Status code is 200']  = responseCode.code === 200;",
+									"tests['Body is valid JSON']  = bodyIsValidJSON;",
+									"tests['Body is {{snippet}}'] = responseBody === environment.snippet;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/users/{{user_id}}/snippets/{{snippet_id}}",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "PUT to /users/{{user_id}}/snippets/{{snippet_id}}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"// Helper funcs and vars",
+									"const getHeader = (h) => postman.getResponseHeader(h); // Have to do it this way or won't run in newman",
+									"const isValidJSON = (str) => {",
+									"    try {",
+									"        JSON.parse(str);",
+									"    } catch (e) {",
+									"        return false;",
+									"    }",
+									"    return true;",
+									"};",
+									"const bodyIsValidJSON = isValidJSON(responseBody);",
+									"const ACAO = 'Access-Control-Allow-Origin';",
+									"",
+									"// Tests",
+									"tests['Status code is 200']  = responseCode.code === 200;",
+									"tests[`${ACAO} is present`] = getHeader(ACAO);",
+									"tests['Body is valid JSON'] = bodyIsValidJSON;",
+									"",
+									"// Only run these tests if response is valid JSON",
+									"if (bodyIsValidJSON) {",
+									"    const body = JSON.parse(responseBody);",
+									"    // Response's \"key\" should be the snippet title, with",
+									"    // spaces converted to underscores and converted to",
+									"    // lowercase.",
+									"    const expectedKey = JSON.parse(environment.snippet)",
+									"                            .snippetTitle",
+									"                            .replace(' ', '_')",
+									"                            .toLowerCase();",
+									"    tests['Body contains \"key\"'] = body.key;",
+									"    tests['\"key\" is correct']    = body.key === expectedKey;",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/users/{{user_id}}/snippets/{{snippet_id}}",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE to /users/{{user_id}}/snippets/{{snippet_id}}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"// Helper funcs and vars",
+									"const getHeader = (h) => postman.getResponseHeader(h); // Have to do it this way or won't run in newman",
+									"const isValidJSON = (str) => {",
+									"    try {",
+									"        JSON.parse(str);",
+									"    } catch (e) {",
+									"        return false;",
+									"    }",
+									"    return true;",
+									"};",
+									"const bodyIsValidJSON = isValidJSON(responseBody);",
+									"const ACAO = 'Access-Control-Allow-Origin';",
+									"",
+									"// Tests",
+									"tests['Status code is 200']  = responseCode.code === 200;",
+									"tests[`${ACAO} is present`] = getHeader(ACAO);",
+									"tests['Body is valid JSON'] = bodyIsValidJSON;",
+									"",
+									"// Only run these tests if response is valid JSON",
+									"if (bodyIsValidJSON) {",
+									"    const body = JSON.parse(responseBody);",
+									"    tests['Body contains \"response\"'] = body.response;",
+									"    tests['\"response\" is correct']    = body.response === \"Successfully deleted.\";",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/users/{{user_id}}/snippets/{{snippet_id}}",
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "OPTIONS to /users/{{user_id}}/snippets/{{snippet_id}}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"// Helper funcs and vars",
+									"const getHeader = (h) => postman.getResponseHeader(h); // Have to do it this way or won't run in newman",
+									"const ACAH = 'Access-Control-Allow-Headers';",
+									"const ACAM = 'Access-Control-Allow-Methods';",
+									"const ACAO = 'Access-Control-Allow-Origin';",
+									"",
+									"// Tests",
+									"tests['Status code is 200'] = responseCode.code === 200;",
+									"tests['Body is empty']      = responseBody      === '';",
+									"tests[`${ACAH} is present`] = getHeader(ACAH);",
+									"tests[`${ACAM} is present`] = getHeader(ACAM);",
+									"tests[`${ACAO} is present`] = getHeader(ACAO);"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/users/{{user_id}}/snippets/{{snippet_id}}",
+						"method": "OPTIONS",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
