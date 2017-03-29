@@ -19,15 +19,6 @@ const sendResponse = (callback, statusCode, response) => {
   })
 }
 
-// Given an apiID, returns the corresponding S3 bucket; or null if none exists
-const mapApiIdToBucket = (apiID) => {
-  // TODO: Add Other environments to process.env and if statement
-  switch(apiID) {
-    case process.env.devID: return process.env.devBucket;
-    default: return null;
-  }
-}
-
 // Saves the given Body to the given Bucket under the given Key. Returns a Promise.
 const saveToS3 = (Bucket, Key, Body) => {
   const params = {
@@ -77,16 +68,8 @@ exports.handler = (event, context, callback) => {
     const snippetKey = body.snippetTitle.replace(/\s+/g, '_').toLowerCase();
     const key        = `${userID}/${snippetKey}`;
     const apiID      = event.requestContext.apiId;
-    const bucket     = mapApiIdToBucket(apiID);
+    const bucket     = process.env.BucketName;
 
-    // Respond with a 400 if the apiID wasn't mapped to an S3 bucket
-    if (bucket === null) {
-      const msg = `Unrecognized apiId: ${apiID}`;
-      console.err(msg);
-      sendResponse(callback, '400', msg);
-    }
-
-    // apiID mapped to an S3 bucket, so save to that
     saveToS3(bucket, key, event.body)
       .then(key => {
         callback(null, {
