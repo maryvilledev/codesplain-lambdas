@@ -1,0 +1,17 @@
+machine:
+  node:
+    version: 7.7.2
+
+test:
+  override:
+    - echo "test"
+
+deployment:
+  release:
+    tag: /v[0-9]+(\.[0-9]+)*/
+    commands:
+      - bash publish codesplain-lambda-functions/$CIRCLE_TAG
+  master:
+    branch: master
+    commands:
+      - bash publish codesplain-lambda-functions/dev
