@@ -3,7 +3,7 @@
 ################################################################################
 # This script is used to run the postman/newman API tests.                     #
 # Example usage:                                                               #
-#   ./test --token=<authorization-token> \                                     #
+#   ./test --token=<access-token> \                                            #
 #          --user=<user> \                                                     #
 #          --all                                                               #
 ################################################################################
