@@ -14,4 +14,4 @@ deployment:
   master:
     branch: master
     commands:
-      - bash publish codesplain-lambda-functions/dev
+      - bash publish codesplain-lambda-functions/dev/$CIRCLE_SHA1
