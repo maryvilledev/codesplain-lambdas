@@ -51,8 +51,9 @@ exports.handler = (event, context, callback) => {
   // Invoke the authorization lambda to ensure the accessToken
   // included in the request matches the userID for the requested
   // resource.
+  const authorizeTokenName = process.env.authorizeTokenName;
   lambda.invoke({
-    FunctionName: 'AuthorizeToken',
+    FunctionName: authorizeTokenName,
     Payload: JSON.stringify({
       accessToken,
       userID,
