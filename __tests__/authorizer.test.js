@@ -1,7 +1,7 @@
 import moxios from 'moxios'
 const mockClientId = process.env.CLIENT_ID
 
-import { handler } from '../lambdas/awslambda/Authorize'
+import { handler } from '../lambdas/Authorize'
 
 const mockMethodArn = 'Teleport'
 
