@@ -1,0 +1,33 @@
+{
+  "name": "codesplain-lambdas",
+  "version": "0.1.0",
+  "description": "Collection of AWS Lambdas for CodesplainUI's backend",
+  "scripts": {
+    "test": "jest"
+  },
+  "babel": {
+    "presets": ["es2015", "react"],
+    "tests": {
+      "presets": ["es2015", "react"]
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maryvilledev/codesplain-lambdas.git"
+  },
+  "author": "Maryville Dev Center",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "bugs": {
+    "url": "https://github.com/maryvilledev/codesplain-lambdas/issues"
+  },
+  "homepage": "https://github.com/maryvilledev/codesplain-lambdas#readme",
+  "devDependencies": {
+    "axios": "^0.15.3",
+    "babel-cli": "^6.24.0",
+    "babel-jest": "^19.0.0",
+    "babel-preset-es2015": "^6.24.0",
+    "jest": "^19.0.2",
+    "moxios": "^0.3.0",
+    "regenerator-runtime": "^0.10.3"
+  }
+}
