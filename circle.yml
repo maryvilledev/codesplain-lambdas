@@ -15,3 +15,4 @@ deployment:
     branch: master
     commands:
       - bash publish codesplain-lambda-functions/dev/$CIRCLE_SHA1
+      - aws cloudformation update-stack --stack-name CodesplainDev --parameters ParameterKey=S3Version,ParameterValue=$CIRCLE_SHA1 --use-previous-template
