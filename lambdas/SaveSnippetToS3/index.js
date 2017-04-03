@@ -66,7 +66,7 @@ exports.handler = (event, context, callback) => {
 
     /* ----- Otherwise, save to S3 ----- */
     const body       = JSON.parse(event.body);
-    const snippetKey = body.snippetTitle.replace(/\s+/g, '_').toLowerCase();
+    const snippetKey = encodeURIComponent(body.snippetTitle.replace(/\s+/g, '_').toLowerCase());
     const key        = `${userID}/${snippetKey}`;
     const apiID      = event.requestContext.apiId;
     const bucket     = process.env.BucketName;
