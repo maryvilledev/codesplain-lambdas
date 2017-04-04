@@ -9,14 +9,7 @@ const s3 = new aws.S3({ apiVersion: '2006-03-01' });
 
 exports.handler = (event, context, callback) => {
     const key = event.pathParameters.user_id + "/" + event.pathParameters.snippet_id;
-    let bucket;
-
-    // TODO: Add Other environments to process.env and if statement
-    if (event.requestContext.apiId === process.env.devID) {
-        bucket = process.env.devBucket;
-    } else {
-        console.err("Invalid apiId" + event.requestContext.apiId);
-    }
+    const bucket = process.env.BucketName;
 
     const params = {
         Bucket: bucket,
@@ -26,7 +19,7 @@ exports.handler = (event, context, callback) => {
         if (err) {
             const message = `Error getting object ${params.Key} from bucket ${bucket}`;
             callback(message);
-            context.fail({ 
+            context.fail({
                 statusCode: 400,
                 headers: {
                     'Access-Control-Allow-Origin': '*',
@@ -35,7 +28,7 @@ exports.handler = (event, context, callback) => {
 
         } else {
             const object = data.Body.toString();
-            context.succeed({ 
+            context.succeed({
                 statusCode: 200,
                 headers: {
                     'Access-Control-Allow-Origin': '*',

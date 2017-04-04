@@ -19,15 +19,6 @@ const sendResponse = (callback, statusCode, response) => {
   })
 }
 
-// Given an apiID, returns the corresponding S3 bucket; or null if none exists
-const mapApiIdToBucket = (apiID) => {
-  // TODO: Add Other environments to process.env and if statement
-  switch(apiID) {
-    case process.env.devID: return process.env.devBucket;
-    default: return null;
-  }
-}
-
 // Deletes the object with the given Key from the given Bucket. Returns a Promise.
 const deleteFromS3 = (Bucket, Key) => {
   const params = {
@@ -50,8 +41,9 @@ exports.handler = (event, context, callback) => {
   // Invoke the authorization lambda to ensure the accessToken
   // included in the request matches the userID for the requested
   // resource.
+  const authorizeTokenName = process.env.authorizeTokenName;
   lambda.invoke({
-    FunctionName: 'AuthorizeToken',
+    FunctionName: authorizeTokenName,
     Payload: JSON.stringify({
       accessToken,
       userID,
@@ -75,16 +67,8 @@ exports.handler = (event, context, callback) => {
     const snippetID = event.pathParameters.snippet_id;
     const key       = `${userID}/${snippetID}`;
     const apiID     = event.requestContext.apiId;
-    const bucket    = mapApiIdToBucket(apiID);
+    const bucket    = process.env.BucketName;
 
-    // Respond with a 400 is the apiID wasn't mapped to an S3 bucket
-    if (bucket === null) {
-      const msg = `Unrecognized apiId: ${apiID}`;
-      console.error(msg);
-      sendResponse(callback, '400', msg);
-    }
-
-    // apiID mapped to an S3 bucket, so delete from there
     deleteFromS3(bucket, key)
       .then(() => {
         sendResponse(callback, '200', 'Successfully deleted.');
