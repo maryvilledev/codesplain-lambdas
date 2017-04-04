@@ -23,7 +23,9 @@ const orgOpts = (token) => ({
   }
 })
 
-const orgWhitelist = ['maryvilledev', 'LaunchCodeEducation'];
+// Create whitelist array, after checking for the env var
+if (!process.env.Whitelist) console.err('Whitelist env var missing!')
+const orgWhitelist = process.env.Whitelist.split(';');
 
 const isMemberOfWhitelistedOrg = (orgs, whitelist) => (
   _.intersection(orgs, whitelist).length > 0
