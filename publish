@@ -50,7 +50,8 @@ do
       [[ "$lambdaDir" == "Authorize" ]] ||
       [[ "$lambdaDir" == "AuthorizeToken" ]]); then
     nodeInstall axios $lambdaDir
-  elif ([[ "$lambdaDir" == "GitHubAccessCodeGetter" ]]); then
+  fi
+  if ([[ "$lambdaDir" == "GitHubAccessCodeGetter" ]]); then
     nodeInstall lodash $lambdaDir
   fi
   zipLambda $lambdaDir
