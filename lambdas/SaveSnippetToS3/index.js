@@ -89,6 +89,16 @@ const generateSnippetKey = (bucket, userID, snippetTitle) => {
   return retryGenerateSnippetKey(bucket, userID, snippetKey);
 }
 
+const generateBody = (body, snippetKey) => {
+  // Update the title of the snippet if the key it's saved under differs from it
+  if (body.snippetTitle !== snippetKey) {
+    return Object.assign({}, body, {
+      snippetTitle: snippetKey
+    });
+  }
+  return body;
+}
+
 exports.handler = (event, context, callback) => {
   // Extract some stuff that we need from the request object.
   const accessToken = event.headers.Authorization;
@@ -126,7 +136,9 @@ exports.handler = (event, context, callback) => {
     generateSnippetKey(bucket, userID, body.snippetTitle)
       .then((snippetKey) => {
         const key = `${userID}/${snippetKey}`;
-        saveToS3(bucket, key, event.body)
+        // Update the save body
+        const saveBody = generateBody(body, snippetKey);
+        saveToS3(bucket, key, JSON.stringify(saveBody))
           .then(() => {
             callback(null, {
               statusCode: '200',
@@ -135,7 +147,7 @@ exports.handler = (event, context, callback) => {
               },
               body: `{ "key": "${snippetKey}" }`,
             })
-          })
+          }, (err) => { console.log(err); })
           .catch(err => {
             const message = `Error putting object ${key} into bucket ${bucket}.` +
                             `Make sure they exist and your bucket is in the same ` +
