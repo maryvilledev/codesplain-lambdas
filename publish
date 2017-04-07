@@ -24,7 +24,7 @@ function nodeInstall {
 }
 
 function nodeCleanup {
-  printf "Removing node_modules and etc for $1 lambda"
+  printf "Removing node_modules and etc for $1 lambda\n"
   cd lambdas/$1
   rm -r node_modules etc
   cd ../.. # Go back to where we came from
@@ -46,10 +46,13 @@ function pushZipsToS3 {
 makeZipsDir
 for lambdaDir in $(ls lambdas);
 do
-  if ([ "$lambdaDir" == "GitHubAccessCodeGetter" ] ||
-      [ "$lambdaDir" == "Authorize" ] ||
-      [ "$lambdaDir" == "AuthorizeToken" ]); then
+  if ([[ "$lambdaDir" == "GitHubAccessCodeGetter" ]] ||
+      [[ "$lambdaDir" == "Authorize" ]] ||
+      [[ "$lambdaDir" == "AuthorizeToken" ]]); then
     nodeInstall axios $lambdaDir
+  fi
+  if ([[ "$lambdaDir" == "GitHubAccessCodeGetter" ]]); then
+    nodeInstall lodash $lambdaDir
   fi
   zipLambda $lambdaDir
   nodeCleanup $lambdaDir
