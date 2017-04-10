@@ -9,26 +9,27 @@ createStack=false
  } || {
    createStack=true
  }
+if [[ $createStack == false ]]; then
+  stackStatus=$(echo $(aws cloudformation describe-stacks --stack-name $STACKNAME --region us-west-2) | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["Stacks"][0]["StackStatus"]')
+  echo "Stack Status= $stackStatus"
+  if [[ $stackStatus == "ROLLBACK_COMPLETE" ]]; then
 
-stackStatus=$(echo $(aws cloudformation describe-stacks --stack-name $STACKNAME --region us-west-2) | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["Stacks"][0]["StackStatus"]')
-echo "Stack Status= $stackStatus"
-if [[ $stackStatus == "ROLLBACK_COMPLETE" ]]; then
+    echo "Deleting Stack"
+    aws cloudformation delete-stack \
+      --stack-name $STACKNAME \
+      --region us-west-2
 
-  echo "Deleting Stack"
-  aws cloudformation delete-stack \
-    --stack-name $STACKNAME \
-    --region us-west-2
-
-  sleep 2
-  createStack=true
+    sleep 2
+    createStack=true
+  fi
 fi
 
 if [[ $createStack == true ]]; then
   echo "Creating Stack"
   aws cloudformation deploy \
-    --template-file ./serverless-output-sandbox.yaml \
     --stack-name $STACKNAME \
-    --parameter-overrides
+    --template-file ./serverless-output-sandbox.yaml \
+    --parameter-overrides \
       EnvVersion="$1" \
       S3Version="sandbox/$1" \
       ClientSecret="$2" \
@@ -41,9 +42,9 @@ echo "Updating Stack"
 # If stack exists
 aws cloudformation update-stack --stack-name $STACKNAME \
   --parameters ParameterKey=S3Version,ParameterValue="dev/$CIRCLE_SHA1" \
-  ParameterKey=EnvVersion,ParameterValue="$1" \
-  ParameterKey=S3Version,ParameterValue="sandbox/$1" \
-  ParameterKey=ClientSecret,ParameterValue="$2" \
-  ParameterKey=ClientID,ParameterValue="$3" \
+    ParameterKey=EnvVersion,ParameterValue="$1" \
+    ParameterKey=S3Version,ParameterValue="sandbox/$1" \
+    ParameterKey=ClientSecret,ParameterValue="$2" \
+    ParameterKey=ClientID,ParameterValue="$3" \
    --use-previous-template \
    --region us-west-2
