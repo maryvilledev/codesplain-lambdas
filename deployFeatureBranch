@@ -18,12 +18,24 @@
   exit 0
  }
 
- stackStatus=$(echo $(aws cloudformation describe-stacks --stack-name "Codesplain-$1") | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["Stacks"][0]["StackStatus"]')
-
+stackStatus=$(echo $(aws cloudformation describe-stacks --stack-name "Codesplain-$1") | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["Stacks"][0]["StackStatus"]')
+echo "Stack Status= $stackStatus"
 if [[ $stackStatus == "ROLLBACK_COMPLETE" ]]; then
+  echo "Deleting Stack"
   aws cloudformation delete-stack --stack-name "Codesplain-$1"
+  echo "Recreating Stack"
+  aws cloudformation deploy --template-file \
+    ./serverless-output-sandbox.yaml \
+    --stack-name "Codesplain-$1" \
+    --parameter-overrides EnvVersion="$1" \
+    S3Version="sandbox/$1" \
+    ClientSecret="$2" \
+    ClientID="$3" \
+    --region us-west-2
+  exit 0
 fi
 
+echo "Updating Stack"
 # If stack exists
 aws cloudformation update-stack --stack-name "Codesplain-$1" \
   --parameters ParameterKey=S3Version,ParameterValue="dev/$CIRCLE_SHA1" \
