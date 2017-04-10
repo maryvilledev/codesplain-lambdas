@@ -1,0 +1,31 @@
+#!/bin/bash
+
+STACKNAME="CodesplainSandbox-$1"
+
+exists=true
+{
+  echo "Checking to see if stack exists"
+  aws cloudformation describe-stacks --stack-name $STACKNAME --region us-west-2
+ } || {
+   createStack=false
+ }
+if [[ $exists == true ]]; then
+  echo "Deleting Stack"
+  aws cloudformation delete-stack \
+    --stack-name $STACKNAME \
+    --region us-west-2
+
+  sleep 5
+fi
+
+echo "Creating Stack"
+aws cloudformation deploy \
+  --stack-name $STACKNAME \
+  --template-file ./serverless-output-sandbox.yaml \
+  --parameter-overrides \
+    EnvVersion="$1" \
+    S3Version="sandbox/$1" \
+    ClientSecret="$2" \
+    ClientID="$3" \
+  --region us-west-2
+exit 0
