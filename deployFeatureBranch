@@ -2,7 +2,7 @@
 
 {
   echo "Checking to see if stack exists"
-  stack=aws cloudformation describe-stacks --stack-name "Codesplain-$1"
+  aws cloudformation describe-stacks --stack-name "Codesplain-$1"
 
  } || {
    echo "Creating Stack"
