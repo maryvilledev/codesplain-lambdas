@@ -3,10 +3,10 @@ Description: Codesplain API and Lambda Functions
 Parameters:
   ClientID:
     Description: Github Local Client Id (From Circle Env Variables)
-    Type: Sting
+    Type: String
   ClientSecret:
     Description: Github Local Client Secret (From Circle Env Variables)
-    Type: Sting
+    Type: String
   ENV:
     AllowedValues:
     - dev

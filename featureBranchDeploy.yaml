@@ -178,7 +178,7 @@ Parameters:
     Default: "dev"
   ClientID:
     Description: Github Local Client Id (From Circle Env Variables)
-    Type: Sting
+    Type: String
   ClientSecret:
     Description: Github Local Client Secret (From Circle Env Variables)
-    Type: Sting
+    Type: String
