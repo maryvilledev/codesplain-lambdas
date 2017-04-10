@@ -16,3 +16,9 @@ deployment:
     commands:
       - bash publish codesplain-lambda-functions/dev/$CIRCLE_SHA1
       - aws cloudformation update-stack --stack-name CodesplainDev --parameters ParameterKey=S3Version,ParameterValue="dev/$CIRCLE_SHA1" --use-previous-template --region us-west-2
+  feature:
+    branch: branch: /^((?!master).)*$/ # not master
+    commands:
+      - bash publish codesplain-lambda-functions/sandbox/$CIRCLE_BRANCH
+      # - aws cloudformation update-stack --stack-name CodesplainDev --parameters ParameterKey=S3Version,ParameterValue="sandbox/$CIRCLE_BRANCH" ParameterKey=ClientSecret,ParameterValue=$AuthSecret ParameterKey=ClientID,ParameterValue=$AuthId --use-previous-template --region us-west-2
+      - aws cloudformation deploy -stack-name "Codesplain-$CIRCLE_BRANCH" --parameter-overrides EnvVersion="$CIRCLE_BRANCH" S3Version="sandbox/$CIRCLE_BRANCH" ClientSecret="$AuthSecret" ClientID="$AuthID" --region us-west-2
