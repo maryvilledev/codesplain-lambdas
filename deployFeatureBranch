@@ -18,7 +18,7 @@
   exit 0
  }
 
-stackStatus=$(echo $(aws cloudformation describe-stacks --stack-name "Codesplain-$1 --region us-west-2") | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["Stacks"][0]["StackStatus"]')
+stackStatus=$(echo $(aws cloudformation describe-stacks --stack-name "Codesplain-$1" --region us-west-2) | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["Stacks"][0]["StackStatus"]')
 echo "Stack Status= $stackStatus"
 if [[ $stackStatus == "ROLLBACK_COMPLETE" ]]; then
   echo "Deleting Stack"
