@@ -26,7 +26,9 @@ if [[ $stackStatus == "ROLLBACK_COMPLETE" ]]; then
   aws cloudformation delete-stack \
     --stack-name "Codesplain-$1" \
     --region us-west-2
-  
+
+  sleep 2
+
   echo "Recreating Stack"
   aws cloudformation deploy --template-file \
     ./serverless-output-sandbox.yaml \
