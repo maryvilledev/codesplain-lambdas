@@ -2,7 +2,7 @@
 
 {
   echo "Checking to see if stack exists"
-  aws cloudformation describe-stacks --stack-name "Codesplain-$1"
+  stack=aws cloudformation describe-stacks --stack-name "Codesplain-$1"
 
  } || {
    echo "Creating Stack"
@@ -17,6 +17,12 @@
     --region us-west-2
   exit 0
  }
+
+ stackStatus=$(echo $(aws cloudformation describe-stacks --stack-name "Codesplain-$1") | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["Stacks"][0]["StackStatus"]')
+
+if [[ $stackStatus == "ROLLBACK_COMPLETE" ]]; then
+  aws cloudformation delete-stack --stack-name "Codesplain-$1"
+fi
 
 # If stack exists
 aws cloudformation update-stack --stack-name "Codesplain-$1" \
