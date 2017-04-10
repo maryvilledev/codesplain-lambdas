@@ -19,5 +19,6 @@ deployment:
   feature:
     branch: /^((?!master).)*$/ # not master
     commands:
+      - aws --version
       - bash publish codesplain-lambda-functions/sandbox/$CIRCLE_BRANCH
       - aws cloudformation deploy --template-file ./serverless-output-sandbox.yaml -stack-name "Codesplain-$CIRCLE_BRANCH" --parameter-overrides EnvVersion="$CIRCLE_BRANCH" S3Version="sandbox/$CIRCLE_BRANCH" ClientSecret="$AuthSecret" ClientID="$AuthID" --region us-west-2
