@@ -15,7 +15,7 @@ if [[ $exists == true ]]; then
     --stack-name $STACKNAME \
     --region us-west-2
 
-  sleep 2
+  sleep 5
 fi
 
 echo "Creating Stack"
