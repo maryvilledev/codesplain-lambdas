@@ -1,0 +1,29 @@
+#!/bin/bash
+
+{
+  echo "Checking to see if stack exists"
+  aws cloudformation describe-stacks --stack-name "Codesplain-$1"
+
+ } || {
+   echo "Creating Stack"
+   # If stack doesn't exist
+  aws cloudformation deploy --template-file /
+    ./serverless-output-sandbox.yaml /
+    --stack-name "Codesplain-$1" /
+    --parameter-overrides EnvVersion="$1" /
+    S3Version="sandbox/$1" /
+    ClientSecret="$2" /
+    ClientID="$3" /
+    --region us-west-2
+  exit 0
+ }
+
+# If stack exists
+aws cloudformation update-stack --stack-name "Codesplain-$1" /
+  --parameters ParameterKey=S3Version,ParameterValue="dev/$CIRCLE_SHA1" /
+  ParameterKey=EnvVersion,ParameterValue="$1" /
+  ParameterKey=S3Version,ParameterValue="sandbox/$1" /
+  ParameterKey=ClientSecret,ParameterValue="$2" /
+  ParameterKey=ClientID,ParameterValue="$3" /
+   --use-previous-template /
+   --region us-west-2
