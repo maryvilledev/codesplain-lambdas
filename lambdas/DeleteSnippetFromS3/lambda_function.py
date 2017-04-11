@@ -10,7 +10,7 @@ import boto3 # AWS SDK for Python
 s3 = boto3.client('s3', 'us-west-2')
 client = boto3.client('lambda')
 
-def deleteObjFromS3(bucket, key):
+def delete_obj_from_s3(bucket, key):
     try:
         s3.delete_object(Bucket=bucket, Key=key)
     except ClientError as error:
@@ -21,33 +21,31 @@ def deleteObjFromS3(bucket, key):
 
 def object_exists(bucket, key):
     try:
-        contentsInBucket = s3.head_object(Bucket=bucket, Key=key)
+        contents_in_bucket = s3.head_object(Bucket=bucket, Key=key)
     except ClientError as error:
         return False
     return True
 
 #Verifies existance of index file; if absent, creates index file. Writes file to S3.
-def updateIndexFile(snippetKey, bucket, user):
+def update_index_file(snippet_key, bucket, user):
     try:
-        indexData = s3.get_object(Bucket=bucket, Key=user + '/index.json')['Body'].read()
+        index_data = s3.get_object(Bucket=bucket, Key=user + '/index.json')['Body'].read()
     except ClientError as error:
-        indexData = '{}'
+        index_data = '{}'
 
-    index = json.loads(indexData)
-    del index[snippetKey]
+    index = json.loads(index_data)
+    del index[snippet_key]
     s3.put_object(Body=json.dumps(index), Bucket=bucket, Key=user +'/index.json')
 
 def lambda_handler(event, context):
     #Extract needed data from the event
-    accessToken = event['headers']['Authorization']
-    userID = event['pathParameters']['user_id']
+    access_token = event['headers']['Authorization']
+    user_id = event['pathParameters']['user_id']
 
-    authorizeTokenName = os.environ['authorizeTokenName']
-
-    #Invoke the auth. lambda to verify the accessToken mathches the userID for the requested resource
+    #Invoke the auth. lambda to verify the accessToken mathches the user_id for the requested resource
     lambda_auth = client.invoke(
         FunctionName = os.environ['authorizeTokenName'],
-        Payload=json.dumps({'accessToken': accessToken, 'userID': userID}))
+        Payload=json.dumps({'accessToken': access_token, 'userID': user_id}))
 
     lambda_payload_resp = json.loads(lambda_auth['Payload'].read())
 
@@ -55,20 +53,19 @@ def lambda_handler(event, context):
         return {'statusCode': '400', 'body': json.dumps({'response': lambda_payload_resp['body']})}
 
     # -------- Otherwise, delete from S3 -------- #
-    snippetKey = event['pathParameters']['snippet_id']
-    key = userID + '/' + snippetKey
-    apiID = event['requestContext']['apiId']
+    snippet_key = event['pathParameters']['snippet_id']
+    key = user_id + '/' + snippet_key
     bucket = os.environ['BucketName']
 
     if (not object_exists(bucket, key)):
-        return {'statusCode': '400', 'body':json.dumps({'response': snippetKey + ' does not exist'})}
+        return {'statusCode': '400', 'body':json.dumps({'response': snippet_key + ' does not exist'})}
     else:
-        deleteObjFromS3(bucket, key)
+        delete_obj_from_s3(bucket, key)
 
-    updateIndexFile(
-        snippetKey,
+    update_index_file(
+        snippet_key,
         bucket,
-        userID)
+        user_id)
     return {
         'statusCode': '200',
         'headers': {'Access-Control-Allow-Origin': '*'},

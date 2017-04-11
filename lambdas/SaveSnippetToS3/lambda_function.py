@@ -11,14 +11,14 @@ s3 = boto3.client('s3', 'us-west-2')
 client = boto3.client('lambda')
 
 #Verifies existance of index file; if absent, creates index file. Writes file to S3.
-def update_index_file(snippetKey, bucket, snippetData, user):
+def update_index_file(snippet_key, bucket, snippet_data, user):
     try:
-        indexData = s3.get_object(Bucket=bucket, Key=user + '/index.json')['Body'].read()
+        index_data = s3.get_object(Bucket=bucket, Key=user + '/index.json')['Body'].read()
     except ClientError as error:
-        indexData = '{}'
+        index_data = '{}'
 
-    index = json.loads(indexData)
-    index[snippetKey] = snippetData
+    index = json.loads(index_data)
+    index[snippet_key] = snippet_data
     s3.put_object(Body=json.dumps(index), Bucket=bucket, Key=user +'/index.json')
 
 #Saves the given body to the appropiate bucket under the assigned key.
@@ -33,13 +33,13 @@ def save_to_s3(bucket, key, body):
 
 def lambda_handler(event, context):
     #Extract needed data from the event
-    accessToken = event['headers']['Authorization']
-    userID = event['pathParameters']['user_id']
+    access_token = event['headers']['Authorization']
+    user_id = event['pathParameters']['user_id']
 
-    #Invoke the auth. lambda to verify the accessToken mathches the userID for the requested resource
+    #Invoke the auth. lambda to verify the accessToken mathches the user_id for the requested resource
     lambda_auth = client.invoke(
         FunctionName=os.environ['authorizeTokenName'],
-        Payload=json.dumps({'accessToken': accessToken, 'userID': userID}))
+        Payload=json.dumps({'accessToken': access_token, 'userID': user_id}))
 
     lambda_payload_resp = json.loads(lambda_auth['Payload'].read())
 
@@ -56,9 +56,9 @@ def lambda_handler(event, context):
             })
         }
     body = json.loads(event['body'])
-    snippetTitle = body['snippetTitle']
-    snippetKey = urllib.quote(string.lower(re.sub(r'\s+', '_', snippetTitle)))
-    key = userID + '/' + snippetKey
+    snippet_title = body['snippetTitle']
+    snippet_key = urllib.quote(string.lower(re.sub(r'\s+', '_', snippet_title)))
+    key = user_id + '/' + snippet_key
 
     bucket = os.environ['BucketName']
     if(bucket == None):
@@ -68,12 +68,12 @@ def lambda_handler(event, context):
     save_to_s3(bucket, key, event['body'])
 
     update_index_file(
-        snippetKey,
+        snippet_key,
         bucket,
-        {'snippetTitle': snippetTitle, 'language': 'python3', 'lastEdited': datetime.now().isoformat()},
-        userID)
+        {'snippetTitle': snippet_title, 'language': 'python3', 'lastEdited': datetime.now().isoformat()},
+        user_id)
     return {
         'statusCode': '200',
         'headers': {'Access-Control-Allow-Origin': '*'},
-        'body': json.dumps({'key': snippetKey})
+        'body': json.dumps({'key': snippet_key})
     }
