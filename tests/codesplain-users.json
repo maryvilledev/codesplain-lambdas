@@ -286,11 +286,16 @@
 								"key": "Authorization",
 								"value": "{{access_token}}",
 								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "{{snippet}}"
 						},
 						"description": ""
 					},
