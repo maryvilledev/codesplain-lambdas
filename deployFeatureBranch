@@ -14,8 +14,6 @@ if [[ $exists == true ]]; then
   aws cloudformation delete-stack \
     --stack-name $STACKNAME \
     --region us-west-2
-
-  sleep 5
 fi
 
 echo "Creating Stack"
