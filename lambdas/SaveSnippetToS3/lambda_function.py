@@ -70,7 +70,7 @@ def lambda_handler(event, context):
     update_index_file(
         snippet_key,
         bucket,
-        {'snippetTitle': snippet_title, 'language': 'python3', 'lastEdited': datetime.now().isoformat()},
+        {'snippetTitle': snippet_title, 'language': body['snippetLanguage'], 'lastEdited': datetime.now().isoformat()},
         user_id)
     return {
         'statusCode': '200',
