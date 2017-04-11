@@ -33,7 +33,13 @@ function nodeCleanup {
 function zipLambda {
   printf "Zipping up $1 lambda\n"
   cd lambdas/$1
-  zip -r ../../zips/$1.zip index.js node_modules >/dev/null
+  if [[ -e "lambdas/$1/index.js" ]]; then
+    zip -r ../../zips/$1.zip index.js node_modules >/dev/null
+  elif [[ -e "lambdas/$1/lambda_function.py" ]]; then
+    zip -r ../../zips/$1.zip lambda_function.py >/dev/null
+  else
+    printf "$1 is an unknown lambda type!"
+  fi
   cd ../.. # Go back to where we came from
 }
 
