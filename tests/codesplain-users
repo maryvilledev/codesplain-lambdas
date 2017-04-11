@@ -37,11 +37,11 @@
 									"    title: 'Snippet Meta Data',",
 									"    type: 'object',",
 									"    properties: {",
-									"        snippetName: 'string',",
+									"        snippetTitle: 'string',",
 									"        language: 'string',",
 									"        lastEdited: 'string', // should be a timestamp",
 									"    },",
-									"    required: ['snippetName', 'language', 'lastEdited'],",
+									"    required: ['snippetTitle', 'language', 'lastEdited'],",
 									"};",
 									"const isValidJSON = (str) => {",
 									"    try {",
@@ -286,16 +286,11 @@
 								"key": "Authorization",
 								"value": "{{access_token}}",
 								"description": ""
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"description": ""
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{{snippet}}"
+							"raw": ""
 						},
 						"description": ""
 					},
