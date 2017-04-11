@@ -7,7 +7,7 @@ exists=true
   echo "Checking to see if stack exists"
   aws cloudformation describe-stacks --stack-name $STACKNAME --region us-west-2
  } || {
-   createStack=false
+   exists=false
  }
 if [[ $exists == true ]]; then
   echo "Deleting Stack"
