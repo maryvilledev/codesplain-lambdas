@@ -5,7 +5,7 @@ from datetime import datetime
 from boto3.s3.transfer import ClientError
 import boto3 # AWS SDK for Python
 
-s3 = boto.client('s3', 'us-west-2')
+s3 = boto3.client('s3', 'us-west-2')
 client = boto3.client('lambda')
 
 # Updates index file and writes to S3. Creates new one if needed.
@@ -31,7 +31,7 @@ def save_to_s3(bucket, user_id, snippet_key, body):
         raise error
 
 # Lambda handler function
-def  lambda_handler(event, context):
+def lambda_handler(event, context):
     # Extract stuff we need from the event
     access_token = event['headers']['Authorization']
     user_id      = event['pathParameters']['user_id']
@@ -44,7 +44,7 @@ def  lambda_handler(event, context):
         FunctionName=os.environ['authorizeTokenName'],
         Payload=json.dumps({
             'accessToken': access_token,
-            'user_id': user_id
+            'userID': user_id
         }))
 
     # Respond with 400 if user is not authorized
@@ -58,21 +58,29 @@ def  lambda_handler(event, context):
         }
 
     # ----- Otherwise, user is authorized, so save to S3 ----- #
+    if(event['body'] == None):
+        return {
+            'statusCode': '400',
+            'headers':    { 'Access-Control-Allow-Origin': '*' },
+            'body':       json.dumps({
+               'response': 'PUT requests must not have empty bodies.'
+            })
+        }
     body   = json.loads(event['body'])
     bucket = os.environ['BucketName']
     if(bucket == None):
         print 'Must specify "BucketName" env var!'
         raise error
 
-    save_to_s3(bucket, user_id, snippet_id, body)
+    save_to_s3(bucket, user_id, snippet_id, event['body'])
     new_entry = {
         'snippetTitle': body['snippetTitle'],
         'language':     body['snippetLanguage'],
         'lastEdited':   datetime.now().isoformat()
     }
-    update_index_file(bucket, user_id, key, new_entry)
+    update_index_file(bucket, user_id, snippet_id, new_entry)
     return {
         'statusCode': '200',
         'headers':    { 'Access-Control-Allow-Origin': '*' },
-        'body':       json.dumps({ 'key': key })
+        'body':       json.dumps({ 'key': snippet_id })
     }
