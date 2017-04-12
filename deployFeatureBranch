@@ -1,5 +1,5 @@
 #!/bin/bash
-STACKNAME="CodesplainSandbox-$1"
+STACKNAME="CodesplainFeature-$1"
 
 exists=true
 {
