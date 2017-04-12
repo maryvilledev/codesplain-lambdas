@@ -20,7 +20,7 @@ Resources:
       Description: Validates that a request has a valid token
       MemorySize: 192
       Timeout: 3
-      Role: arn:aws:iam::296636357169:role/CodesplainS3DevRole
+      Role: !Ref Role
       Environment:
         Variables:
           CLIENT_ID: !Ref ClientID
@@ -61,7 +61,7 @@ Resources:
       Description: Converts access key to github token using client sercret
       MemorySize: 192
       Timeout: 3
-      Role: "arn:aws:iam::296636357169:role/CodesplainS3DevRole"
+      Role: !Ref Role
       Environment:
         Variables:
           CLIENT_ID: !Ref ClientID
@@ -84,7 +84,7 @@ Resources:
       Description: Converts API Gateway POST/PUT to S3 Request 2
       MemorySize: 192
       Timeout: 4
-      Role: "arn:aws:iam::296636357169:role/CodesplainS3DevRole"
+      Role: !Ref Role
       Environment:
         Variables:
           authorizeTokenName: !Ref AuthorizeToken
@@ -106,7 +106,7 @@ Resources:
       Description: Converts API Gateway POST/PUT to S3 Request 2
       MemorySize: 192
       Timeout: 3
-      Role: "arn:aws:iam::296636357169:role/CodesplainS3DevRole"
+      Role: !Ref Role
       Environment:
         Variables:
           BucketName: !Ref Bucket
@@ -127,7 +127,7 @@ Resources:
       Description: Converts API Gateway POST/PUT to S3 Request 2
       MemorySize: 192
       Timeout: 3
-      Role: "arn:aws:iam::296636357169:role/CodesplainS3DevRole"
+      Role: !Ref Role
       Environment:
         Variables:
           authorizeTokenName: !Ref AuthorizeToken
@@ -149,7 +149,7 @@ Resources:
       Description: Converts API Gateway POST/PUT to S3 Request 2
       MemorySize: 192
       Timeout: 3
-      Role: "arn:aws:iam::296636357169:role/CodesplainS3DevRole"
+      Role: !Ref Role
       Environment:
         Variables:
           authorizeTokenName: !Ref AuthorizeToken

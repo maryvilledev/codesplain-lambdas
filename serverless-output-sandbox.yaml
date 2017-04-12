@@ -61,7 +61,8 @@ Resources:
             Ref: EnvVersion
       Handler: index.handler
       MemorySize: 192
-      Role: arn:aws:iam::296636357169:role/CodesplainS3DevRole
+      Role:
+        Ref: Role
       Runtime: nodejs4.3
       Timeout: 3
     Type: AWS::Serverless::Function
@@ -523,7 +524,8 @@ Resources:
             Ref: EnvVersion
       Handler: index.handler
       MemorySize: 192
-      Role: arn:aws:iam::296636357169:role/CodesplainS3DevRole
+      Role:
+        Ref: Role
       Runtime: nodejs4.3
       Timeout: 3
     Type: AWS::Serverless::Function
@@ -548,7 +550,8 @@ Resources:
             Ref: EnvVersion
       Handler: index.handler
       MemorySize: 192
-      Role: arn:aws:iam::296636357169:role/CodesplainS3DevRole
+      Role:
+        Ref: Role
       Runtime: nodejs4.3
       Timeout: 3
     Type: AWS::Serverless::Function
@@ -576,7 +579,8 @@ Resources:
             Ref: EnvVersion
       Handler: index.handler
       MemorySize: 192
-      Role: arn:aws:iam::296636357169:role/CodesplainS3DevRole
+      Role:
+        Ref: Role
       Runtime: nodejs4.3
       Timeout: 3
     Type: AWS::Serverless::Function
@@ -603,7 +607,8 @@ Resources:
             Ref: EnvVersion
       Handler: index.handler
       MemorySize: 192
-      Role: arn:aws:iam::296636357169:role/CodesplainS3DevRole
+      Role:
+        Ref: Role
       Runtime: nodejs4.3
       Timeout: 3
     Type: AWS::Serverless::Function
@@ -630,7 +635,8 @@ Resources:
             Ref: EnvVersion
       Handler: index.handler
       MemorySize: 192
-      Role: arn:aws:iam::296636357169:role/CodesplainS3DevRole
+      Role:
+        Ref: Role
       Runtime: nodejs4.3
       Timeout: 4
     Type: AWS::Serverless::Function
