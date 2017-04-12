@@ -10,6 +10,35 @@ import boto3 # AWS SDK for Python
 s3     = boto3.client('s3', 'us-west-2')
 client = boto3.client('lambda')
 
+# Returns the snippet key with the lowest possible unused postfix value.
+def generateSnippetId(bucket, user_id, snippet_title):
+    snippet_id = urllib.quote(string.lower(re.sub(r'\s+', '_', snippet_title)))
+    if object_exists(bucket, user_id, snippet_id):
+        return generateSnippetId(bucket, user_id, nextTitle(snippet_title))
+    return snippet_id
+
+# Increments the postfix on the given snippet_title and returns the result.
+# If the given snippet_title has not postfix, '-1' will be appended.
+def nextTitle(snippet_title):
+    postfixIdx = snippet_title.rfind('-')
+    if postfixIdx == -1 or (postfixIdx + 1) > len(snippet_title):
+        return snippet_title + '-1'
+    postfix    = snippet_title[postfixIdx + 1 : len(snippet_title)]
+    newPostfix = int(postfix) + 1
+    return snippet_title[0 : postfixIdx + 1] + str(newPostfix)
+
+# Returns true if given snippet_id exists under given user in the given bucket.
+# Returns false if not.
+def object_exists(bucket, user_id, snippet_id):
+    try:
+        s3.head_object(
+            Bucket=bucket,
+            Key=user_id + '/' + snippet_id
+        )
+    except ClientError as error:
+        return False
+    return True
+
 # Updates index file and writes to S3. Creates new one if needed.
 def update_index_file(bucket, user_id, snippet_key, entry):
     key = user_id + '/index.json'
@@ -24,7 +53,7 @@ def update_index_file(bucket, user_id, snippet_key, entry):
 
 # Saves the given body to the given bucket under the given key
 def save_to_s3(bucket, user_id, snippet_key, body):
-    key = user_id + '/' + snippety_key
+    key = user_id + '/' + snippet_key
     try:
         s3.put_object(Body=body, Bucket=bucket, Key=key)
     except ClientError as error:
@@ -66,22 +95,24 @@ def lambda_handler(event, context):
                'response': 'POST requests must not have empty bodies.'
             })
         }
-    body         = json.loads(event['body'])
-    snippet_id   = urllib.quote(string.lower(re.sub(r'\s+', '_', snippet_title)))
+    body             = json.loads(event['body'])
+    snippet_title    = body['snippetTitle']
+    snippet_language = body['snippetLanguage']
     bucket = os.environ['BucketName']
     if(bucket == None):
         print 'Must specify "BucketName" env var!'
         raise error
+    snippet_id = generateSnippetId(bucket, user_id, snippet_title)
 
     save_to_s3(bucket, user_id, snippet_id, event['body'])
     new_entry = {
-        'snippetTitle': body['snippetTitle'],
-        'language':     body['snippetLanguage'],
+        'snippetTitle': snippet_title,
+        'language':     snippet_language,
         'lastEdited':   datetime.now().isoformat()
     }
     update_index_file(bucket, user_id, snippet_id, new_entry)
     return {
         'statusCode': '200',
         'headers':    { 'Access-Control-Allow-Origin': '*' },
-        'body':       json.dumps({ 'key': snippet_key })
+        'body':       json.dumps({ 'key': snippet_id })
     }
