@@ -50,7 +50,7 @@ function pushZipsToS3 {
 
 # Install dependencies and zip each lambda, then push to S3 and clean up:
 makeZipsDir
-for lambdaDir in $(ls lambdas);
+for lambdaDir in $(ls -F lambdas | grep '/' | cut -f1 -d'/');
 do
   if ([[ "$lambdaDir" == "GitHubAccessCodeGetter" ]] ||
       [[ "$lambdaDir" == "Authorize" ]] ||
