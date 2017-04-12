@@ -1,9 +1,8 @@
 import sys
 import os
 import unittest
-from mock import Mock, patch
+from mock import patch
 
-sys.modules['boto3'] = Mock()
 os.environ['BucketName'] = 'mockBucketName'
 import lambdas.GenerateIndexFiles.lambda_function as gif
 
@@ -17,11 +16,13 @@ class TestGenerateIndexFiles(unittest.TestCase):
         self.assertTrue(gif.has_index(['index.json']))
         self.assertFalse(gif.has_index([]))
 
-    def test_create_index (self):
+    @patch('lambdas.GenerateIndexFiles.lambda_function.get_snippet_info',
+     return_value='mockSnippetInfo')
+    def test_create_index (self, mock_fn):
         """Should create an index object"""
         mock_filenames = ['leet']
         mock_dir = 'hacks'
         mock_snippet_info = 'mockSnippetInfo'
-        gif.get_snippet_info = Mock(return_value=mock_snippet_info)
         expected = {'hacks/leet': mock_snippet_info}
         self.assertEqual(gif.create_index(mock_dir, mock_filenames), expected)
+        mock_fn.assert_called_once_with('hacks/leet')
