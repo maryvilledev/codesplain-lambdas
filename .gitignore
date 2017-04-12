@@ -1,5 +1,7 @@
 .env
-node_modules
+**/node_modules/**
+**/etc/**
+*.zip
 
 ## Ignore compiled python files
 *.pyc

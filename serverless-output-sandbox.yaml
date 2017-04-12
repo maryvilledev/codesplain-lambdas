@@ -1,0 +1,208 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Codesplain API and Lambda Functions
+Parameters:
+  ClientID:
+    Description: Github Local Client Id (From Circle Env Variables)
+    Type: String
+  ClientSecret:
+    Description: Github Local Client Secret (From Circle Env Variables)
+    Type: String
+  ENV:
+    AllowedValues:
+    - dev
+    - prod
+    - sandbox
+    Default: dev
+    Description: The Codesplain Environment
+    Type: String
+  EnvVersion:
+    Default: dev
+    Description: Titles for Lambdas
+    Type: String
+  ParserPath:
+    Default: dev
+    Description: Path in the codesplain-parsers S3 Bucket
+    Type: String
+  S3Version:
+    Description: The Version path to use when pulling S3 Lambdas
+    Type: String
+Resources:
+  Authorize:
+    Properties:
+      CodeUri:
+        Bucket: codesplain-lambda-functions
+        Key:
+          Fn::Sub:
+          - ${lambda_version}/Authorize.zip
+          - lambda_version:
+              Ref: S3Version
+      Description: Validates that a request has a valid token
+      Environment:
+        Variables:
+          CLIENT_ID:
+            Ref: ClientID
+          CLIENT_SECRET:
+            Ref: ClientSecret
+      FunctionName:
+        Fn::Sub:
+        - Authorize-${lambda_version}
+        - lambda_version:
+            Ref: EnvVersion
+      Handler: index.handler
+      MemorySize: 192
+      Role: arn:aws:iam::296636357169:role/CodesplainS3DevRole
+      Runtime: nodejs4.3
+      Timeout: 3
+    Type: AWS::Serverless::Function
+  AuthorizeToken:
+    Properties:
+      CodeUri:
+        Bucket: codesplain-lambda-functions
+        Key:
+          Fn::Sub:
+          - ${lambda_version}/AuthorizeToken.zip
+          - lambda_version:
+              Ref: S3Version
+      Description: Validates that users are allowed to make requests
+      FunctionName:
+        Fn::Sub:
+        - AuthorizeToken-${lambda_version}
+        - lambda_version:
+            Ref: EnvVersion
+      Handler: index.handler
+      MemorySize: 192
+      Role: arn:aws:iam::296636357169:role/CodesplainS3DevRole
+      Runtime: nodejs4.3
+      Timeout: 3
+    Type: AWS::Serverless::Function
+  DeleteSnippet:
+    Properties:
+      CodeUri:
+        Bucket: codesplain-lambda-functions
+        Key:
+          Fn::Sub:
+          - ${lambda_version}/DeleteSnippetFromS3.zip
+          - lambda_version:
+              Ref: S3Version
+      Description: Converts API Gateway POST/PUT to S3 Request 2
+      Environment:
+        Variables:
+          BucketName: codesplain-snippets-dev
+          authorizeTokenName:
+            Ref: AuthorizeToken
+      FunctionName:
+        Fn::Sub:
+        - DeleteSnippet-${lambda_version}
+        - lambda_version:
+            Ref: EnvVersion
+      Handler: index.handler
+      MemorySize: 192
+      Role: arn:aws:iam::296636357169:role/CodesplainS3DevRole
+      Runtime: nodejs4.3
+      Timeout: 3
+    Type: AWS::Serverless::Function
+  GetSnippet:
+    Properties:
+      CodeUri:
+        Bucket: codesplain-lambda-functions
+        Key:
+          Fn::Sub:
+          - ${lambda_version}/GetSnippetFromS3.zip
+          - lambda_version:
+              Ref: S3Version
+      Description: Converts API Gateway POST/PUT to S3 Request 2
+      Environment:
+        Variables:
+          BucketName: codesplain-snippets-dev
+      FunctionName:
+        Fn::Sub:
+        - GetSnippet-${lambda_version}
+        - lambda_version:
+            Ref: EnvVersion
+      Handler: index.handler
+      MemorySize: 192
+      Role: arn:aws:iam::296636357169:role/CodesplainS3DevRole
+      Runtime: nodejs4.3
+      Timeout: 3
+    Type: AWS::Serverless::Function
+  GithubAccessCodeGetter:
+    Properties:
+      CodeUri:
+        Bucket: codesplain-lambda-functions
+        Key:
+          Fn::Sub:
+          - ${lambda_version}/GitHubAccessCodeGetter.zip
+          - lambda_version:
+              Ref: S3Version
+      Description: Converts access key to github token using client sercret
+      Environment:
+        Variables:
+          CLIENT_ID:
+            Ref: ClientID
+          CLIENT_SECRET:
+            Ref: ClientSecret
+          ORG_WHITELIST: maryvilledev
+      FunctionName:
+        Fn::Sub:
+        - GithubAccessCodeGetter-${lambda_version}
+        - lambda_version:
+            Ref: EnvVersion
+      Handler: index.handler
+      MemorySize: 192
+      Role: arn:aws:iam::296636357169:role/CodesplainS3DevRole
+      Runtime: nodejs4.3
+      Timeout: 3
+    Type: AWS::Serverless::Function
+  PutSnippet:
+    Properties:
+      CodeUri:
+        Bucket: codesplain-lambda-functions
+        Key:
+          Fn::Sub:
+          - ${lambda_version}/UpdateSnippetInS3.zip
+          - lambda_version:
+              Ref: S3Version
+      Description: Converts API Gateway POST/PUT to S3 Request 2
+      Environment:
+        Variables:
+          BucketName: codesplain-snippets-dev
+          authorizeTokenName:
+            Ref: AuthorizeToken
+      FunctionName:
+        Fn::Sub:
+        - PutSnippet-${lambda_version}
+        - lambda_version:
+            Ref: EnvVersion
+      Handler: index.handler
+      MemorySize: 192
+      Role: arn:aws:iam::296636357169:role/CodesplainS3DevRole
+      Runtime: nodejs4.3
+      Timeout: 3
+    Type: AWS::Serverless::Function
+  SaveSnippet:
+    Properties:
+      CodeUri:
+        Bucket: codesplain-lambda-functions
+        Key:
+          Fn::Sub:
+          - ${lambda_version}/SaveSnippetToS3.zip
+          - lambda_version:
+              Ref: S3Version
+      Description: Converts API Gateway POST/PUT to S3 Request 2
+      Environment:
+        Variables:
+          BucketName: codesplain-snippets-dev
+          authorizeTokenName:
+            Ref: AuthorizeToken
+      FunctionName:
+        Fn::Sub:
+        - SaveSnippet-${lambda_version}
+        - lambda_version:
+            Ref: EnvVersion
+      Handler: index.handler
+      MemorySize: 192
+      Role: arn:aws:iam::296636357169:role/CodesplainS3DevRole
+      Runtime: nodejs4.3
+      Timeout: 4
+    Type: AWS::Serverless::Function
+Transform: AWS::Serverless-2016-10-31
