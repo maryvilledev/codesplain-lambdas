@@ -155,6 +155,28 @@ Resources:
           authorizeTokenName: !Ref AuthorizeToken
           BucketName: codesplain-snippets-dev
 
+  GenerateIndexFiles:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      FunctionName: !Sub
+       - GenerateIndexFiles-${lambda_version}
+       - { lambda_version: !Ref EnvVersion }
+      Handler: index.handler
+      Runtime: nodejs4.3
+      CodeUri:
+        Bucket: codesplain-lambda-functions
+        Key:  !Sub
+         - ${lambda_version}/GenerateIndexFiles.zip
+         - { lambda_version: !Ref S3Version }
+      Description: Converts API Gateway POST/PUT to S3 Request 2
+      MemorySize: 192
+      Timeout: 3
+      Role: "arn:aws:iam::296636357169:role/CodesplainS3DevRole"
+      Environment:
+        Variables:
+          authorizeTokenName: !Ref AuthorizeToken
+          BucketName: codesplain-snippets-dev
+
 
 Parameters:
   ENV:

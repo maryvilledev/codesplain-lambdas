@@ -5,7 +5,7 @@ import boto3
 from boto3 import ClientError
 
 s3 = boto3.resource('s3')
-bucket = s3.Bucket(os.environ['BUCKET_NAME'])
+bucket = s3.Bucket(os.environ['BucketName'])
 
 def get_dirs ():
     """Creates a dict of dir names to snippet names from the bucket"""
@@ -34,7 +34,7 @@ def create_index (dirname, files):
 
 def get_snippet_info(snippet_key):
     """Connects to s3 and gets info about the snippet"""
-    obj = s3.Object(os.environ['BUCKET_NAME'], snippet_key)
+    obj = s3.Object(os.environ['BucketName'], snippet_key)
     content = json.loads(obj.get())
     return {
         'snippetTitle': content['snippetTitle'],
