@@ -2,7 +2,7 @@ import os
 import json
 
 import boto3
-from boto3 import ClientError
+from boto3.s3.transfer import ClientError
 
 s3 = boto3.resource('s3')
 bucket = s3.Bucket(os.environ['BucketName'])
@@ -35,11 +35,11 @@ def create_index (dirname, files):
 def get_snippet_info(snippet_key):
     """Connects to s3 and gets info about the snippet"""
     obj = s3.Object(os.environ['BucketName'], snippet_key)
-    content = json.loads(obj.get())
+    content = json.loads(obj.get()['Body'].read())
     return {
         'snippetTitle': content['snippetTitle'],
-        'language': content['snippetLanguage'],
-        'lastEdited': obj.last_modified
+        'language': content['snippetLanguage'] if 'snippetLanguage' in content else 'python3',
+        'lastEdited': obj.last_modified.now().isoformat()
     }
 
 def lambda_handler(event, context):
@@ -53,6 +53,6 @@ def lambda_handler(event, context):
             index = create_index(dirname, files)
             data = json.dumps(index)
             try:
-                s3.put_object(Bucket=bucket, Key="%s/index.json" % dirname, Body=data)
+                s3.Object(os.environ['BucketName'], "%s/index.json" % dirname).put(Body=data)
             except ClientError as error:
                 print "Error adding index to directory %s" % dirname
