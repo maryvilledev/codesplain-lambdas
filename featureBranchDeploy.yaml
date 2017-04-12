@@ -196,7 +196,7 @@ Resources:
                     Access-Control-Allow-Origin:
                       type: "string"
               x-amazon-apigateway-integration:
-                credentials: !FindInMap [Roles, S3, !Ref "ENV"]
+                credentials: !Ref Role
                 responses:
                   default:
                     statusCode: "200"
@@ -247,7 +247,7 @@ Resources:
                 "200":
                   description: "200 response"
               x-amazon-apigateway-integration:
-                credentials: !FindInMap [Roles, S3, !Ref "ENV"]
+                credentials: !Ref Roles
                 responses:
                   default:
                     statusCode: "200"
@@ -277,7 +277,7 @@ Resources:
                     Access-Control-Allow-Headers:
                       type: "string"
               x-amazon-apigateway-integration:
-                credentials: !FindInMap [Roles, S3, !Ref "ENV"]
+                credentials: !Ref Roles
                 responses:
                   default:
                     statusCode: "200"
@@ -305,7 +305,7 @@ Resources:
                     Access-Control-Allow-Origin:
                       type: "string"
               x-amazon-apigateway-integration:
-                credentials: !FindInMap [Roles, S3, !Ref "ENV"]
+                credentials: !Ref Roles
                 responses:
                   default:
                     statusCode: "200"
@@ -346,7 +346,7 @@ Resources:
               security:
               - GithubAuthorizer: []
               x-amazon-apigateway-integration:
-                credentials: !FindInMap [Roles, S3, !Ref "ENV"]
+                credentials: !Ref Roles
                 responses:
                   default:
                     statusCode: "200"
@@ -409,7 +409,7 @@ Resources:
               security:
               - GithubAuthorizer: []
               x-amazon-apigateway-integration:
-                credentials: !FindInMap [Roles, S3, !Ref "ENV"]
+                credentials: !Ref Roles
                 responses:
                   default:
                     statusCode: "200"
@@ -447,7 +447,7 @@ Resources:
               security:
               - GithubAuthorizer: []
               x-amazon-apigateway-integration:
-                credentials: !FindInMap [Roles, S3, !Ref "ENV"]
+                credentials: !Ref Roles
                 responses:
                   default:
                     statusCode: "200"
@@ -478,7 +478,7 @@ Resources:
               security:
               - GithubAuthorizer: []
               x-amazon-apigateway-integration:
-                credentials: !FindInMap [Roles, S3, !Ref "ENV"]
+                credentials: !Ref Roles
                 responses:
                   default:
                     statusCode: "200"
@@ -524,7 +524,7 @@ Resources:
             in: "header"
             x-amazon-apigateway-authtype: "custom"
             x-amazon-apigateway-authorizer:
-              authorizerCredentials: !FindInMap [Roles, S3, !Ref "ENV"]
+              authorizerCredentials: !Ref Roles
               authorizerUri: !Sub
                 - "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:296636357169:function:Authorize-${version}/invocations"
                 - { version: !Ref EnvVersion}
@@ -581,3 +581,7 @@ Parameters:
     Description: Bucket to Save Snippets In
     Type: String
     Default: "codesplain-snippets-dev"
+  Role:
+    Description: Role for developer access
+    Type: String
+    Default: "arn:aws:iam::296636357169:role/CodesplainS3DevRole"
