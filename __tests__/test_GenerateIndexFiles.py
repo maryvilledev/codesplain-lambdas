@@ -4,7 +4,7 @@ import unittest
 from mock import Mock, patch
 
 sys.modules['boto3'] = Mock()
-os.environ['BUCKET_NAME'] = 'mockBucketName'
+os.environ['BucketName'] = 'mockBucketName'
 import lambdas.GenerateIndexFiles as gif
 
 class TestGenerateIndexFiles(unittest.TestCase):
