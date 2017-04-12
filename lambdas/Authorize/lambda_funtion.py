@@ -8,7 +8,7 @@ client_id = os.environ['CLIENT_ID']
 client_secret = os.environ['CLIENT_SECRET']
 
 def https_url(token):
-    requests.get('https://api.github.com/applications/ %s/tokens/ %s', auth=('client_id', 'token'))
+    requests.get('https://api.github.com/applications/ %s/tokens/ %s' % (client_id, token), auth=('client_id', 'token'))
 
 def generate_policy(prinicipal_id, effect, resource):
     return {
@@ -25,4 +25,7 @@ def generate_policy(prinicipal_id, effect, resource):
 
 def lambda_handler(event, context):
     token = event['authorizationToken']
-    https_url
+    url = https_url(token)
+
+    try:
+        requests.get(url, )
