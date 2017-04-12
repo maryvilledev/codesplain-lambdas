@@ -5,7 +5,7 @@ from mock import Mock, patch
 
 sys.modules['boto3'] = Mock()
 os.environ['BucketName'] = 'mockBucketName'
-import lambdas.GenerateIndexFiles as gif
+import lambdas.GenerateIndexFiles.lambda_function as gif
 
 class TestGenerateIndexFiles(unittest.TestCase):
     def setUp (self):
