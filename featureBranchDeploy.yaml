@@ -163,7 +163,7 @@ Resources:
         swagger: "2.0"
         info:
           version: "0.2.1"
-          title: Test
+          title: !Ref "Title"
         schemes:
         - "https"
         paths:
