@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Use this to update template
-# aws cloudformation package --template-file featureBranchDeploy.yaml --s3-bucket codesplain-lambda-functions --output-template-file serverless-output-sandbox.yaml --tags Key="FeatureBranch",Value="True")
+# aws cloudformation package --template-file featureBranchDeploy.yaml --s3-bucket codesplain-lambda-functions --output-template-file serverless-output-sandbox.yaml
 
 STACKNAME="CodesplainSandbox-$1"
 
@@ -23,6 +23,8 @@ if [[ $exists == true ]]; then
     sleep 20
   fi
 fi
+
+aws cloudformation package --template-file featureBranchDeploy.yaml --s3-bucket codesplain-lambda-functions --output-template-file serverless-output-sandbox.yaml
 
 echo "Creating Stack"
 aws cloudformation deploy \
