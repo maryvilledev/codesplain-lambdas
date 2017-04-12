@@ -23,7 +23,5 @@ class TestGenerateIndexFiles(unittest.TestCase):
         mock_dir = 'hacks'
         mock_snippet_info = 'mockSnippetInfo'
         gif.get_snippet_info = Mock(return_value=mock_snippet_info)
-        expected = {
-            'hacks/leet': mock_snippet_info
-        }
+        expected = {'hacks/leet': mock_snippet_info}
         self.assertEqual(gif.create_index(mock_dir, mock_filenames), expected)
