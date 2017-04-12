@@ -11,7 +11,8 @@ def lambda_handler(event, context):
     bucket = os.environ['BucketName']
 
     try:
-        s3.get_object(Bucket=bucket, Key=key)
+        object = s3.get_object(Bucket=bucket, Key=key)['Body'].read()
+        print object
     except ClientError as error:
         err_code = str(error.response['Error']['Code'])
         print 'Error getting object %s from bucket %s' % (key, bucket)
@@ -22,5 +23,5 @@ def lambda_handler(event, context):
     return {
         'statusCode': '200',
         'headers': {'Access-Control-Allow-Origin': '*'},
-        'body': json.dumps({event['body']})
+        'body': object
     }
