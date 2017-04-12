@@ -2,7 +2,7 @@
 	"variables": [],
 	"info": {
 		"name": "codesplain-users",
-		"_postman_id": "02831bc1-af47-35b6-73c1-d85ab07dafcb",
+		"_postman_id": "c8cf7bd3-02aa-1ba1-f8ec-4d035c8ad1c9",
 		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
 	},
@@ -109,7 +109,7 @@
 									"const ACAO = 'Access-Control-Allow-Origin';",
 									"",
 									"// Tests",
-									"tests['Status code is 200']  = responseCode.code === 200;",
+									"tests['Status code is 200'] = responseCode.code === 200;",
 									"tests[`${ACAO} is present`] = getHeader(ACAO);",
 									"tests['Body is valid JSON'] = bodyIsValidJSON;",
 									"",
@@ -123,9 +123,8 @@
 									"                            .snippetTitle",
 									"                            .replace(' ', '_')",
 									"                            .toLowerCase();",
-									"    postman.setEnvironmentVariable('snippet_id', expectedKey);",
 									"    tests['Body contains \"key\"'] = body.key;",
-									"    tests['\"key\" is correct']    = body.key === expectedKey;",
+									"    tests['\"key\" is correct']    = body.key.substring(0, expectedKey.length) === expectedKey;",
 									"}"
 								]
 							}
@@ -182,10 +181,7 @@
 						"url": "{{url}}/users/{{user_id}}/snippets",
 						"method": "OPTIONS",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
+						"body": {},
 						"description": ""
 					},
 					"response": []
@@ -227,10 +223,7 @@
 								"description": ""
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
+						"body": {},
 						"description": ""
 					},
 					"response": []
@@ -352,10 +345,7 @@
 								"description": ""
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
+						"body": {},
 						"description": ""
 					},
 					"response": []
@@ -388,10 +378,7 @@
 						"url": "{{url}}/users/{{user_id}}/snippets/{{snippet_id}}",
 						"method": "OPTIONS",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
+						"body": {},
 						"description": ""
 					},
 					"response": []
