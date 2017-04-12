@@ -83,7 +83,8 @@ Resources:
             Ref: EnvVersion
       Handler: index.handler
       MemorySize: 192
-      Role: arn:aws:iam::296636357169:role/CodesplainS3DevRole
+      Role:
+        Ref: Role
       Runtime: nodejs4.3
       Timeout: 3
     Type: AWS::Serverless::Function
@@ -188,7 +189,7 @@ Resources:
               x-amazon-apigateway-integration:
                 contentHandling: CONVERT_TO_TEXT
                 credentials:
-                  Ref: Roles
+                  Ref: Role
                 httpMethod: GET
                 passthroughBehavior: when_no_match
                 requestParameters:
@@ -220,7 +221,7 @@ Resources:
                       type: string
               x-amazon-apigateway-integration:
                 credentials:
-                  Ref: Roles
+                  Ref: Role
                 passthroughBehavior: when_no_match
                 requestTemplates:
                   application/json: '{"statusCode": 200}'
@@ -250,7 +251,7 @@ Resources:
               x-amazon-apigateway-integration:
                 contentHandling: CONVERT_TO_TEXT
                 credentials:
-                  Ref: Roles
+                  Ref: Role
                 httpMethod: GET
                 passthroughBehavior: when_no_match
                 requestParameters:
@@ -322,7 +323,7 @@ Resources:
               x-amazon-apigateway-integration:
                 contentHandling: CONVERT_TO_TEXT
                 credentials:
-                  Ref: Roles
+                  Ref: Role
                 httpMethod: POST
                 passthroughBehavior: when_no_match
                 responses:
@@ -359,7 +360,7 @@ Resources:
               x-amazon-apigateway-integration:
                 contentHandling: CONVERT_TO_TEXT
                 credentials:
-                  Ref: Roles
+                  Ref: Role
                 httpMethod: POST
                 passthroughBehavior: when_no_match
                 responses:
@@ -395,7 +396,7 @@ Resources:
               x-amazon-apigateway-integration:
                 contentHandling: CONVERT_TO_TEXT
                 credentials:
-                  Ref: Roles
+                  Ref: Role
                 httpMethod: POST
                 passthroughBehavior: when_no_match
                 responses:
@@ -463,7 +464,7 @@ Resources:
               x-amazon-apigateway-integration:
                 contentHandling: CONVERT_TO_TEXT
                 credentials:
-                  Ref: Roles
+                  Ref: Role
                 httpMethod: POST
                 passthroughBehavior: when_no_match
                 responses:
@@ -484,7 +485,7 @@ Resources:
             type: apiKey
             x-amazon-apigateway-authorizer:
               authorizerCredentials:
-                Ref: Roles
+                Ref: Role
               authorizerResultTtlInSeconds: 0
               authorizerUri:
                 Fn::Sub:

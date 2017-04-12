@@ -42,7 +42,7 @@ Resources:
       Description: Validates that users are allowed to make requests
       MemorySize: 192
       Timeout: 3
-      Role: "arn:aws:iam::296636357169:role/CodesplainS3DevRole"
+      Role: !Ref Role
 
   GithubAccessCodeGetter:
     Type: 'AWS::Serverless::Function'
@@ -245,7 +245,7 @@ Resources:
                 "200":
                   description: "200 response"
               x-amazon-apigateway-integration:
-                credentials: !Ref Roles
+                credentials: !Ref Role
                 responses:
                   default:
                     statusCode: "200"
@@ -275,7 +275,7 @@ Resources:
                     Access-Control-Allow-Headers:
                       type: "string"
               x-amazon-apigateway-integration:
-                credentials: !Ref Roles
+                credentials: !Ref Role
                 responses:
                   default:
                     statusCode: "200"
@@ -303,7 +303,7 @@ Resources:
                     Access-Control-Allow-Origin:
                       type: "string"
               x-amazon-apigateway-integration:
-                credentials: !Ref Roles
+                credentials: !Ref Role
                 responses:
                   default:
                     statusCode: "200"
@@ -344,7 +344,7 @@ Resources:
               security:
               - GithubAuthorizer: []
               x-amazon-apigateway-integration:
-                credentials: !Ref Roles
+                credentials: !Ref Role
                 responses:
                   default:
                     statusCode: "200"
@@ -407,7 +407,7 @@ Resources:
               security:
               - GithubAuthorizer: []
               x-amazon-apigateway-integration:
-                credentials: !Ref Roles
+                credentials: !Ref Role
                 responses:
                   default:
                     statusCode: "200"
@@ -445,7 +445,7 @@ Resources:
               security:
               - GithubAuthorizer: []
               x-amazon-apigateway-integration:
-                credentials: !Ref Roles
+                credentials: !Ref Role
                 responses:
                   default:
                     statusCode: "200"
@@ -476,7 +476,7 @@ Resources:
               security:
               - GithubAuthorizer: []
               x-amazon-apigateway-integration:
-                credentials: !Ref Roles
+                credentials: !Ref Role
                 responses:
                   default:
                     statusCode: "200"
@@ -522,7 +522,7 @@ Resources:
             in: "header"
             x-amazon-apigateway-authtype: "custom"
             x-amazon-apigateway-authorizer:
-              authorizerCredentials: !Ref Roles
+              authorizerCredentials: !Ref Role
               authorizerUri: !Sub
                 - "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:296636357169:function:Authorize-${version}/invocations"
                 - { version: !Ref EnvVersion}
