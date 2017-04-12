@@ -1,9 +1,9 @@
 import os
 
-# import boto3
-#
-# s3 = boto3.resource('s3')
-# bucket = s3.Bucket(os.environ['BUCKET_NAME'])
+import boto3
+
+s3 = boto3.resource('s3')
+bucket = s3.Bucket(os.environ['BUCKET_NAME'])
 
 def get_dirs (bucket):
     """Takes an s3 bucket and creates a dict of dir names to snippet names"""
@@ -21,6 +21,11 @@ def has_index (files):
     """Takes the contents of a folder and returns if there is an index file"""
     return 'index.json' in files
 
-def create_index (files):
-    """Takes a list of files and creates a dict that is an index of the files"""
-    pass
+def create_index (dirname, files):
+    """Takes a list of filenames and creates a dict that is an index of the files"""
+    index = {}
+    for filename in files:
+        snippet_key = "%s/%s" %(dirname, filename)
+        snippet_info = get_snippet_info(snippet_key)
+        index[snippet_key] = snippet_info
+    return index
