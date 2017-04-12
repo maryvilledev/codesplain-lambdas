@@ -158,15 +158,13 @@ Resources:
   CodesplainAPI:
     Type: AWS::Serverless::Api
     Properties:
-      StageName: !Ref "ENV"
+      StageName: !Ref "EnvVersion"
       DefinitionBody:
         swagger: "2.0"
         info:
           version: "0.2.1"
           title: !Ref "Title"
           # TODO: Add host mappings
-        host: "api.codesplain.io"
-        basePath: "/dev"
         schemes:
         - "https"
         paths:
