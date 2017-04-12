@@ -163,8 +163,7 @@ Resources:
         swagger: "2.0"
         info:
           version: "0.2.1"
-          title: !Ref "Title"
-          # TODO: Add host mappings
+          title: Test
         schemes:
         - "https"
         paths:
