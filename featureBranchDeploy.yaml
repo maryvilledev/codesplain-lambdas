@@ -170,7 +170,7 @@ Resources:
          - { lambda_version: !Ref S3Version }
       Description: Converts API Gateway POST/PUT to S3 Request 2
       MemorySize: 192
-      Timeout: 10
+      Timeout: 30
       Role: "arn:aws:iam::296636357169:role/CodesplainS3DevRole"
       Environment:
         Variables:
