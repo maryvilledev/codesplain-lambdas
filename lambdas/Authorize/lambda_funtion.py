@@ -22,12 +22,10 @@ def generate_policy(prinicipal_id, effect, resource):
     }
 }
 
-def lambda_handler(event, context):    
+def lambda_handler(event, context):
     token = event['authorizationToken']
-
-    requests.get('https://api.github.com/applications/ %s/tokens/ %s' % (client_id, token), auth=('client_id', 'token'))
-
     try:
+        requests.get('https://api.github.com/applications/ %s/tokens/ %s' % (client_id, token), auth=('client_id', 'token'))
         generate_policy('user', 'Allow', event[methodArn])
     except ClientError as error:
         print 'Unauthorized'
