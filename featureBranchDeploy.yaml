@@ -64,7 +64,7 @@ Resources:
       Role: !Ref Role
       Environment:
         Variables:
-          ignoreWhiteList: false
+          IGNORE_WHITELIST: false
           CLIENT_ID: !Ref ClientID
           CLIENT_SECRET: !Ref ClientSecret
           ORG_WHITELIST: "maryvilledev"
