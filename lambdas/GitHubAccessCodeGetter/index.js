@@ -59,7 +59,7 @@ exports.handler = (event, context, callback) => {
           axios.get(orgUrl, orgOpts(token))
             .then((res) => {
               const orgs = res.data.map((org) => org.login)
-              if (isMemberOfWhitelistedOrg(orgs, orgWhitelist)) {
+              if (isMemberOfWhitelistedOrg(orgs, orgWhitelist) || ignoreWhiteList === true) {
                 callback(null, {
                     statusCode: '200',
                     headers: {
