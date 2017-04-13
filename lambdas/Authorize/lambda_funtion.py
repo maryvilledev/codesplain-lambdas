@@ -6,6 +6,7 @@ from boto3.s3.transfer import ClientError
 s3 = boto3.client('s3', 'us-west-2')
 client = boto3.client('lambda')
 
+client_id = os.environ['CLIENT_ID']
 client_secret = os.environ['CLIENT_SECRET']
 
 def generate_policy(prinicipal_id, effect, resource):
@@ -21,8 +22,7 @@ def generate_policy(prinicipal_id, effect, resource):
     }
 }
 
-def lambda_handler(event, context):
-    client_id = os.environ['CLIENT_ID']
+def lambda_handler(event, context):    
     token = event['authorizationToken']
 
     requests.get('https://api.github.com/applications/ %s/tokens/ %s' % (client_id, token), auth=('client_id', 'token'))
