@@ -54,7 +54,7 @@ exports.handler = (event, context, callback) => {
     axios.post(url, data, config)
       .then(response => {
           // Success
-          if (error in response.data) {
+          if ('error' in response.data) {
             throw response.data.error;
           }
           console.log(`Success getting access token from GitHub!`);
