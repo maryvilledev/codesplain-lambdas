@@ -125,7 +125,7 @@ Resources:
       MemorySize: 192
       Role: arn:aws:iam::296636357169:role/CodesplainS3DevRole
       Runtime: python2.7
-      Timeout: 3
+      Timeout: 10
     Type: AWS::Serverless::Function
   GetSnippet:
     Properties:
