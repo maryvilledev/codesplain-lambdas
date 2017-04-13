@@ -31,7 +31,7 @@ def create_index (dirname, files):
     for filename in files:
         snippet_key = "%s/%s" % (dirname, filename)
         snippet_info = get_snippet_info(snippet_key)
-        index[snippet_key] = snippet_info
+        index[filename] = snippet_info
     return index
 
 def get_snippet_info(snippet_key):
