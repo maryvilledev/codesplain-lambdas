@@ -11,21 +11,21 @@ s3     = boto3.client('s3', 'us-west-2')
 client = boto3.client('lambda')
 
 # Returns the snippet key with the lowest possible unused postfix value.
-def generateSnippetId(bucket, user_id, snippet_title):
+def generate_snippet_id(bucket, user_id, snippet_title):
     snippet_id = urllib.quote(string.lower(re.sub(r'\s+', '_', snippet_title)))
     if object_exists(bucket, user_id, snippet_id):
-        return generateSnippetId(bucket, user_id, nextTitle(snippet_title))
+        return generate_snippet_id(bucket, user_id, next_title(snippet_title))
     return snippet_id
 
 # Increments the postfix on the given snippet_title and returns the result.
 # If the given snippet_title has not postfix, '-1' will be appended.
-def nextTitle(snippet_title):
-    postfixIdx = snippet_title.rfind('-')
-    if postfixIdx == -1 or (postfixIdx + 1) > len(snippet_title):
+def next_title(snippet_title):
+    postfix_idx = snippet_title.rfind('-')
+    if postfix_idx == -1 or (postfix_idx + 1) > len(snippet_title):
         return snippet_title + '-1'
-    postfix    = snippet_title[postfixIdx + 1 : len(snippet_title)]
-    newPostfix = int(postfix) + 1
-    return snippet_title[0 : postfixIdx + 1] + str(newPostfix)
+    postfix    = snippet_title[postfix_idx + 1 : len(snippet_title)]
+    new_postfix = int(postfix) + 1
+    return snippet_title[0 : postfix_idx + 1] + str(new_postfix)
 
 # Returns true if given snippet_id exists under given user in the given bucket.
 # Returns false if not.
@@ -98,11 +98,11 @@ def lambda_handler(event, context):
     body             = json.loads(event['body'])
     snippet_title    = body['snippetTitle']
     snippet_language = body['snippetLanguage']
-    bucket = os.environ['BucketName']
+    bucket           = os.environ['BucketName']
     if(bucket == None):
         print 'Must specify "BucketName" env var!'
         raise error
-    snippet_id = generateSnippetId(bucket, user_id, snippet_title)
+    snippet_id = generate_snippet_id(bucket, user_id, snippet_title)
 
     save_to_s3(bucket, user_id, snippet_id, event['body'])
     new_entry = {
