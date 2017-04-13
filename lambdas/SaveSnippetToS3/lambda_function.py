@@ -12,7 +12,7 @@ client = boto3.client('lambda')
 
 # Returns the snippet key with the lowest possible unused postfix value.
 def generate_snippet_id(bucket, user_id, snippet_title):
-    snippet_id = urllib.quote(string.lower(re.sub(r'\s+', '_', snippet_title)))
+    snippet_id = urllib.quote_plus(string.lower(re.sub(r'\s+', '_', snippet_title)))
     if object_exists(bucket, user_id, snippet_id):
         return generate_snippet_id(bucket, user_id, next_title(snippet_title))
     return snippet_id
