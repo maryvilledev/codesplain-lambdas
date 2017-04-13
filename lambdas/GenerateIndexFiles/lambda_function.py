@@ -13,9 +13,9 @@ def get_dirs ():
     for obj in bucket.objects.all():
         dirname = os.path.dirname(obj.key)
         basename = os.path.basename(obj.key)
-        if basename == 'index.json':
+        if basename == '' or basename == 'index.json':
             continue
-        if not dirname in dirs:
+        elif not dirname in dirs:
             dirs[dirname] = [basename]
         else:
             dirs[dirname].append(basename)
