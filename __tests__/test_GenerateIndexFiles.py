@@ -31,6 +31,6 @@ class TestGenerateIndexFiles(unittest.TestCase):
         mock_filenames = ['leet']
         mock_dir = 'hacks'
         mock_snippet_info = 'mockSnippetInfo'
-        expected = {'hacks/leet': mock_snippet_info}
+        expected = {'leet': mock_snippet_info}
         self.assertEqual(gif.create_index(mock_dir, mock_filenames), expected)
         mock_fn.assert_called_once_with('hacks/leet')
