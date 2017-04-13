@@ -62,7 +62,7 @@ exports.handler = (event, context, callback) => {
           axios.get(orgUrl, orgOpts(token))
             .then((res) => {
               const orgs = res.data.map((org) => org.login)
-              if (isMemberOfWhitelistedOrg(orgs, orgWhitelist)) {
+              if (isMemberOfWhitelistedOrg(orgs, orgWhitelist) || process.env.IGNORE_WHITELIST === true) { //TODO: Change order of these during python conversion
                 callback(null, {
                     statusCode: '200',
                     headers: {
