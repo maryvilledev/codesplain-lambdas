@@ -1,6 +1,10 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: Codesplain API and Lambda Functions
 Parameters:
+  Bucket:
+    Default: codesplain-snippets-dev
+    Description: Bucket to Save Snippets In
+    Type: String
   ClientID:
     Description: Github Local Client Id (From Circle Env Variables)
     Type: String
@@ -23,8 +27,15 @@ Parameters:
     Default: dev
     Description: Path in the codesplain-parsers S3 Bucket
     Type: String
+  Role:
+    Default: arn:aws:iam::296636357169:role/CodesplainS3DevRole
+    Description: Role for developer access
+    Type: String
   S3Version:
     Description: The Version path to use when pulling S3 Lambdas
+    Type: String
+  Title:
+    Description: Title Of Feature Branch API
     Type: String
 Resources:
   Authorize:
@@ -50,7 +61,8 @@ Resources:
             Ref: EnvVersion
       Handler: index.handler
       MemorySize: 192
-      Role: arn:aws:iam::296636357169:role/CodesplainS3DevRole
+      Role:
+        Ref: Role
       Runtime: nodejs4.3
       Timeout: 3
     Type: AWS::Serverless::Function
@@ -71,10 +83,425 @@ Resources:
             Ref: EnvVersion
       Handler: index.handler
       MemorySize: 192
-      Role: arn:aws:iam::296636357169:role/CodesplainS3DevRole
+      Role:
+        Ref: Role
       Runtime: nodejs4.3
       Timeout: 3
     Type: AWS::Serverless::Function
+  CodesplainAPI:
+    Properties:
+      DefinitionBody:
+        definitions:
+          Snippet:
+            properties:
+              snippet:
+                type: string
+              snippetTitle:
+                type: string
+            required:
+            - snippet
+            - snippetTitle
+            type: object
+        info:
+          title:
+            Ref: Title
+          version: 0.2.1
+        paths:
+          /auth:
+            options:
+              consumes:
+              - application/json
+              produces:
+              - application/json
+              responses:
+                '200':
+                  description: 200 response
+                  headers:
+                    Access-Control-Allow-Headers:
+                      type: string
+                    Access-Control-Allow-Methods:
+                      type: string
+                    Access-Control-Allow-Origin:
+                      type: string
+              x-amazon-apigateway-integration:
+                passthroughBehavior: when_no_match
+                requestTemplates:
+                  application/json: '{"statusCode": 200}'
+                responses:
+                  default:
+                    responseParameters:
+                      method.response.header.Access-Control-Allow-Headers: '''Content-Type,X-Amz-Date,Authorization,x-api-key,x-amz-security-token'''
+                      method.response.header.Access-Control-Allow-Methods: '''POST'''
+                      method.response.header.Access-Control-Allow-Origin: '''*'''
+                    statusCode: '200'
+                type: mock
+            post:
+              produces:
+              - application/json
+              responses:
+                '200':
+                  description: 200 response
+                  headers:
+                    Access-Control-Allow-Origin:
+                      type: string
+                '400':
+                  description: 400 response
+                  headers:
+                    Access-Control-Allow-Origin:
+                      type: string
+                '500':
+                  description: 500 response
+                  headers:
+                    Access-Control-Allow-Origin:
+                      type: string
+                '502':
+                  description: 502 response
+                  headers:
+                    Access-Control-Allow-Origin:
+                      type: string
+              x-amazon-apigateway-integration:
+                contentHandling: CONVERT_TO_TEXT
+                credentials:
+                  Ref: Role
+                httpMethod: POST
+                passthroughBehavior: when_no_match
+                responses:
+                  default:
+                    responseParameters:
+                      method.response.header.Access-Control-Allow-Origin: '''*'''
+                    statusCode: '200'
+                type: aws_proxy
+                uri:
+                  Fn::Sub:
+                  - arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:296636357169:function:GithubAccessCodeGetter-${version}/invocations
+                  - version:
+                      Ref: EnvVersion
+          /parsers/{language}:
+            get:
+              parameters:
+              - in: path
+                name: language
+                required: true
+                type: string
+              responses:
+                '200':
+                  description: 200 response
+              x-amazon-apigateway-integration:
+                contentHandling: CONVERT_TO_TEXT
+                credentials:
+                  Ref: Role
+                httpMethod: GET
+                passthroughBehavior: when_no_match
+                requestParameters:
+                  integration.request.path.language: method.request.path.language
+                responses:
+                  default:
+                    contentHandling: CONVERT_TO_TEXT
+                    statusCode: '200'
+                type: aws
+                uri:
+                  Fn::Sub:
+                  - arn:aws:apigateway:us-west-2:s3:path/codesplain-parsers/{language}/${env}/{language}.min.js
+                  - env:
+                      Ref: ParserPath
+            options:
+              consumes:
+              - application/json
+              produces:
+              - application/json
+              responses:
+                '200':
+                  description: 200 response
+                  headers:
+                    Access-Control-Allow-Headers:
+                      type: string
+                    Access-Control-Allow-Methods:
+                      type: string
+                    Access-Control-Allow-Origin:
+                      type: string
+              x-amazon-apigateway-integration:
+                credentials:
+                  Ref: Role
+                passthroughBehavior: when_no_match
+                requestTemplates:
+                  application/json: '{"statusCode": 200}'
+                responses:
+                  default:
+                    responseParameters:
+                      method.response.header.Access-Control-Allow-Headers: '''Content-Type,X-Amz-Date,Authorization,x-api-key,x-amz-security-token'''
+                      method.response.header.Access-Control-Allow-Methods: '''GET'''
+                      method.response.header.Access-Control-Allow-Origin: '''*'''
+                    statusCode: '200'
+                type: mock
+          /users/{user_id}/snippets:
+            get:
+              parameters:
+              - in: path
+                name: user_id
+                required: true
+                type: string
+              produces:
+              - application/json
+              responses:
+                '200':
+                  description: 200 response
+                  headers:
+                    Access-Control-Allow-Origin:
+                      type: string
+              x-amazon-apigateway-integration:
+                contentHandling: CONVERT_TO_TEXT
+                credentials:
+                  Ref: Role
+                httpMethod: GET
+                passthroughBehavior: when_no_match
+                requestParameters:
+                  integration.request.path.user_id: method.request.path.user_id
+                responses:
+                  default:
+                    responseParameters:
+                      method.response.header.Access-Control-Allow-Origin: '''*'''
+                    statusCode: '200'
+                type: aws
+                uri:
+                  Fn::Sub:
+                  - arn:aws:apigateway:us-west-2:s3:path/${bucket}/{user_id}/index.json
+                  - bucket:
+                      Ref: Bucket
+            options:
+              consumes:
+              - application/json
+              produces:
+              - application/json
+              responses:
+                '200':
+                  description: 200 response
+                  headers:
+                    Access-Control-Allow-Headers:
+                      type: string
+                    Access-Control-Allow-Methods:
+                      type: string
+                    Access-Control-Allow-Origin:
+                      type: string
+              x-amazon-apigateway-integration:
+                passthroughBehavior: when_no_match
+                requestTemplates:
+                  application/json: '{"statusCode": 200}'
+                responses:
+                  default:
+                    responseParameters:
+                      method.response.header.Access-Control-Allow-Headers: '''Content-Type,X-Amz-Date,Authorization,x-api-key,x-amz-security-token'''
+                      method.response.header.Access-Control-Allow-Methods: '''GET,
+                        POST'''
+                      method.response.header.Access-Control-Allow-Origin: '''*'''
+                    statusCode: '200'
+                type: mock
+            post:
+              consumes:
+              - application/json
+              parameters:
+              - in: path
+                name: user_id
+                required: true
+                type: string
+              - in: body
+                name: Snippet
+                required: true
+                schema:
+                  $ref: '#/definitions/Snippet'
+              produces:
+              - application/json
+              responses:
+                '200':
+                  description: 200 response
+                  headers:
+                    Access-Control-Allow-Origin:
+                      type: string
+                '500':
+                  description: 500 response
+              security:
+              - GithubAuthorizer: []
+              x-amazon-apigateway-integration:
+                contentHandling: CONVERT_TO_TEXT
+                credentials:
+                  Ref: Role
+                httpMethod: POST
+                passthroughBehavior: when_no_match
+                responses:
+                  default:
+                    responseParameters:
+                      method.response.header.Access-Control-Allow-Origin: '''*'''
+                    statusCode: '200'
+                type: aws_proxy
+                uri:
+                  Fn::Sub:
+                  - arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:296636357169:function:SaveSnippet-${version}/invocations
+                  - version:
+                      Ref: EnvVersion
+          /users/{user_id}/snippets/{snippet_id}:
+            delete:
+              parameters:
+              - in: path
+                name: snippet_id
+                required: true
+                type: string
+              - in: path
+                name: user_id
+                required: true
+                type: string
+              produces:
+              - application/json
+              responses:
+                '204':
+                  description: 204 response
+                '400':
+                  description: 400 response
+              security:
+              - GithubAuthorizer: []
+              x-amazon-apigateway-integration:
+                contentHandling: CONVERT_TO_TEXT
+                credentials:
+                  Ref: Role
+                httpMethod: POST
+                passthroughBehavior: when_no_match
+                responses:
+                  default:
+                    statusCode: '200'
+                type: aws_proxy
+                uri:
+                  Fn::Sub:
+                  - arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:296636357169:function:DeleteSnippet-${version}/invocations
+                  - version:
+                      Ref: EnvVersion
+            get:
+              parameters:
+              - in: path
+                name: snippet_id
+                required: true
+                type: string
+              - in: path
+                name: user_id
+                required: true
+                type: string
+              produces:
+              - application/json
+              responses:
+                '200':
+                  description: 200 response
+                  schema:
+                    $ref: '#/definitions/Snippet'
+                '404':
+                  description: 404 response
+              security:
+              - GithubAuthorizer: []
+              x-amazon-apigateway-integration:
+                contentHandling: CONVERT_TO_TEXT
+                credentials:
+                  Ref: Role
+                httpMethod: POST
+                passthroughBehavior: when_no_match
+                responses:
+                  default:
+                    statusCode: '200'
+                type: aws_proxy
+                uri:
+                  Fn::Sub:
+                  - arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:296636357169:function:GetSnippet-${version}/invocations
+                  - version:
+                      Ref: EnvVersion
+            options:
+              consumes:
+              - application/json
+              produces:
+              - application/json
+              responses:
+                '200':
+                  description: 200 response
+                  headers:
+                    Access-Control-Allow-Headers:
+                      type: string
+                    Access-Control-Allow-Methods:
+                      type: string
+                    Access-Control-Allow-Origin:
+                      type: string
+              x-amazon-apigateway-integration:
+                passthroughBehavior: when_no_match
+                requestTemplates:
+                  application/json: '{"statusCode": 200}'
+                responses:
+                  default:
+                    responseParameters:
+                      method.response.header.Access-Control-Allow-Headers: '''Content-Type,X-Amz-Date,Authorization,x-api-key,x-amz-security-token'''
+                      method.response.header.Access-Control-Allow-Methods: '''GET,PUT,DELETE'''
+                      method.response.header.Access-Control-Allow-Origin: '''*'''
+                    statusCode: '200'
+                type: mock
+            put:
+              consumes:
+              - application/json
+              parameters:
+              - in: path
+                name: snippet_id
+                required: true
+                type: string
+              - in: path
+                name: user_id
+                required: true
+                type: string
+              - in: body
+                name: Snippet
+                required: true
+                schema:
+                  $ref: '#/definitions/Snippet'
+              produces:
+              - application/json
+              responses:
+                '204':
+                  description: 204 response
+                '400':
+                  description: 400 response
+              security:
+              - GithubAuthorizer: []
+              x-amazon-apigateway-integration:
+                contentHandling: CONVERT_TO_TEXT
+                credentials:
+                  Ref: Role
+                httpMethod: POST
+                passthroughBehavior: when_no_match
+                responses:
+                  default:
+                    statusCode: '200'
+                type: aws_proxy
+                uri:
+                  Fn::Sub:
+                  - arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:296636357169:function:PutSnippet-${version}/invocations
+                  - version:
+                      Ref: EnvVersion
+        schemes:
+        - https
+        securityDefinitions:
+          GithubAuthorizer:
+            in: header
+            name: Authorization
+            type: apiKey
+            x-amazon-apigateway-authorizer:
+              authorizerCredentials:
+                Ref: Role
+              authorizerResultTtlInSeconds: 0
+              authorizerUri:
+                Fn::Sub:
+                - arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:296636357169:function:Authorize-${version}/invocations
+                - version:
+                    Ref: EnvVersion
+              type: token
+            x-amazon-apigateway-authtype: custom
+          api_key:
+            in: header
+            name: x-api-key
+            type: apiKey
+        swagger: '2.0'
+      StageName:
+        Ref: EnvVersion
+    Type: AWS::Serverless::Api
   DeleteSnippet:
     Properties:
       CodeUri:
@@ -87,7 +514,8 @@ Resources:
       Description: Converts API Gateway POST/PUT to S3 Request 2
       Environment:
         Variables:
-          BucketName: codesplain-snippets-dev
+          BucketName:
+            Ref: Bucket
           authorizeTokenName:
             Ref: AuthorizeToken
       FunctionName:
@@ -97,9 +525,36 @@ Resources:
             Ref: EnvVersion
       Handler: index.handler
       MemorySize: 192
-      Role: arn:aws:iam::296636357169:role/CodesplainS3DevRole
+      Role:
+        Ref: Role
       Runtime: nodejs4.3
       Timeout: 3
+    Type: AWS::Serverless::Function
+  GenerateIndexFiles:
+    Properties:
+      CodeUri:
+        Bucket: codesplain-lambda-functions
+        Key:
+          Fn::Sub:
+          - ${lambda_version}/GenerateIndexFiles.zip
+          - lambda_version:
+              Ref: S3Version
+      Description: Converts API Gateway POST/PUT to S3 Request 2
+      Environment:
+        Variables:
+          BucketName: codesplain-snippets-dev
+          authorizeTokenName:
+            Ref: AuthorizeToken
+      FunctionName:
+        Fn::Sub:
+        - GenerateIndexFiles-${lambda_version}
+        - lambda_version:
+            Ref: EnvVersion
+      Handler: lambda_function.lambda_handler
+      MemorySize: 192
+      Role: arn:aws:iam::296636357169:role/CodesplainS3DevRole
+      Runtime: python2.7
+      Timeout: 30
     Type: AWS::Serverless::Function
   GetSnippet:
     Properties:
@@ -113,7 +568,8 @@ Resources:
       Description: Converts API Gateway POST/PUT to S3 Request 2
       Environment:
         Variables:
-          BucketName: codesplain-snippets-dev
+          BucketName:
+            Ref: Bucket
       FunctionName:
         Fn::Sub:
         - GetSnippet-${lambda_version}
@@ -121,7 +577,8 @@ Resources:
             Ref: EnvVersion
       Handler: index.handler
       MemorySize: 192
-      Role: arn:aws:iam::296636357169:role/CodesplainS3DevRole
+      Role:
+        Ref: Role
       Runtime: nodejs4.3
       Timeout: 3
     Type: AWS::Serverless::Function
@@ -149,7 +606,8 @@ Resources:
             Ref: EnvVersion
       Handler: index.handler
       MemorySize: 192
-      Role: arn:aws:iam::296636357169:role/CodesplainS3DevRole
+      Role:
+        Ref: Role
       Runtime: nodejs4.3
       Timeout: 3
     Type: AWS::Serverless::Function
@@ -165,7 +623,8 @@ Resources:
       Description: Converts API Gateway POST/PUT to S3 Request 2
       Environment:
         Variables:
-          BucketName: codesplain-snippets-dev
+          BucketName:
+            Ref: Bucket
           authorizeTokenName:
             Ref: AuthorizeToken
       FunctionName:
@@ -175,7 +634,8 @@ Resources:
             Ref: EnvVersion
       Handler: index.handler
       MemorySize: 192
-      Role: arn:aws:iam::296636357169:role/CodesplainS3DevRole
+      Role:
+        Ref: Role
       Runtime: nodejs4.3
       Timeout: 3
     Type: AWS::Serverless::Function
@@ -191,7 +651,8 @@ Resources:
       Description: Converts API Gateway POST/PUT to S3 Request 2
       Environment:
         Variables:
-          BucketName: codesplain-snippets-dev
+          BucketName:
+            Ref: Bucket
           authorizeTokenName:
             Ref: AuthorizeToken
       FunctionName:
@@ -201,7 +662,8 @@ Resources:
             Ref: EnvVersion
       Handler: index.handler
       MemorySize: 192
-      Role: arn:aws:iam::296636357169:role/CodesplainS3DevRole
+      Role:
+        Ref: Role
       Runtime: nodejs4.3
       Timeout: 4
     Type: AWS::Serverless::Function

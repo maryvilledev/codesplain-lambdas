@@ -2,3 +2,9 @@
 **/node_modules/**
 **/etc/**
 *.zip
+
+## Ignore compiled python files
+*.pyc
+
+## Ignore the virtual environment
+codesplain-env/

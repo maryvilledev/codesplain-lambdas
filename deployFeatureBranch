@@ -1,6 +1,5 @@
 #!/bin/bash
-
-STACKNAME="CodesplainSandbox-$1"
+STACKNAME="CodesplainFeature-$1"
 
 exists=true
 {
@@ -21,6 +20,8 @@ if [[ $exists == true ]]; then
   fi
 fi
 
+aws cloudformation package --template-file featureBranchDeploy.yaml --s3-bucket codesplain-lambda-functions --output-template-file serverless-output-sandbox.yaml
+
 echo "Creating Stack"
 aws cloudformation deploy \
   --stack-name $STACKNAME \
@@ -30,5 +31,6 @@ aws cloudformation deploy \
     S3Version="sandbox/$1" \
     ClientSecret="$2" \
     ClientID="$3" \
+    Title="Codesplain: $1" \
   --region us-west-2
 exit 0
