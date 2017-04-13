@@ -1,14 +1,12 @@
 import os
 import json
+import requests
+from boto3.s3.transfer import ClientError
 
 s3 = boto3.client('s3', 'us-west-2')
 client = boto3.client('lambda')
 
-client_id = os.environ['CLIENT_ID']
 client_secret = os.environ['CLIENT_SECRET']
-
-def https_url(token):
-    requests.get('https://api.github.com/applications/ %s/tokens/ %s' % (client_id, token), auth=('client_id', 'token'))
 
 def generate_policy(prinicipal_id, effect, resource):
     return {
@@ -24,8 +22,12 @@ def generate_policy(prinicipal_id, effect, resource):
 }
 
 def lambda_handler(event, context):
+    client_id = os.environ['CLIENT_ID']
     token = event['authorizationToken']
-    url = https_url(token)
+
+    requests.get('https://api.github.com/applications/ %s/tokens/ %s' % (client_id, token), auth=('client_id', 'token'))
 
     try:
-        requests.get(url, )
+        generate_policy('user', 'Allow', event[methodArn])
+    except ClientError as error:
+        print 'Unauthorized'
