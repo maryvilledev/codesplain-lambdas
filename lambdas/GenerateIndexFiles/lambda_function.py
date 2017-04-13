@@ -42,17 +42,22 @@ def get_snippet_info(snippet_key):
         'lastEdited': obj.last_modified.now().isoformat()
     }
 
+def delete_index_file(dirname):
+    """Deletes the index file in the given directory"""
+    s3.Object(os.environ['BucketName'], "%s/index.json" % dirname).delete()
+
 def lambda_handler(event, context):
     """Called by AWS"""
     ## Get all the directories
     dirs = get_dirs()
     for dirname in dirs:
         files = dirs[dirname]
-        ## If the directory does not contain an index
-        if not has_index(files):
-            index = create_index(dirname, files)
-            data = json.dumps(index)
-            try:
-                s3.Object(os.environ['BucketName'], "%s/index.json" % dirname).put(Body=data)
-            except ClientError as error:
-                print "Error adding index to directory %s" % dirname
+        ## If the directory has an index, delete it
+        if has_index(files):
+            delete_index_file(dirname)
+        index = create_index(dirname, files)
+        data = json.dumps(index)
+        try:
+            s3.Object(os.environ['BucketName'], "%s/index.json" % dirname).put(Body=data)
+        except ClientError as error:
+            print "Error adding index to directory %s" % dirname
