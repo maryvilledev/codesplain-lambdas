@@ -1,9 +1,8 @@
 #!/bin/bash
 
 echo "Sha: $1"
-featureBranch=$(echo $(echo \
-$(curl https://api.github.com/repos/maryvilledev/codesplain-lambdas/git/commits/$1) \
-| python -i scripts/featureBranchName.py))
+commitJSON=$(curl https://api.github.com/repos/maryvilledev/codesplain-lambdas/git/commits/$1)
+featureBranch=$(echo python -i scripts/featureBranchName.py $commitJSON))
 
 if [ $featureBranch == -1 ]; then
   exit 1
