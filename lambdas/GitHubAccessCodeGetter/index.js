@@ -30,6 +30,9 @@ const orgWhitelist = process.env.ORG_WHITELIST.split(';');
 const isMemberOfWhitelistedOrg = (orgs, whitelist) => (
   _.intersection(orgs, whitelist).length > 0
 )
+if (process.env.IGNORE_WHITELIST === "true" ) {
+  console.log("Ignoring Whitelist")
+}
 
 // Handler Function:
 exports.handler = (event, context, callback) => {
@@ -54,12 +57,15 @@ exports.handler = (event, context, callback) => {
     axios.post(url, data, config)
       .then(response => {
           // Success
+          if ('error' in response.data) {
+            throw response.data.error;
+          }
           console.log(`Success getting access token from GitHub!`);
           const token = response.data.access_token; // Access token is in the response
           axios.get(orgUrl, orgOpts(token))
             .then((res) => {
               const orgs = res.data.map((org) => org.login)
-              if (isMemberOfWhitelistedOrg(orgs, orgWhitelist)) {
+              if (isMemberOfWhitelistedOrg(orgs, orgWhitelist) || process.env.IGNORE_WHITELIST === "true") { //TODO: Change order of these during python conversion
                 callback(null, {
                     statusCode: '200',
                     headers: {

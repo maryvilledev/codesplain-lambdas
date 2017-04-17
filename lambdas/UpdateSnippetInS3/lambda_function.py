@@ -5,7 +5,7 @@ from datetime import datetime
 from boto3.s3.transfer import ClientError
 import boto3 # AWS SDK for Python
 
-s3 = boto3.client('s3', 'us-west-2')
+s3     = boto3.client('s3', 'us-west-2')
 client = boto3.client('lambda')
 
 # Updates index file and writes to S3. Creates new one if needed.
