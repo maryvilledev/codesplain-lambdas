@@ -48,7 +48,7 @@ deployment:
         S3Version="sandbox/$CIRCLE_BRANCH"
         ClientSecret="$AuthSecret"
         ClientID="$AuthId"
-        Title="Codesplain Feature:$CIRCLE_BRANCH"
+        Title="Codesplain Feature:$CIRCLE_BRANCH-$CIRCLE_BUILD_NUM"
         CircleBuild="$CIRCLE_BUILD_NUM"
         --region us-west-2
       - bash scripts/cleanup $CIRCLE_SHA1
