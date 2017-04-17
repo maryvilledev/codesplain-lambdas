@@ -287,7 +287,7 @@ Resources:
                   application/json: "{\"statusCode\": 200}"
                 passthroughBehavior: "when_no_match"
                 type: "mock"
-          "/parsers/{mappings}":
+          "/mappings/{language}":
             get:
               parameters:
               - name: "language"
