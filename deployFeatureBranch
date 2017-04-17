@@ -1,28 +1,8 @@
 #!/bin/bash
 STACKNAME="CodesplainFeature-$1"
 
-exists=true
-{
-  echo "Checking to see if stack exists"
-  aws cloudformation describe-stacks --stack-name $STACKNAME --region us-west-2
- } || {
-   exists=false
- }
-if [[ $exists == true ]]; then
-  echo "Deleting Stack"
-  aws cloudformation delete-stack \
-    --stack-name $STACKNAME \
-    --region us-west-2
-  sleep 10
-  stackStatus=$(echo $(aws cloudformation describe-stacks --stack-name "$STACKNAME" --region us-west-2) | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["Stacks"][0]["StackStatus"]')
-  if [[ $stackStatus == "DELETE_IN_PROGRESS" ]];then
-    sleep 20
-  fi
-fi
-
 aws cloudformation package --template-file featureBranchDeploy.yaml --s3-bucket codesplain-lambda-functions --output-template-file serverless-output-sandbox.yaml
 
-echo "Creating Stack"
 aws cloudformation deploy \
   --stack-name $STACKNAME \
   --template-file ./serverless-output-sandbox.yaml \
@@ -33,4 +13,5 @@ aws cloudformation deploy \
     ClientID="$3" \
     Title="Codesplain: $1" \
   --region us-west-2
+
 exit 0

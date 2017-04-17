@@ -569,14 +569,6 @@ Resources:
 
 
 Parameters:
-  ENV:
-    Description: The Codesplain Environment
-    Type: String
-    Default: dev
-    AllowedValues:
-      - dev
-      - prod
-      - sandbox
   S3Version:
     Description: The Version path to use when pulling S3 Lambdas
     Type: String
