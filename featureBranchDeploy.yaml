@@ -58,7 +58,7 @@ Resources:
         Key:  !Sub
          - ${lambda_version}/GitHubAccessCodeGetter.zip
          - { lambda_version: !Ref S3Version }
-      Description: Converts access key to github token using client sercret
+      Description: Converts access key to github token using client secret
       MemorySize: 192
       Timeout: 3
       Role: !Ref Role
