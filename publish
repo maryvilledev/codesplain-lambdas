@@ -23,6 +23,20 @@ function nodeInstall {
   cd ../.. # Go back to where we came from
 }
 
+function pythonInstall {
+  printf "Installing $1 for $2 lambda\n"
+  cd lambdas/$2
+  pip install --prefix=$(pwd) $1 >/dev/null
+  cd ../.. # Go back to where we came from
+}
+
+function pythonCleanup {
+  printf "Removing lib for $1 lambda\n"
+  cd lambdas/$1
+  rm -r lib
+  cd ../.. # Go back to where we came from
+}
+
 function nodeCleanup {
   printf "Removing node_modules and etc for $1 lambda\n"
   cd lambdas/$1
@@ -56,11 +70,15 @@ do
       [[ "$lambdaDir" == "AuthorizeToken" ]]); then
     nodeInstall axios $lambdaDir
   fi
+  if ([[ "$lambdaDir" == "Authorize" ]]); then
+    pythonInstall requests $lambdaDir
+  fi
   if ([[ "$lambdaDir" == "GitHubAccessCodeGetter" ]]); then
     nodeInstall lodash $lambdaDir
   fi
   zipLambda $lambdaDir
   nodeCleanup $lambdaDir
+  pythonCleanup $lambdaDir
 done
 pushZipsToS3 $1
 removeZips
