@@ -22,10 +22,29 @@ deployment:
       - echo $CI_PULL_REQUEST
       - echo $CI_PULL_REQUESTS
       - bash publish codesplain-lambda-functions/dev/$CIRCLE_SHA1
-      - aws cloudformation update-stack --stack-name CodesplainDev --parameters ParameterKey=S3Version,ParameterValue="dev/$CIRCLE_SHA1" --use-previous-template --region us-west-2
+      - >
+        aws cloudformation update-stack
+        --stack-name CodesplainDev
+        --parameters
+        ParameterKey=S3Version,ParameterValue="dev/$CIRCLE_SHA1"
+        --use-previous-template
+        --region us-west-2
   feature:
     branch: /^((?!master).)*$/ # not master
     commands:
-      - aws --version
       - bash publish codesplain-lambda-functions/sandbox/$CIRCLE_BRANCH
-      - bash deployFeatureBranch $CIRCLE_BRANCH $AuthSecret $AuthId
+      - >
+        aws cloudformation package --template-file featureBranchDeploy.yaml
+        --s3-bucket codesplain-lambda-functions
+        --output-template-file serverless-output-sandbox.yaml
+      - >
+        aws cloudformation deploy
+        --stack-name "CodesplainFeature-$CIRCLE_BRANCH"
+        --template-file ./serverless-output-sandbox.yaml
+        --parameter-overrides
+        EnvVersion="$CIRCLE_BRANCH"
+        S3Version="sandbox/$CIRCLE_BRANCH"
+        ClientSecret="$AuthSecret"
+        ClientID="$AuthId"
+        Title="Codesplain Feature:$CIRCLE_BRANCH"
+        --region us-west-2

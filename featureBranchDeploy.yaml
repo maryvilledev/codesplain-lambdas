@@ -58,7 +58,7 @@ Resources:
         Key:  !Sub
          - ${lambda_version}/GitHubAccessCodeGetter.zip
          - { lambda_version: !Ref S3Version }
-      Description: Converts access key to github token using client sercret
+      Description: Converts access key to github token using client secret
       MemorySize: 192
       Timeout: 3
       Role: !Ref Role
@@ -82,7 +82,7 @@ Resources:
         Key:  !Sub
          - ${lambda_version}/SaveSnippetToS3.zip
          - { lambda_version: !Ref S3Version }
-      Description: Converts API Gateway POST/PUT to S3 Request 2
+      Description: Converts API Gateway POST/PUT to S3 Request
       MemorySize: 192
       Timeout: 4
       Role: !Ref Role
@@ -104,7 +104,7 @@ Resources:
         Key:  !Sub
          - ${lambda_version}/GetSnippetFromS3.zip
          - { lambda_version: !Ref S3Version }
-      Description: Converts API Gateway POST/PUT to S3 Request 2
+      Description: Converts API Gateway POST/PUT to S3 Request
       MemorySize: 192
       Timeout: 3
       Role: !Ref Role
@@ -125,7 +125,7 @@ Resources:
         Key:  !Sub
          - ${lambda_version}/UpdateSnippetInS3.zip
          - { lambda_version: !Ref S3Version }
-      Description: Converts API Gateway POST/PUT to S3 Request 2
+      Description: Converts API Gateway POST/PUT to S3 Request
       MemorySize: 192
       Timeout: 3
       Role: !Ref Role
@@ -147,7 +147,7 @@ Resources:
         Key:  !Sub
          - ${lambda_version}/DeleteSnippetFromS3.zip
          - { lambda_version: !Ref S3Version }
-      Description: Converts API Gateway POST/PUT to S3 Request 2
+      Description: Converts API Gateway POST/PUT to S3 Request
       MemorySize: 192
       Timeout: 3
       Role: !Ref Role
@@ -569,14 +569,6 @@ Resources:
 
 
 Parameters:
-  ENV:
-    Description: The Codesplain Environment
-    Type: String
-    Default: dev
-    AllowedValues:
-      - dev
-      - prod
-      - sandbox
   S3Version:
     Description: The Version path to use when pulling S3 Lambdas
     Type: String
@@ -598,7 +590,7 @@ Parameters:
     Description: Title Of Feature Branch API
     Type: String
   Bucket:
-    Description: Bucket to Save Snippets In
+    Description: Bucket to Save Snippets in
     Type: String
     Default: "codesplain-snippets-dev"
   Role:
