@@ -27,7 +27,7 @@ deployment:
         --parameters ParameterKey=S3Version,ParameterValue="dev/$CIRCLE_SHA1" \
           ParameterKey=ENV,ParameterValue="sandbox" \
           ParameterKey=EnvVersion,ParameterValue="sandbox" \
-          ParameterKey=APITitle,ParameterValue="Codesplain API: Localhost" \
+          ParameterKey=APITitle,ParameterValue="Codesplain API:Localhost" \
         --use-previous-template --region us-west-2
   feature:
     branch: /^((?!master).)*$/ # not master
