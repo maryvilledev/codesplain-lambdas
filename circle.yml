@@ -19,6 +19,8 @@ deployment:
   master:
     branch: master
     commands:
+      - echo $CI_PULL_REQUEST
+      - echo $CI_PULL_REQUESTS
       - bash publish codesplain-lambda-functions/dev/$CIRCLE_SHA1
       - >
         aws cloudformation update-stack
