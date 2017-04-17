@@ -31,12 +31,12 @@ deployment:
         --output-template-file serverless-output-sandbox.yaml
       - >
         aws cloudformation deploy
-          --stack-name "CodesplainFeature-$CIRCLE_BRANCH"
-          --template-file ./serverless-output-sandbox.yaml
-          --parameter-overrides
-            EnvVersion="$CIRCLE_BRANCH"
-            S3Version="sandbox/$CIRCLE_BRANCH"
-            ClientSecret="$AuthSecret"
-            ClientID="$AuthId"
-            Title="Codesplain Feature:$CIRCLE_BRANCH"
-          --region us-west-2
+        --stack-name "CodesplainFeature-$CIRCLE_BRANCH"
+        --template-file ./serverless-output-sandbox.yaml
+        --parameter-overrides
+        EnvVersion="$CIRCLE_BRANCH"
+        S3Version="sandbox/$CIRCLE_BRANCH"
+        ClientSecret="$AuthSecret"
+        ClientID="$AuthId"
+        Title="Codesplain Feature:$CIRCLE_BRANCH"
+        --region us-west-2
