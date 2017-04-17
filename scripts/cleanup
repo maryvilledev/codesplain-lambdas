@@ -3,7 +3,10 @@
 echo "Sha: $1"
 featureBranch=$(echo $(echo \
 $(curl https://api.github.com/repos/maryvilledev/codesplain-lambdas/git/commits/$1) \
-| python -i scripts/featureBranchName.py  obj["message"]))
+| python -i scripts/featureBranchName.py))
 
-echo $featureBranch
+if [ $featureBranch == -1 ]; then
+  exit 1
+fi
+echo "Feature: $featureBranch"
 aws cloudformation --region us-west-2 delete-stack --stack-name "CodesplainFeature-$featureBranch"
