@@ -53,7 +53,6 @@ makeZipsDir
 for lambdaDir in $(ls -F lambdas | grep '/' | cut -f1 -d'/');
 do
   if ([[ "$lambdaDir" == "GitHubAccessCodeGetter" ]] ||
-      [[ "$lambdaDir" == "Authorize" ]] ||
       [[ "$lambdaDir" == "AuthorizeToken" ]]); then
     nodeInstall axios $lambdaDir
   fi

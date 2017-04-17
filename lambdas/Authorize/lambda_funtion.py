@@ -12,7 +12,7 @@ client_secret = os.environ['CLIENT_SECRET']
 def auth_request(client_id, client_secret):
     requests.get('https://api.github.com/applications/ %s/tokens/ %s' % (client_id, token), auth=('client_id', 'client_secret'))
 
-'''def generate_policy(principal_id, effect, resource):
+def generate_policy(principal_id, effect, resource):
     return {
         'principal_id',
         'policy_document': {
@@ -23,7 +23,7 @@ def auth_request(client_id, client_secret):
             'Resource': resource
           }]
         }
-    }'''
+    }
 
 
 def lambda_handler(event, context):
@@ -33,5 +33,5 @@ def lambda_handler(event, context):
     except ClientError as error:
         print 'Unauthorized'
 
-    #generate_policy('user', 'Allow', event[methodArn])
+    generate_policy('user', 'Allow', event[methodArn])
     print "TEST"
