@@ -11,7 +11,7 @@ aws cloudformation deploy \
     S3Version="sandbox/$1" \
     ClientSecret="$2" \
     ClientID="$3" \
-    Title="Codesplain: $1" \
+    Title="Codesplain Feature: $1" \
   --region us-west-2
 
 exit 0

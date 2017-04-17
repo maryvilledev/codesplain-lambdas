@@ -590,7 +590,7 @@ Parameters:
     Description: Title Of Feature Branch API
     Type: String
   Bucket:
-    Description: Bucket to Save Snippets In
+    Description: Bucket to Save Snippets in
     Type: String
     Default: "codesplain-snippets-dev"
   Role:
