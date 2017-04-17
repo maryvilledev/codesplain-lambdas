@@ -49,5 +49,6 @@ deployment:
         ClientSecret="$AuthSecret"
         ClientID="$AuthId"
         Title="Codesplain Feature:$CIRCLE_BRANCH"
+        CircleBuild="$CIRCLE_BUILD_NUM"
         --region us-west-2
       - bash scripts/cleanup $CIRCLE_SHA1
