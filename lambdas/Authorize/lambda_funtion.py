@@ -1,6 +1,6 @@
 import os
 import json
-import requests.auth import HTTPBasicAuth
+from requests.auth import HTTPBasicAuth
 from boto3.s3.transfer import ClientError
 
 s3 = boto3.client('s3', 'us-west-2')
