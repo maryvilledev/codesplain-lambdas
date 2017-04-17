@@ -18,8 +18,6 @@ def findFeatureFromMessage(commitBody):
     return feature
 
 def main(arg1):
-    message = eval(arg1)['message']
-
     print findFeatureFromMessage(arg1)
 
 if __name__=='__main__':
