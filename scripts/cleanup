@@ -2,10 +2,11 @@
 
 echo "Sha: $1"
 commitJSON=$(curl https://api.github.com/repos/maryvilledev/codesplain-lambdas/git/commits/$1)
+echo "CommitJSON: $commitJSON"
 featureBranch=$(echo python -i scripts/featureBranchName.py $commitJSON)
+echo "Feature: $featureBranch"
 
 if [ $featureBranch == -1 ]; then
   exit 1
 fi
-echo "Feature: $featureBranch"
 aws cloudformation --region us-west-2 delete-stack --stack-name "CodesplainFeature-$featureBranch"
