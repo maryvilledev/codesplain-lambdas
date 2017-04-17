@@ -5,4 +5,5 @@ featureBranch=$(echo $(echo \
 $(curl https://api.github.com/repos/maryvilledev/codesplain-lambdas/git/commits/$1) \
 | python -i scripts/featureBranchName.py  obj["message"]))
 
-aws cloudformation delete-stack --stack-name "CodesplainFeature-featureBranch"
+echo $featureBranch
+aws cloudformation --region us-west-2 delete-stack --stack-name "CodesplainFeature-$featureBranch"
