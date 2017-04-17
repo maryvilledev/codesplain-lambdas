@@ -48,3 +48,4 @@ deployment:
         ClientID="$AuthId"
         Title="Codesplain Feature:$CIRCLE_BRANCH"
         --region us-west-2
+      - bash scripts/cleanup $CIRCLE_BRANCH
