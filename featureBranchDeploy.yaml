@@ -316,7 +316,7 @@ Resources:
               consumes:
               - "application/json"
               produces:
-              - "application/json"
+              - "application/csv"
               responses:
                 "200":
                   description: "200 response"
