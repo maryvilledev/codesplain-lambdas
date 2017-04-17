@@ -2,8 +2,9 @@ import string, sys, json
 
 def findFeatureFromMessage(commitBody):
     print commitBody
-    message = eval(commitBody)['message']
+    message = eval(commitBody)
     print message
+    return -1
     maryvilledev_start = string.find(message,'maryvilledev/')
     if maryvilledev_start == -1:
         print "Start missing"
