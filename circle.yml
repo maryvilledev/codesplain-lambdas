@@ -25,11 +25,11 @@ deployment:
     branch: /^((?!master).)*$/ # not master
     commands:
       - bash publish codesplain-lambda-functions/sandbox/$CIRCLE_BRANCH
-      - >-
+      - >
         aws cloudformation package --template-file featureBranchDeploy.yaml
         --s3-bucket codesplain-lambda-functions
         --output-template-file serverless-output-sandbox.yaml
-      - >-
+      - >
         aws cloudformation deploy
           --stack-name "CodesplainFeature-$CIRCLE_BRANCH"
           --template-file ./serverless-output-sandbox.yaml
