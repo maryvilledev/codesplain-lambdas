@@ -104,7 +104,7 @@ Resources:
         Key:  !Sub
          - ${lambda_version}/GetSnippetFromS3.zip
          - { lambda_version: !Ref S3Version }
-      Description: Converts API Gateway POST/PUT to S3 Request 2
+      Description: Converts API Gateway POST/PUT to S3 Request
       MemorySize: 192
       Timeout: 3
       Role: !Ref Role
@@ -125,7 +125,7 @@ Resources:
         Key:  !Sub
          - ${lambda_version}/UpdateSnippetInS3.zip
          - { lambda_version: !Ref S3Version }
-      Description: Converts API Gateway POST/PUT to S3 Request 2
+      Description: Converts API Gateway POST/PUT to S3 Request
       MemorySize: 192
       Timeout: 3
       Role: !Ref Role
@@ -147,7 +147,7 @@ Resources:
         Key:  !Sub
          - ${lambda_version}/DeleteSnippetFromS3.zip
          - { lambda_version: !Ref S3Version }
-      Description: Converts API Gateway POST/PUT to S3 Request 2
+      Description: Converts API Gateway POST/PUT to S3 Request
       MemorySize: 192
       Timeout: 3
       Role: !Ref Role
