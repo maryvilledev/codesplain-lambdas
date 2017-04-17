@@ -2,6 +2,6 @@
 
 featureBranch=$(echo $(echo \
 $(curl https://api.github.com/repos/maryvilledev/codesplain-lambdas/git/commits/$1) \
-| python featureBranchName.py  "Merge pull request #65 from maryvilledev/lambdaWhiteList log and change bool to string"))
+| python -i featureBranchName.py  "Merge pull request #65 from maryvilledev/lambdaWhiteList log and change bool to string"))
 
 aws cloudformation delete-stack --stack-name "CodesplainFeature-featureBranch"
