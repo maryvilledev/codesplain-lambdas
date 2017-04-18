@@ -4,10 +4,13 @@ def findFeatureFromMessage(commitBody):
     print 1
     print commitBody
     print 2
-    message = eval(commitBody)
+    commitBody = json.load(commitBody)
     print 3
-    print message
+    print commitBody
     print 4
+    message = commitBody['message']
+    print message
+    print 5
     return -1
     maryvilledev_start = string.find(message,'maryvilledev/')
     if maryvilledev_start == -1:
@@ -23,7 +26,7 @@ def findFeatureFromMessage(commitBody):
     return feature
 
 def main(arg1):
-    print findFeatureFromMessage(arg1)
+    return findFeatureFromMessage(arg1)
 
 if __name__=='__main__':
     main(sys.argv[1])
