@@ -14,8 +14,33 @@ test:
 deployment:
   release:
     tag: /v[0-9]+(\.[0-9]+)*/
+    environment:
+      EnvVersion: echo "$CIRCLE_TAG" | tr . _
+      CloudFormationVersion: echo "$CIRCLE_TAG" | tr . -
     commands:
+      # Zip and deploy lambda code to S3
       - bash publish codesplain-lambda-functions/$CIRCLE_TAG
+
+      # Package template for deloying prod
+      - >
+        aws cloudformation package --template-file featureBranchDeploy.yaml
+        --s3-bucket codesplain-lambda-functions
+        --output-template-file serverless-output.yaml
+
+      # Deploy a new stack for this version
+      - >
+        aws cloudformation deploy
+        --stack-name "Codesplain-Prod-$CloudFormationVersion"
+        --template-file ./serverless-output.yaml
+        --parameter-overrides
+        EnvVersion="dev"
+        S3Version="dev/$CIRCLE_SHA1"
+        ClientSecret="$CLIENT_SECRET_DEV"
+        ClientID="$CLIENT_ID_DEV"
+        Title="Codesplain API: Dev Environment"
+        CircleBuild="$CIRCLE_BUILD_NUM"
+        --region us-west-2
+
   master:
     branch: master
     commands:
@@ -27,7 +52,7 @@ deployment:
         aws cloudformation package --template-file featureBranchDeploy.yaml
         --s3-bucket codesplain-lambda-functions
         --output-template-file serverless-output.yaml
-        
+
       # Update Dev stack wtih current template and code changes
       - >
         aws cloudformation deploy
@@ -61,7 +86,12 @@ deployment:
 
   feature:
     branch: /^((?!master).)*$/ # not master
+    environment:
+      EnvVersion: echo "$v0.4" | tr . _
+      CloudFormationVersion: echo "$0.4" | tr . -
     commands:
+      - echo $EnvVersion
+      - echo $CloudFormationVersion
       # Zip and push lambda code to S3 bucket under sandbox/branch
       - bash publish codesplain-lambda-functions/sandbox/$CIRCLE_BRANCH
 
