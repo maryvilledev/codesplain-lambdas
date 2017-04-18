@@ -23,21 +23,23 @@ deployment:
 
       # Package template for deloying prod
       - >
-        aws cloudformation package --template-file featureBranchDeploy.yaml
+        aws cloudformation package --template-file codesplainTemplate.yaml
         --s3-bucket codesplain-lambda-functions
         --output-template-file serverless-output.yaml
 
       # Deploy a new stack for this version
       - >
+        EnvVersion=$CIRCLE_TAG && EnvVersion=${EnvVersion//./_} &&
+        CloudFormationVersion=$CIRCLE_TAG && CloudFormationVersion=${CloudFormationVersion//./-} &&
         aws cloudformation deploy
         --stack-name "Codesplain-Prod-$CloudFormationVersion"
         --template-file ./serverless-output.yaml
         --parameter-overrides
-        EnvVersion="dev"
-        S3Version="dev/$CIRCLE_SHA1"
-        ClientSecret="$CLIENT_SECRET_DEV"
-        ClientID="$CLIENT_ID_DEV"
-        Title="Codesplain API: Dev Environment"
+        EnvVersion="$EnvVersion"
+        S3Version="$CIRCLE_TAG"
+        ClientSecret="$CLIENT_SECRET_PROD"
+        ClientID="$CLIENT_ID_PROD"
+        Title="CodesplainAPI: $CIRCLE_TAG"
         CircleBuild="$CIRCLE_BUILD_NUM"
         --region us-west-2
 
@@ -49,7 +51,7 @@ deployment:
 
       # Package template for deloying Dev/Sandbox
       - >
-        aws cloudformation package --template-file featureBranchDeploy.yaml
+        aws cloudformation package --template-file codesplainTemplate.yaml
         --s3-bucket codesplain-lambda-functions
         --output-template-file serverless-output.yaml
 
@@ -87,13 +89,12 @@ deployment:
   feature:
     branch: /^((?!master).)*$/ # not master
     commands:
-      - test="v0.4" && test=${test//./_} && echo $test
       # Zip and push lambda code to S3 bucket under sandbox/branch
       - bash publish codesplain-lambda-functions/sandbox/$CIRCLE_BRANCH
 
       # Package template for deploying to feature branch API
       - >
-        aws cloudformation package --template-file featureBranchDeploy.yaml
+        aws cloudformation package --template-file codesplainTemplate.yaml
         --s3-bucket codesplain-lambda-functions
         --output-template-file serverless-output-sandbox.yaml
 
