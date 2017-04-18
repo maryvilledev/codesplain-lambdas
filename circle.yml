@@ -3,8 +3,8 @@ machine:
     version: 7.7.2
   environment:
     Test: test
-    EnvVersion: echo "$v0.4" | tr . _
-    CloudFormationVersion: echo "$0.4" | tr . -
+    EnvVersion: echo $("$v0.4" | tr . _)
+    CloudFormationVersion: echo $("$0.4" | tr . -)
 
 dependencies:
   override:
