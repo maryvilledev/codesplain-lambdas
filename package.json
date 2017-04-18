@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "Collection of AWS Lambdas for CodesplainUI's backend",
   "scripts": {
-    "test": "python -m unittest discover -v && jest"
+    "test": "python -m unittest discover -v"
   },
   "babel": {
     "presets": [ "es2015" ]
