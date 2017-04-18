@@ -5,7 +5,7 @@
 # Example usage:                                                               #
 #   ./test --token=<access-token> \                                            #
 #          --user=<user> \                                                     #
-#          --all                                                               #
+#          --positive                                                               #
 ################################################################################
 
 # Make sure newman is installed
@@ -17,24 +17,23 @@ fi
 
 # Default values
 VERBOSITY='--reporter-no-assertions'
-RUN_AUTH=false
-RUN_PARSERS=false
+RUN_POSITIVE=false
+RUN_NEGATIVE=false
 RUN_USERS=false
 EXPORT_ENV=false
-API_URL='http://api.codesplain.io/dev'
+API_URL='http://api.codesplain.io/sandbox'
 ENV_FILE='env.json'
-COLOR='\033[0;36m' # Cyan
 
 # Process all command line flag
 VALID_OPTIONS="Valid options are:
   -t | --token=   (GitHub access token for Authorization header)
        --user=    (GitHub user login to use for \"user_id\" in path)
   -v | --verbose  (turns on verbose output)
-  -s | --suite=   (sets suite of tests to run; auth, parsers, or users)
+  -s | --suite=   (sets suite of tests to run; 'positive' or 'negative')
   -e | --export   (saves JSON file of environment after completion
                    of specified test suite(s))
   -u | --api-url= (sets the URL to hit when running tests)
-  -a | --all      (runs all suites of tests; auth, parsers, & users)
+  -a | --all      (runs all suites of tests; positive & negative)
   -h | --help     (displays list of valid options)\n"
 for arg in "$@"
 do
@@ -53,12 +52,10 @@ case $arg in
 
     -s=*|--suite=*)
     s="${arg#*=}"
-    if [ "$s" == "auth" ]; then
-      RUN_AUTH=true
-    elif [ "$s" == "parsers" ]; then
-      RUN_PARSERS=true
-    elif [ "$s" == "users" ]; then
-      RUN_USERS=true
+    if [ "$s" == "positive" ]; then
+      RUN_POSITIVE=true
+    elif [ "$s" == "negative" ]; then
+      RUN_NEGATIVE=true
     else
       printf "Unrecognized suite: $s\n"
       exit 127 # exit code for "option not found"
@@ -74,9 +71,8 @@ case $arg in
     shift;; # past argument=value
 
     -a|--all)
-    RUN_AUTH=true
-    RUN_PARSERS=true
-    RUN_USERS=true
+    RUN_POSITIVE=true
+    RUN_NEGATIVE=true
     shift;; # past argument
 
     -h|--help)
@@ -118,6 +114,12 @@ ENV_JSON='{
       "key": "snippet",
       "type": "text",
       "value": "{\"annotations\":{},\"AST\":{\"ast_type\":\"file_input\",\"tags\":[\"file_input\"],\"begin\":0,\"end\":13,\"detail\":[],\"children\":[{\"ast_type\":\"simple_stmt\",\"tags\":[\"simple_stmt\"],\"begin\":0,\"end\":13,\"detail\":[],\"children\":[{\"ast_type\":\"expr\",\"tags\":[\"expr\"],\"begin\":0,\"end\":13,\"detail\":[],\"children\":[{\"ast_type\":\"trailed_atom\",\"tags\":[\"trailed_atom\",\"function_call\"],\"begin\":0,\"end\":13,\"detail\":[{\"handler\":\"docs\",\"template\":\"function_call\",\"name\":\"print\",\"args\":[null]}],\"children\":[{\"ast_type\":\"atom\",\"tags\":[\"atom\"],\"begin\":0,\"end\":5,\"detail\":[],\"children\":[{\"ast_type\":\".NAME\",\"tags\":[\".NAME\"],\"begin\":0,\"end\":5,\"text\":\"print\",\"detail\":[],\"children\":[]}]},{\"ast_type\":\"trailer\",\"tags\":[\"trailer\"],\"begin\":5,\"end\":13,\"detail\":[],\"children\":[{\"ast_type\":\".OPEN_PAREN\",\"tags\":[\".OPEN_PAREN\"],\"begin\":5,\"end\":6,\"text\":\"(\",\"detail\":[],\"children\":[]},{\"ast_type\":\"arglist\",\"tags\":[\"arglist\"],\"begin\":6,\"end\":12,\"detail\":[],\"children\":[{\"ast_type\":\"expr\",\"tags\":[\"expr\"],\"begin\":6,\"end\":12,\"detail\":[],\"children\":[{\"ast_type\":\"atom\",\"tags\":[\"atom\"],\"begin\":6,\"end\":12,\"detail\":[],\"children\":[{\"ast_type\":\"str\",\"tags\":[\"str\"],\"begin\":6,\"end\":12,\"detail\":[],\"children\":[{\"ast_type\":\".STRING_LITERAL\",\"tags\":[\".STRING_LITERAL\"],\"begin\":6,\"end\":12,\"text\":\"test\",\"detail\":[],\"children\":[]}]}]}]}]},{\"ast_type\":\".CLOSE_PAREN\",\"tags\":[\".CLOSE_PAREN\"],\"begin\":12,\"end\":13,\"text\":\")\",\"detail\":[],\"children\":[]}]}]}]}]},{\"ast_type\":\"._EOF\",\"tags\":[\"._EOF\"],\"begin\":13,\"end\":13,\"text\":\"<EOF>\",\"detail\":[],\"children\":[]}]},\"filters\":{},\"hasUnsavedChanges\":true,\"snippetLanguage\":\"python3\",\"readOnly\":false,\"snippet\":\"print('test')\",\"snippetTitle\":\"Test Snippet\"}"
+    },
+    {
+      "enabled": true,
+      "key": "snippet_id",
+      "type": "text",
+      "value": "test_snippet"
     }
   ],
   "timestamp": 1490716137324,
@@ -130,29 +132,21 @@ echo "$ENV_JSON" > $ENV_FILE
 #Run test suite(s) based on command line flags
 OPTIONS="-e $ENV_FILE $VERBOSITY --export-environment $ENV_FILE"
 EXIT_STATUS=0
-if $RUN_AUTH; then
-  printf "${COLOR}<<<<<< Running /auth Suite... >>>>>>\n"
-  newman run codesplain-auth.json $OPTIONS
+if $RUN_POSITIVE; then
+  printf "###### Running Positive Tests Suite... ######"
+  newman run codesplain-positive.json $OPTIONS
   if [[ $EXIT_STATUS == 1 || $? == 1 ]]; then
     EXIT_STATUS=1
   fi
-  printf "${COLOR}<<<<<< Done with /auth Suite. >>>>>>\n"
+  printf "###### Done With Positive Suite. ######\n"
 fi
-if $RUN_PARSERS; then
-  printf "${COLOR}<<<<<< Running /parsers Suite... >>>>>>\n"
-  newman run codesplain-parsers.json $OPTIONS
+if $RUN_NEGATIVE; then
+  printf "###### Running Negative Tests Suite... ######"
+  newman run codesplain-negative.json $OPTIONS
   if [[ $EXIT_STATUS == 1 || $? == 1 ]]; then
     EXIT_STATUS=1
   fi
-  printf "${COLOR}<<<<<< Done with /parsers Suite... >>>>>>\n"
-fi
-if $RUN_USERS; then
-  printf "${COLOR}<<<<<< Running /users Suite... >>>>>>\n"
-  newman run codesplain-users.json $OPTIONS
-  if [[ $EXIT_STATUS == 1 || $? == 1 ]]; then
-    EXIT_STATUS=1
-  fi
-  printf "${COLOR}<<<<<< Done with /users Suite. >>>>>>\n"
+  printf "###### Done with /parsers Suite... ######\n"
 fi
 
 # Remove environment file unless --export flag was used

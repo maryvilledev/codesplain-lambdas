@@ -1,12 +1,126 @@
 {
 	"variables": [],
 	"info": {
-		"name": "codesplain-users",
-		"_postman_id": "e34a85d9-56f9-88fb-0299-9a000f5de870",
+		"name": "codesplain-positive",
+		"_postman_id": "16b48915-12f0-3578-9e83-076cff933ee8",
 		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
 	},
 	"item": [
+		{
+			"name": "auth",
+			"description": "Folder for auth",
+			"item": [
+				{
+					"name": "POST to /auth",
+					"request": {
+						"url": "{{url}}/auth",
+						"method": "POST",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "OPTIONS to /auth",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"// Helper funcs and vars",
+									"const getHeader = (h) => postman.getResponseHeader(h); // Have to do it this way or won't run in newman",
+									"const ACAH = 'Access-Control-Allow-Headers';",
+									"const ACAM = 'Access-Control-Allow-Methods';",
+									"const ACAO = 'Access-Control-Allow-Origin';",
+									"",
+									"// Tests",
+									"tests['Status code is 200'] = responseCode.code === 200;",
+									"tests['Body is empty']      = responseBody      === '';",
+									"tests[`${ACAH} is present`] = getHeader(ACAH);",
+									"tests[`${ACAM} is present`] = getHeader(ACAM);",
+									"tests[`${ACAO} is present`] = getHeader(ACAO);"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/auth",
+						"method": "OPTIONS",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "parsers",
+			"description": "Folder for parsers",
+			"item": [
+				{
+					"name": "GET to /parsers/python3",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests['Status code is 200'] = responseCode.code === 200;",
+									"// Make sure we actually get a response that could be a",
+									"// parser. 100000 is a guesstimate.",
+									"tests['Response could be a valid parser'] = responseBody.length >= 100000"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/parsers/python3",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "OPTIONS to /parsers/python3",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"// Helper funcs and vars",
+									"const getHeader = (h) => postman.getResponseHeader(h); // Have to do it this way or won't run in newman",
+									"const ACAH = 'Access-Control-Allow-Headers';",
+									"const ACAM = 'Access-Control-Allow-Methods';",
+									"const ACAO = 'Access-Control-Allow-Origin';",
+									"",
+									"// Tests",
+									"tests['Status code is 200'] = responseCode.code === 200;",
+									"tests['Body is empty']      = responseBody      === '';",
+									"tests[`${ACAH} is present`] = getHeader(ACAH);",
+									"tests[`${ACAM} is present`] = getHeader(ACAM);",
+									"tests[`${ACAO} is present`] = getHeader(ACAO);"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/parsers/python3",
+						"method": "OPTIONS",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
 		{
 			"name": "users",
 			"description": "Folder for users",
@@ -22,12 +136,12 @@
 									"// Helper funcs and vars",
 									"// responseBody = `{",
 									"//   \"snippet_1\": { ",
-									"//       \"snippetTitle\":\"\", ",
+									"//       \"snippetName\":\"\", ",
 									"//       \"language\":\"\", ",
 									"//       \"lastEdited\":\"\"",
 									"//   },",
 									"//   \"snippet_2\": {",
-									"//       \"snippetTitle\":\"\", ",
+									"//       \"snippetName\":\"\", ",
 									"//       \"language\":\"\", ",
 									"//       \"lastEdited\":\"\"",
 									"//   }",
