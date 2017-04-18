@@ -51,4 +51,3 @@ deployment:
         Title="Codesplain Feature:$CIRCLE_BRANCH-$CIRCLE_BUILD_NUM"
         CircleBuild="$CIRCLE_BUILD_NUM"
         --region us-west-2
-      - bash scripts/cleanup $CIRCLE_SHA1
