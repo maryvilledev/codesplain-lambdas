@@ -158,6 +158,8 @@ Resources:
 
   CodesplainAPI:
     Type: AWS::Serverless::Api
+    Metadata:
+      CircleBuild: !Ref "CircleBuild"
     Properties:
       StageName: !Ref "EnvVersion"
       DefinitionBody:
@@ -650,3 +652,7 @@ Parameters:
     Description: Role for developer access
     Type: String
     Default: "arn:aws:iam::296636357169:role/CodesplainS3DevRole"
+  CircleBuild:
+    Description: Build number that deployed API
+    Type: String
+    Default: "Unknown"

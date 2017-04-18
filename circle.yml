@@ -29,6 +29,7 @@ deployment:
         ParameterKey=S3Version,ParameterValue="dev/$CIRCLE_SHA1"
         --use-previous-template
         --region us-west-2
+
       - >
         aws cloudformation update-stack 
         --stack-name "Codesplain-Local"
@@ -39,6 +40,7 @@ deployment:
         ParameterKey=APITitle,ParameterValue="Codesplain API:Localhost"
         --use-previous-template
         --region us-west-2
+      - bash scripts/cleanup $CIRCLE_SHA1
 
   feature:
     branch: /^((?!master).)*$/ # not master
@@ -57,5 +59,6 @@ deployment:
         S3Version="sandbox/$CIRCLE_BRANCH"
         ClientSecret="$AuthSecret"
         ClientID="$AuthId"
-        Title="Codesplain Feature:$CIRCLE_BRANCH"
+        Title="Codesplain Feature:$CIRCLE_BRANCH-$CIRCLE_BUILD_NUM"
+        CircleBuild="$CIRCLE_BUILD_NUM"
         --region us-west-2
