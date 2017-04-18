@@ -7,8 +7,8 @@ from boto3.s3.transfer import ClientError
 s3 = boto3.client('s3', 'us-west-2')
 client = boto3.client('lambda')
 
-client_id = os.environ['ClientID']
-client_secret = os.environ['ClientSecret']
+client_id = os.environ['CLIENT_ID']
+client_secret = os.environ['CLIENT_SECRET']
 
 def auth_request(client_id, client_secret, token):
     requests.get('https://api.github.com/applications/%s/tokens/%s' % (client_id, token), auth=(client_id, client_secret))

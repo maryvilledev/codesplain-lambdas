@@ -4,8 +4,8 @@ import unittest
 from mock import patch, Mock
 
 with patch('boto3.client'):
-    os.environ['ClientID'] = 'MockClientId'
-    os.environ['ClientSecret']= 'FooBar'
+    os.environ['CLIENT_ID'] = 'MockClientId'
+    os.environ['CLIENT_SECRET']= 'FooBar'
     import lambdas.Authorize.lambda_function as auth
 
 class TestAuthorize(unittest.TestCase):
