@@ -3,11 +3,13 @@ import os
 import unittest
 from mock import patch, Mock
 
-os.environ['BucketName'] = 'mockBucketName'
-import lambdas.GenerateIndexFiles.lambda_function as gif
+with patch('boto3.resource'):
+    os.environ['BucketName'] = 'mockBucketName'
+    import lambdas.GenerateIndexFiles.lambda_function as gif
 
 class TestGenerateIndexFiles(unittest.TestCase):
-    def setUp (self):
+    @patch('boto3.resource')
+    def setUp (self, mock_boto3):
         ## We're going to mock out some global functions, so re-import before each
         reload(gif)
         ## Mock out the s3 object
