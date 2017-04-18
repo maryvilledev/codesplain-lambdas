@@ -14,9 +14,6 @@ test:
 deployment:
   release:
     tag: /v[0-9]+(\.[0-9]+)*/
-    environment:
-      EnvVersion: echo "$CIRCLE_TAG" | tr . _
-      CloudFormationVersion: echo "$CIRCLE_TAG" | tr . -
     commands:
       # Zip and deploy lambda code to S3
       - bash publish codesplain-lambda-functions/$CIRCLE_TAG
