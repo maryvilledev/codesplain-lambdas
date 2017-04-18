@@ -1,6 +1,10 @@
 machine:
   node:
     version: 7.7.2
+  environment:
+    Test: test
+    EnvVersion: echo "$v0.4" | tr . _
+    CloudFormationVersion: echo "$0.4" | tr . -
 
 dependencies:
   override:
@@ -86,10 +90,6 @@ deployment:
 
   feature:
     branch: /^((?!master).)*$/ # not master
-    environment:
-      Test: test
-      EnvVersion: echo "$v0.4" | tr . _
-      CloudFormationVersion: echo "$0.4" | tr . -
     commands:
       - echo $Test
       - echo $EnvVersion
