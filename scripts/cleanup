@@ -4,6 +4,7 @@ echo "Sha: $1"
 commitJSON=$(curl https://api.github.com/repos/maryvilledev/codesplain-lambdas/git/commits/$1)
 echo "CommitJSON: $commitJSON"
 featureBranch=$(python scripts/featureBranchName.py "$commitJSON")
+sleep 1
 echo "Feature: $featureBranch"
 
 if [ $featureBranch == -1 ]; then
