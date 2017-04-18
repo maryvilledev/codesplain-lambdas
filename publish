@@ -19,14 +19,14 @@ function removeZips {
 function nodeInstall {
   printf "Installing $1 for $2 lambda\n"
   cd lambdas/$2
-  npm install --prefix=$(pwd) $1 >/dev/null
+  npm install --prefix=$(pwd) $1
   cd ../.. # Go back to where we came from
 }
 
 function pythonInstall {
   printf "Installing $1 for $2 lambda\n"
   cd lambdas/$2
-  pip install --prefix=$(pwd) $1 >/dev/null
+  pip install --prefix=$(pwd) $1
   cd ../.. # Go back to where we came from
 }
 
@@ -48,9 +48,9 @@ function zipLambda {
   printf "Zipping up $1 lambda\n"
   cd lambdas/$1
   if [[ -e "index.js" ]]; then
-    zip -r ../../zips/$1.zip index.js node_modules >/dev/null
+    zip -r ../../zips/$1.zip index.js node_modules 
   elif [[ -e "lambda_function.py" ]]; then
-    zip -r ../../zips/$1.zip lambda_function.py lib >/dev/null
+    zip -r ../../zips/$1.zip lambda_function.py lib
   else
     printf "$1 is an unknown lambda type!\n"
   fi

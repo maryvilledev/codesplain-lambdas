@@ -10,8 +10,8 @@ Resources:
       FunctionName: !Sub
        - Authorize-${lambda_version}
        - { lambda_version: !Ref EnvVersion }
-      Handler: index.handler
-      Runtime: nodejs4.3
+      Handler: lambda_function.lambda_handler
+      Runtime: python2.7
       CodeUri:
         Bucket: codesplain-lambda-functions
         Key:  !Sub
