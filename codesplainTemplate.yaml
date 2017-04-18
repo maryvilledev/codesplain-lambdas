@@ -462,9 +462,6 @@ Resources:
                   description: "200 response"
                   schema:
                     $ref: "#/definitions/Snippet"
-                  headers:
-                    Access-Control-Allow-Origin:
-                      type: "string"
                 "404":
                   description: "404 response"
               security:
