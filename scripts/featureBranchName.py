@@ -4,7 +4,7 @@ def findFeatureFromMessage(commitBody):
     print 1
     print commitBody
     print 2
-    commitBody = json.load(commitBody)
+    commitBody = json.loads(commitBody)
     print 3
     print commitBody
     print 4
