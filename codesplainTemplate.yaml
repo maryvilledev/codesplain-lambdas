@@ -462,6 +462,9 @@ Resources:
                   description: "200 response"
                   schema:
                     $ref: "#/definitions/Snippet"
+                  headers:
+                    Access-Control-Allow-Origin:
+                      type: "string"
                 "404":
                   description: "404 response"
               security:
@@ -471,6 +474,8 @@ Resources:
                 responses:
                   default:
                     statusCode: "200"
+                    responseParameters:
+                      method.response.header.Access-Control-Allow-Origin: "'*'"
                 uri: !Sub
                   - "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:296636357169:function:GetSnippet-${version}/invocations"
                   - { version: !Ref EnvVersion}
