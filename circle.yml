@@ -87,7 +87,7 @@ deployment:
   feature:
     branch: /^((?!master).)*$/ # not master
     commands:
-      -  test=${"${v0.4}"//./_} && echo $test
+      -  test=${"v0.4"//./_} && echo $test
       # Zip and push lambda code to S3 bucket under sandbox/branch
       - bash publish codesplain-lambda-functions/sandbox/$CIRCLE_BRANCH
 
