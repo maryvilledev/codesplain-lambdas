@@ -87,9 +87,11 @@ deployment:
   feature:
     branch: /^((?!master).)*$/ # not master
     environment:
+      Test: test
       EnvVersion: echo "$v0.4" | tr . _
       CloudFormationVersion: echo "$0.4" | tr . -
     commands:
+      - echo $Test
       - echo $EnvVersion
       - echo $CloudFormationVersion
       # Zip and push lambda code to S3 bucket under sandbox/branch
