@@ -289,6 +289,59 @@ Resources:
                   application/json: "{\"statusCode\": 200}"
                 passthroughBehavior: "when_no_match"
                 type: "mock"
+          "/mappings/{language}":
+            get:
+              parameters:
+              - name: "language"
+                in: "path"
+                required: true
+                type: "string"
+              responses:
+                "200":
+                  description: "200 response"
+              x-amazon-apigateway-integration:
+                credentials: !Ref Role
+                responses:
+                  default:
+                    statusCode: "200"
+                    contentHandling: "CONVERT_TO_TEXT"
+                requestParameters:
+                  integration.request.path.language: "method.request.path.language"
+                uri: !Sub
+                 - arn:aws:apigateway:us-west-2:s3:path/codesplain-parsers/{language}/${env}/{language}.csv
+                 - { env: !Ref ParserPath }
+                passthroughBehavior: "when_no_match"
+                httpMethod: "GET"
+                contentHandling: "CONVERT_TO_TEXT"
+                type: "aws"
+            options:
+              consumes:
+              - "application/json"
+              produces:
+              - "application/csv"
+              responses:
+                "200":
+                  description: "200 response"
+                  headers:
+                    Access-Control-Allow-Origin:
+                      type: "string"
+                    Access-Control-Allow-Methods:
+                      type: "string"
+                    Access-Control-Allow-Headers:
+                      type: "string"
+              x-amazon-apigateway-integration:
+                credentials: !Ref Role
+                responses:
+                  default:
+                    statusCode: "200"
+                    responseParameters:
+                      method.response.header.Access-Control-Allow-Methods: "'GET'"
+                      method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,x-api-key,x-amz-security-token'"
+                      method.response.header.Access-Control-Allow-Origin: "'*'"
+                requestTemplates:
+                  application/json: "{\"statusCode\": 200}"
+                passthroughBehavior: "when_no_match"
+                type: "mock"
           "/users/{user_id}/snippets":
             get:
               produces:
