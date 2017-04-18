@@ -19,35 +19,59 @@ deployment:
   master:
     branch: master
     commands:
+      # Zip and deploy lambda code to S3
       - bash publish codesplain-lambda-functions/dev/$CIRCLE_SHA1
+
+      # Package template for deloying Dev/Sandbox
       - >
-        aws cloudformation update-stack
-        --stack-name CodesplainDev
-        --parameters
-        ParameterKey=S3Version,ParameterValue="dev/$CIRCLE_SHA1"
-        --use-previous-template
+        aws cloudformation package --template-file featureBranchDeploy.yaml
+        --s3-bucket codesplain-lambda-functions
+        --output-template-file serverless-output.yaml
+        
+      # Update Dev stack wtih current template and code changes
+      - >
+        aws cloudformation deploy
+        --stack-name "CodesplainDev"
+        --template-file ./serverless-output.yaml
+        --parameter-overrides
+        EnvVersion="dev"
+        S3Version="dev/$CIRCLE_SHA1"
+        ClientSecret="$CLIENT_SECRET_DEV"
+        ClientID="$CLIENT_ID_DEV"
+        Title="Codesplain API: Dev Environment"
+        CircleBuild="$CIRCLE_BUILD_NUM"
         --region us-west-2
 
+      # Update Sandbox/Localhost stack with current template and code changes
       - >
-        aws cloudformation update-stack
+        aws cloudformation deploy
         --stack-name "Codesplain-Local"
-        --parameters
-        ParameterKey=S3Version,ParameterValue="dev/$CIRCLE_SHA1"
-        ParameterKey=ENV,ParameterValue="sandbox"
-        ParameterKey=EnvVersion,ParameterValue="sandbox"
-        ParameterKey=APITitle,ParameterValue="Codesplain API:Localhost"
-        --use-previous-template
+        --template-file ./serverless-output.yaml
+        --parameter-overrides
+        EnvVersion="sandbox"
+        S3Version="dev/$CIRCLE_SHA1"
+        ClientSecret="$CLIENT_SECRET_LOCAL"
+        ClientID="$CLIENT_ID_LOCAL"
+        Title="Codesplain API:Localhost"
+        CircleBuild="$CIRCLE_BUILD_NUM"
         --region us-west-2
+
+      # Remove Cloudformation Stack from merged Feature Branch
       - bash scripts/cleanup $CIRCLE_SHA1
 
   feature:
     branch: /^((?!master).)*$/ # not master
     commands:
+      # Zip and push lambda code to S3 bucket under sandbox/branch
       - bash publish codesplain-lambda-functions/sandbox/$CIRCLE_BRANCH
+
+      # Package template for deploying to feature branch API
       - >
         aws cloudformation package --template-file featureBranchDeploy.yaml
         --s3-bucket codesplain-lambda-functions
         --output-template-file serverless-output-sandbox.yaml
+
+      # Deploy or update feature stack based on new lambda code and template
       - >
         aws cloudformation deploy
         --stack-name "CodesplainFeature-$CIRCLE_BRANCH"
