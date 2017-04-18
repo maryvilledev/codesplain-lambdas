@@ -40,7 +40,7 @@ deployment:
         ParameterKey=APITitle,ParameterValue="Codesplain API:Localhost"
         --use-previous-template
         --region us-west-2
-      # - bash scripts/cleanup $CIRCLE_SHA1
+      - bash scripts/cleanup $CIRCLE_SHA1
 
   feature:
     branch: /^((?!master).)*$/ # not master

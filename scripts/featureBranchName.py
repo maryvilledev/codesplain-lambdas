@@ -7,7 +7,7 @@ def findFeatureFromMessage(commitBody):
     if maryvilledev_start == -1:
         return -1
     maryvilledev_start+=13
-    feature_branch_end = string.find(message, ' ', maryvilledev_start)
+    feature_branch_end = string.find(message, '\n', maryvilledev_start)
     if feature_branch_end == -1:
         return -1
 
