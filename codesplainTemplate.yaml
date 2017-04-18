@@ -299,16 +299,11 @@ Resources:
               responses:
                 "200":
                   description: "200 response"
-                  headers:
-                    Access-Control-Allow-Origin:
-                      type: "string"
               x-amazon-apigateway-integration:
                 credentials: !Ref Role
                 responses:
                   default:
                     statusCode: "200"
-                    responseParameters:
-                      method.response.header.Access-Control-Allow-Origin: "'*'"
                     contentHandling: "CONVERT_TO_TEXT"
                 requestParameters:
                   integration.request.path.language: "method.request.path.language"
@@ -621,7 +616,7 @@ Resources:
       Description: Converts API Gateway POST/PUT to S3 Request 2
       MemorySize: 192
       Timeout: 30
-      Role: "arn:aws:iam::296636357169:role/CodesplainS3DevRole"
+      Role: !Ref Role
       Environment:
         Variables:
           authorizeTokenName: !Ref AuthorizeToken
@@ -660,4 +655,4 @@ Parameters:
   CircleBuild:
     Description: Build number that deployed API
     Type: String
-    Default: "Unknown"
+    Default: "CircleBuildUnknown"
