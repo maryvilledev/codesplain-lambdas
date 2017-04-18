@@ -1,10 +1,6 @@
 machine:
   node:
     version: 7.7.2
-  environment:
-    Test: test
-    EnvVersion: echo $("$v0.4" | tr . _)
-    CloudFormationVersion: echo $("$0.4" | tr . -)
 
 dependencies:
   override:
@@ -91,9 +87,7 @@ deployment:
   feature:
     branch: /^((?!master).)*$/ # not master
     commands:
-      - echo $Test
-      - echo $EnvVersion
-      - echo $CloudFormationVersion
+      -  test=$(echo "$v0.4" | tr . _) && echo $Test
       # Zip and push lambda code to S3 bucket under sandbox/branch
       - bash publish codesplain-lambda-functions/sandbox/$CIRCLE_BRANCH
 
