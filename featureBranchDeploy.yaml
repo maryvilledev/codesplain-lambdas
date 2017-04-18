@@ -307,6 +307,8 @@ Resources:
                 responses:
                   default:
                     statusCode: "200"
+                    responseParameters:
+                      method.response.header.Access-Control-Allow-Origin: "'*'"
                     contentHandling: "CONVERT_TO_TEXT"
                 requestParameters:
                   integration.request.path.language: "method.request.path.language"
