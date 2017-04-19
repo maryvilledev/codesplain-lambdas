@@ -54,7 +54,7 @@ function zipLambda {
     zip -r ../../zips/$1.zip lambda_function.py
     cd lib
     zip -r ../../../zips/$1.zip .
-    cd -
+    cd ..
   else
     printf "$1 is an unknown lambda type!\n"
   fi
