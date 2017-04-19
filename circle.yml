@@ -15,36 +15,96 @@ deployment:
   release:
     tag: /v[0-9]+(\.[0-9]+)*/
     commands:
+      # Zip and deploy lambda code to S3
       - bash publish codesplain-lambda-functions/$CIRCLE_TAG
+
+      # Package template for deloying prod
+      - >
+        aws cloudformation package --template-file codesplainTemplate.yaml
+        --s3-bucket codesplain-lambda-functions
+        --output-template-file serverless-output.yaml
+
+      # Deploy a new stack for this version
+      - >
+        EnvVersion=$CIRCLE_TAG && EnvVersion=${EnvVersion//./_} &&
+        CloudFormationVersion=$CIRCLE_TAG && CloudFormationVersion=${CloudFormationVersion//./-} &&
+        aws cloudformation deploy
+        --stack-name "Codesplain-Prod-$CloudFormationVersion"
+        --template-file ./serverless-output.yaml
+        --parameter-overrides
+        EnvVersion="$EnvVersion"
+        S3Version="$CIRCLE_TAG"
+        ClientSecret="$CLIENT_SECRET_PROD"
+        ClientID="$CLIENT_ID_PROD"
+        Title="CodesplainAPI: $CIRCLE_TAG"
+        CircleBuild="$CIRCLE_BUILD_NUM"
+        --region us-west-2
+
   master:
     branch: master
     commands:
-      - echo $CI_PULL_REQUEST
-      - echo $CI_PULL_REQUESTS
+      # Zip and deploy lambda code to S3
       - bash publish codesplain-lambda-functions/dev/$CIRCLE_SHA1
+
+      # Package template for deloying Dev/Sandbox
       - >
-        aws cloudformation update-stack
-        --stack-name CodesplainDev
-        --parameters
-        ParameterKey=S3Version,ParameterValue="dev/$CIRCLE_SHA1"
-        --use-previous-template
+        aws cloudformation package --template-file codesplainTemplate.yaml
+        --s3-bucket codesplain-lambda-functions
+        --output-template-file serverless-output.yaml
+
+      # Update Dev stack wtih current template and code changes
+      - >
+        aws cloudformation deploy
+        --stack-name "CodesplainDev"
+        --template-file ./serverless-output.yaml
+        --parameter-overrides
+        EnvVersion="dev"
+        S3Version="dev/$CIRCLE_SHA1"
+        ClientSecret="$CLIENT_SECRET_DEV"
+        ClientID="$CLIENT_ID_DEV"
+        Title="Codesplain API: Dev Environment"
+        CircleBuild="$CIRCLE_BUILD_NUM"
         --region us-west-2
+
+      # Update Sandbox/Localhost stack with current template and code changes
+      - >
+        aws cloudformation deploy
+        --stack-name "Codesplain-Local"
+        --template-file ./serverless-output.yaml
+        --parameter-overrides
+        EnvVersion="sandbox"
+        S3Version="dev/$CIRCLE_SHA1"
+        ClientSecret="$CLIENT_SECRET_LOCAL"
+        ClientID="$CLIENT_ID_LOCAL"
+        Title="Codesplain API:Localhost"
+        CircleBuild="$CIRCLE_BUILD_NUM"
+        --region us-west-2
+
+      # Remove Cloudformation Stack from merged Feature Branch
+      - bash scripts/cleanup $CIRCLE_SHA1
+
   feature:
     branch: /^((?!master).)*$/ # not master
     commands:
-      - bash publish codesplain-lambda-functions/sandbox/$CIRCLE_BRANCH
+      # Zip and push lambda code to S3 bucket under sandbox/branch
+      - bash publish codesplain-lambda-functions/sandbox/$CIRCLE_BRANCH/$CIRCLE_SHA1
+
+      # Package template for deploying to feature branch API
       - >
-        aws cloudformation package --template-file featureBranchDeploy.yaml
+        aws cloudformation package --template-file codesplainTemplate.yaml
         --s3-bucket codesplain-lambda-functions
         --output-template-file serverless-output-sandbox.yaml
+
+      # Deploy or update feature stack based on new lambda code and template
       - >
         aws cloudformation deploy
         --stack-name "CodesplainFeature-$CIRCLE_BRANCH"
         --template-file ./serverless-output-sandbox.yaml
         --parameter-overrides
         EnvVersion="$CIRCLE_BRANCH"
-        S3Version="sandbox/$CIRCLE_BRANCH"
+        S3Version="sandbox/$CIRCLE_BRANCH/$CIRCLE_SHA1"
         ClientSecret="$AuthSecret"
         ClientID="$AuthId"
-        Title="Codesplain Feature:$CIRCLE_BRANCH"
+        Title="Codesplain Feature:$CIRCLE_BRANCH-$CIRCLE_BUILD_NUM"
+        CircleBuild="$CIRCLE_BUILD_NUM"
         --region us-west-2
