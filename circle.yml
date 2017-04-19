@@ -4,7 +4,6 @@ machine:
   environment:
     # Which version of the parser you want to deploy into qa/prod
     RELEASED_PARSER: v0.4
-    TEST: test
 
 dependencies:
   override:
@@ -91,7 +90,6 @@ deployment:
   feature:
     branch: /^((?!master).)*$/ # not master
     commands:
-      - echo "$TEST"
       # Zip and push lambda code to S3 bucket under sandbox/branch
       - bash publish codesplain-lambda-functions/sandbox/$CIRCLE_BRANCH
 
