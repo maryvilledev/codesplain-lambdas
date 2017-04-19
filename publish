@@ -26,7 +26,8 @@ function nodeInstall {
 function pythonInstall {
   printf "Installing $1 for $2 lambda\n"
   cd lambdas/$2
-  pip install --prefix=$(pwd) $1
+  mkdir -p lib
+  pip install -t "$(pwd)/lib" $1
   cd ../.. # Go back to where we came from
 }
 
@@ -48,7 +49,7 @@ function zipLambda {
   printf "Zipping up $1 lambda\n"
   cd lambdas/$1
   if [[ -e "index.js" ]]; then
-    zip -r ../../zips/$1.zip index.js node_modules 
+    zip -r ../../zips/$1.zip index.js node_modules
   elif [[ -e "lambda_function.py" ]]; then
     zip -r ../../zips/$1.zip lambda_function.py lib
   else
