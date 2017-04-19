@@ -51,7 +51,7 @@ function zipLambda {
   if [[ -e "index.js" ]]; then
     zip -r ../../zips/$1.zip index.js node_modules
   elif [[ -e "lambda_function.py" ]]; then
-    zip -r ../../zips/$1.zip lambda_function.py lib
+    zip -r ../../zips/$1.zip lambda_function.py lib/*
   else
     printf "$1 is an unknown lambda type!\n"
   fi
