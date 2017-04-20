@@ -31,11 +31,7 @@ const authorizeToken = (accessToken, role) => {
         axios.get(`https://api.github.com/user/orgs`, { headers })
           .then(res => {
             const orgs = res.data.map((org) => org.login);
-            if ( orgs.indexOf(role) >= 0 ) {
-              resolve(true);
-            } else {
-              resolve(false);
-            }
+            resolve(orgs.indexOf(role) >= 0)
           });
       }
     }, err => {
