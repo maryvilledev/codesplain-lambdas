@@ -91,7 +91,7 @@ deployment:
     branch: /^((?!master).)*$/ # not master
     commands:
       # Zip and push lambda code to S3 bucket under sandbox/branch
-      - bash publish codesplain-lambda-functions/sandbox/$CIRCLE_BRANCH
+      - bash publish codesplain-lambda-functions/sandbox/$CIRCLE_BRANCH/$CIRCLE_SHA1
 
       # Package template for deploying to feature branch API
       - >
@@ -106,7 +106,7 @@ deployment:
         --template-file ./serverless-output-sandbox.yaml
         --parameter-overrides
         EnvVersion="$CIRCLE_BRANCH"
-        S3Version="sandbox/$CIRCLE_BRANCH"
+        S3Version="sandbox/$CIRCLE_BRANCH/$CIRCLE_SHA1"
         ClientSecret="$AuthSecret"
         ClientID="$AuthId"
         Title="Codesplain Feature:$CIRCLE_BRANCH-$CIRCLE_BUILD_NUM"
