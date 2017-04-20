@@ -13,11 +13,11 @@ const sendResponse = (callback, statusCode, response) => {
 }
 
 /*
-Given a GitHub access token, authorizeToken gets the basic profile info for the 
-user and returns true if username contained therein matches the given username.
+Given a GitHub access token, authorizeToken gets the basic profile info for the
+user and returns true if role contained therein matches the given role.
 (Return value is in form of a Promise)
 */
-const authorizeToken = (accessToken, username) => {
+const authorizeToken = (accessToken, role) => {
   const headers = {
     Accept: 'application/json',
     Authorization: `token ${accessToken}`,
@@ -25,8 +25,19 @@ const authorizeToken = (accessToken, username) => {
   return new Promise((resolve, reject) => {
     axios.get(`https://api.github.com/user`, { headers })
     .then(res => {
-      const doesMatch = res.data.login === username;
-      resolve(doesMatch);
+      if ( res.data.login === role ) {
+        resolve(true);
+      } else {
+        axios.get(`https://api.github.com/user/orgs`, { headers })
+          .then(res => {
+            const orgs = res.data.map((org) => org.login);
+            if ( orgs.indexOf(role) >= 0 ) {
+              resolve(true);
+            } else {
+              resolve(false);
+            }
+          });
+      }
     }, err => {
       reject(err);
     });
