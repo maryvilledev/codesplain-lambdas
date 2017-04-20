@@ -34,4 +34,3 @@ def lambda_handler(event, context):
         generate_policy('user', 'Allow', event['methodArn'])
     except (KeyError, ClientError) as error:
         print 'Unauthorized'
-        raise error

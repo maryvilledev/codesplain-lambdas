@@ -25,3 +25,5 @@ class TestAuthorize(unittest.TestCase):
         auth.auth_request(mock_client_id, mock_client_secret, mock_token)
 
         mock_requests.assert_called_once_with('https://api.github.com/applications/%s/tokens/%s' % (mock_client_id, mock_token), auth=(mock_client_id, mock_client_secret))
+
+    
