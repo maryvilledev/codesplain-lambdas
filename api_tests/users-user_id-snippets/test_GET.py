@@ -1,8 +1,13 @@
 import unittest
+import json
 import requests
+from jsonschema import validate
+from jsonschema import ValidationError
 
 class TestEndpoint(unittest.TestCase):
-    API_URL = 'https://api.codesplain/io/sandbox/users/Hopding/snippets'
+    global API_URL
+    API_URL = 'https://api.codesplain.io/sandbox/users/Hopding/snippets'
+
     def test_get_index_file (self):
         """GET user's index.json file"""
         r = requests.get(API_URL)
@@ -17,4 +22,19 @@ class TestEndpoint(unittest.TestCase):
             self.fail("Body is not valid JSON")
 
         # Body object keys should be valid snippet meta data
-        self.assertTrue(True)
+        schema = {
+            'title'      : 'Snippet Meta Data',
+            'type'       : 'object',
+            'properties' : {
+                'snippetTitle' : {'type' : 'string'},
+                'language'     : {'type' : 'string'},
+                'lastEdited'   : {'type' : 'string'},
+            },
+            'required' : ['snippetTitle', 'language', 'lastEdited'],
+        }
+        for key, value in bodyJson.items():
+            try:
+                validate(bodyJson[key], schema)
+            except ValidationError as error:
+                self.fail("Body object keys not valid snippet meta data")
+                print error

@@ -8,3 +8,9 @@
 
 ## Ignore the virtual environment
 codesplain-env/
+.Python
+bin
+include
+lib
+pip-selfcheck.json
+
