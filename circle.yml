@@ -3,7 +3,7 @@ machine:
     version: 7.7.2
   environment:
     # Which version of the parser you want to deploy into qa/prod
-    RELEASED_PARSER: v0.4
+    RELEASED_PARSER: v0.4.1
 
 dependencies:
   override:
