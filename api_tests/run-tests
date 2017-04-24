@@ -4,5 +4,6 @@
 
 cd "$(dirname "$0")"
 
+python -m unittest -v parsers.test_endpoint.TestEndpoint.run_tests && \
 python -m unittest -v users.user_id.snippets.test_endpoint.TestEndpoint.run_tests && \
 python -m unittest -v users.user_id.snippets.snippet_id.test_endpoint.TestEndpoint.run_tests
