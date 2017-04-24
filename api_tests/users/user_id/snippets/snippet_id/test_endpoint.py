@@ -15,14 +15,27 @@ class TestEndpoint(unittest.TestCase):
         self.ACCESS_TOKEN = config_dict['access_token']
         self.SNIPPET      = json.dumps(config_dict['snippet'])
 
+    def run_tests (self):
+        print '\nTesting /users/{{user_id}}/snippets/{{snippet_id}} Endpoint:'
+        self.test_options()
+        self.test_get()
+        self.test_put('to existing snippet_id')
+        self.test_delete()
+        self.test_put('to a new snippet_id')
+
+        # Cleanup
+        headers = { 'Authorization' : self.ACCESS_TOKEN }
+        r = requests.delete(self.API_URL, headers=headers, data=self.SNIPPET)
+
     def test_options (self):
         """Validate OPTIONS response"""
+        print('\tTesting OPTIONS method')
         r = requests.options(self.API_URL)
 
-        # Status code should be 200
+        print '\t\tStatus code should be 200'
         self.assertEqual(r.status_code, 200)
 
-        # CORS headers should be present
+        print '\t\tCORS headers should be present'
         self.assertEqual(
             r.headers['Access-Control-Allow-Headers'],
             'Content-Type,X-Amz-Date,Authorization,x-api-key,x-amz-security-token'
@@ -36,43 +49,45 @@ class TestEndpoint(unittest.TestCase):
             '*'
         )
 
-        # Body should be empty
+        print '\t\tBody should be empty'
         self.assertEqual(r.text, '')
 
     def test_get (self):
         """GET a JSON snippet"""
+        print '\tTesting GET method'
         r = requests.get(self.API_URL)
 
-        # Status code should be 200
+        print '\t\tStatus code should be 200'
         self.assertEqual(r.status_code, 200)
 
-        # Body should be valid JSON
+        print '\t\tBody should be valid JSON'
         try:
             body_json = r.json()
         except ValueError as error:
             self.fail('Body is not valid JSON')
 
-        # Body == snippet (from config file)
+        print '\t\tResponse body should == snippet (from config file)'
         self.assertEqual(body_json, json.loads(self.SNIPPET))
 
-    def test_put_existing (self):
-        """PUT to an existing {{snippet_id}}"""
+    def test_put (self, note):
+        """PUT to a {{snippet_id}}"""
+        print '\tTesting PUT method (' + note + ')'
         headers = { 'Authorization' : self.ACCESS_TOKEN }
         r = requests.put(self.API_URL, headers=headers, data=self.SNIPPET)
 
-        # Response code is 200
+        print '\t\tResponse code is 200'
         self.assertEqual(r.status_code, 200)
 
-        # CORS headers are present
+        print '\t\tCORS headers are present'
         self.assertEqual(r.headers['Access-Control-Allow-Origin'], '*')
 
-        # Body is valid JSON
+        print '\t\tBody is valid JSON'
         try:
             body_json = r.json()
         except ValueError as error:
             self.fail('Body is not valid JSON')
 
-        # Body contains "key" and "key" is correct
+        print '\t\tBody contains "key" and "key" is correct'
         try:
             # Received "key" should equal expected "key", up
             # until possible postfix
@@ -87,23 +102,23 @@ class TestEndpoint(unittest.TestCase):
 
     def test_delete (self):
         """DELETE a snippet"""
+        print '\tTesting DELETE method'
         headers = { 'Authorization' : self.ACCESS_TOKEN }
         r = requests.delete(self.API_URL, headers=headers, data=self.SNIPPET)
 
-        # Response code is 200
+        print '\t\tResponse code is 200'
         self.assertEqual(r.status_code, 200)
 
-        # CORS headers are present
+        print '\t\tCORS header are present'
         self.assertEqual(r.headers['Access-Control-Allow-Origin'], '*')
 
-        # Body is valid JSON
+        print '\t\tBody is valid JSON'
         try:
             body_json = r.json()
-            print body_json
         except ValueError as error:
             self.fail('Body is not valid JSON')
 
-        # Body contains "response" and "response" is correct
+        print '\t\tBody contains "response" and "response" is correct'
         try:
             self.assertEqual(body_json['response'], 'Successfully deleted.')
         except KeyError as error:

@@ -10,19 +10,25 @@ class TestEndpoint(unittest.TestCase):
     def setUpClass (self):
         config_dict       = config.parse()
         self.USER_ID      = config_dict['user_id']
-        self.SNIPPET_ID   = config_dict['snippet_id']
         self.API_URL      = config_dict['url'] + '/users/' + self.USER_ID + '/snippets'
         self.ACCESS_TOKEN = config_dict['access_token']
         self.SNIPPET      = json.dumps(config_dict['snippet'])
 
+    def run_tests (self):
+        print '\nTesting /users/{{user_id}}/snippets Endpoint:'
+        self.test_options()
+        self.test_post()
+        self.test_get()
+
     def test_options (self):
         """Validate OPTIONS response"""
+        print '\tTesting OPTIONS method'
         r = requests.options(self.API_URL)
 
-        # Status code should be 200
+        print '\t\tStatus code should be 200'
         self.assertEqual(r.status_code, 200)
 
-        # CORS headers should be present
+        print '\t\tCORS headers should be present'
         self.assertEqual(
             r.headers['Access-Control-Allow-Headers'],
             'Content-Type,X-Amz-Date,Authorization,x-api-key,x-amz-security-token'
@@ -36,24 +42,25 @@ class TestEndpoint(unittest.TestCase):
             '*'
         )
 
-        # Body should be empty
+        print '\t\tBody should be empty'
         self.assertEqual(r.text, '')
 
 
     def test_get (self):
         """GET user's index.json file"""
+        print '\tTesting GET method'
         r = requests.get(self.API_URL)
 
-        # Status code should be 200
+        print '\t\tStatus code should be 200'
         self.assertEqual(r.status_code, 200)
 
-        # Body should be valid JSON
+        print '\t\tBody should be valid JSON'
         try:
             body_json = r.json()
         except ValueError as error:
             self.fail('Body is not valid JSON')
 
-        # Body object keys should be valid snippet meta data
+        print '\t\tBody object keys should be valid snippet meta data'
         schema = {
             'title'      : 'Snippet Meta Data',
             'type'       : 'object',
@@ -73,22 +80,23 @@ class TestEndpoint(unittest.TestCase):
 
     def test_post (self):
         """POST a JSON snippet"""
+        print '\tTesting POST method'
         headers = { 'Authorization' : self.ACCESS_TOKEN }
         r = requests.post(self.API_URL, headers=headers, data=self.SNIPPET)
 
-        # Response code is 200
+        print '\t\tResponse code is 200'
         self.assertEqual(r.status_code, 200)
 
-        # CORS headers are present
+        print '\t\tCORS headers are present'
         self.assertEqual(r.headers['Access-Control-Allow-Origin'], '*')
 
-        # Body is valid JSON
+        print '\t\tBody is valid JSON'
         try:
             body_json = r.json()
         except ValueError as error:
             self.fail('Body is not valid JSON')
 
-        # Body contains "key" and "key" is correct
+        print '\t\tBody contains "key" and "key" is correct'
         try:
             # Received "key" should equal expected "key", up
             # until possible postfix
@@ -100,3 +108,6 @@ class TestEndpoint(unittest.TestCase):
             )
         except KeyError as error:
             self.fail('"key" does not exist in response')
+
+        # Update config file with received key for later tests
+        config.update('snippet_id', body_json['key'])
