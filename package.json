@@ -4,7 +4,7 @@
   "description": "Collection of AWS Lambdas for CodesplainUI's backend",
   "scripts": {
     "test": "python -m unittest discover -v && jest",
-    "test-api": "python -m unittest discover -v api_tests"
+    "test-api": "bash api_tests/run-tests"
   },
   "babel": {
     "presets": [ "es2015" ]
