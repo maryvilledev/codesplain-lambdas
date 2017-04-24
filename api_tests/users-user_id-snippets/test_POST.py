@@ -30,7 +30,7 @@ class TestEndpoint(unittest.TestCase):
         self.assertEqual(r.status_code, 200)
 
         # CORS headers are present
-        self.assertEqual('Access-Control-Allow-Origin', '*')
+        self.assertEqual(r.headers['Access-Control-Allow-Origin'], '*')
 
         # Body is valid json
         try:
@@ -40,6 +40,13 @@ class TestEndpoint(unittest.TestCase):
 
         # Body contains "key" and "key" is correct
         try:
-            # Now generate an expected key and validate it is what we got in response
+            # Received "key" should equal expected "key", up
+            # until possible postfix
+            snippet_dict = json.loads(self.SNIPPET)
+            expected_key = snippet_dict['snippetTitle'].replace(' ', '_').lower()
+            self.assertEqual(
+                bodyJson['key'][0:len(expected_key)],
+                expected_key
+            )
         except KeyError as error:
             self.fail('"key" does not exist in response')
