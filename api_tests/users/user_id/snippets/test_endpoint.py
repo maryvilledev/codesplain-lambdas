@@ -76,15 +76,15 @@ class TestEndpoint(unittest.TestCase):
         headers = { 'Authorization' : self.ACCESS_TOKEN }
         r = requests.post(self.API_URL, headers=headers, data=self.SNIPPET)
 
-        # Reponse code is 200
+        # Response code is 200
         self.assertEqual(r.status_code, 200)
 
         # CORS headers are present
         self.assertEqual(r.headers['Access-Control-Allow-Origin'], '*')
 
-        # Body is valid json
+        # Body is valid JSON
         try:
-            bodyJson = r.json()
+            body_json = r.json()
         except ValueError as error:
             self.fail('Body is not valid JSON')
 
@@ -95,7 +95,7 @@ class TestEndpoint(unittest.TestCase):
             snippet_dict = json.loads(self.SNIPPET)
             expected_key = snippet_dict['snippetTitle'].replace(' ', '_').lower()
             self.assertEqual(
-                bodyJson['key'][0:len(expected_key)],
+                body_json['key'][0:len(expected_key)],
                 expected_key
             )
         except KeyError as error:
