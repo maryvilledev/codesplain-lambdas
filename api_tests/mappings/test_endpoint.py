@@ -7,10 +7,10 @@ class TestEndpoint(unittest.TestCase):
     @classmethod
     def setUpClass (self):
         config_dict  = config.parse()
-        self.API_URL = config_dict['url'] + '/parsers/'
+        self.API_URL = config_dict['url'] + '/mappings/'
 
     def run_tests (self):
-        print '\nTesting /parsers/{{language}} Endpoint:'
+        print '\nTesting /mappings/{{language}} Endpoint:'
         self.test_options('python3')
         self.test_get('python3')
         self.test_options('java8')
@@ -47,7 +47,9 @@ class TestEndpoint(unittest.TestCase):
         print '\t\tStatus code should be 200'
         self.assertEqual(r.status_code, 200)
 
-        print '\t\tResponse could be a valid parser'
-        # Make sure we get a response that could actually be
-        # a valid parser. 100000 is a guesstimate
-        self.assertTrue(len(r.text) >= 100000)
+        print '\t\tResponse is valid csv'
+        csv_lines  = r.text.split('\n')
+        num_commas = csv_lines[0].count(',')
+        for line in csv_lines[0:-2]: # ignore newline at the end
+            if line.count(',') != num_commas:
+                self.fail('Response is not valid csv.')

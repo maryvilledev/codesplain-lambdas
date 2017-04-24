@@ -17,7 +17,7 @@ def update(key, val):
     config_file = open(config_path, 'r+w')
     config_dict = json.load(config_file)
     config_dict[key] = val
-    new_config = json.dumps(config_dict)
+    new_config = json.dumps(config_dict, indent=2)
 
     # Empty file contents and write new config
     config_file.seek(0)
