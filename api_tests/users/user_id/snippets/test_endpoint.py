@@ -20,6 +20,9 @@ class TestEndpoint(unittest.TestCase):
         self.test_post()
         self.test_get()
         self.test_post_invalid_token()
+        self.test_post_no_body()
+        # TODO: when https://github.com/maryvilledev/codesplain-lambdas/issues/86
+        # is resolved, add test for it.
 
     def test_options (self):
         """Validate OPTIONS response"""
@@ -114,12 +117,12 @@ class TestEndpoint(unittest.TestCase):
         config.update('snippet_id', body_json['key'])
 
     def test_post_invalid_token (self):
-        print '\tTesting POST method'
+        print '\tTesting POST method (with invalid auth token)'
         headers = { 'Authorization' : 'vim is the best editor' }
         r = requests.post(self.API_URL, headers=headers, data=self.SNIPPET)
 
         print '\t\tStatus code is 401'
-        self.assertTrue(r.status_code, 401)
+        self.assertEqual(r.status_code, 401)
 
         print '\t\tBody is valid JSON'
         try:
@@ -132,3 +135,29 @@ class TestEndpoint(unittest.TestCase):
             self.assertEqual(body_json['message'], 'Unauthorized')
         except KeyError as error:
             self.fail('"message" does not exist in response')
+
+    def test_post_no_body (self):
+        print '\tTesting POST method (with no body)'
+        headers = { 'Authorization' : self.ACCESS_TOKEN }
+        r = requests.post(self.API_URL, headers=headers)
+
+        print '\t\tStatus code is 400'
+        self.assertEqual(r.status_code, 400)
+
+        print '\t\tCORS headers are present'
+        self.assertEqual(r.headers['Access-Control-Allow-Origin'], '*')
+
+        print '\t\tBody is valid JSON'
+        try:
+            body_json = r.json()
+        except ValueError as error:
+            self.fail('Body is not valid JSON')
+
+        print '\t\tBody contains "response" and "response" is correct'
+        try:
+            self.assertEqual(
+                body_json['response'],
+                'POST requests must not have empty bodies.'
+            )
+        except ValueError as error:
+            self.fail('Body is not valid JSON')
