@@ -19,6 +19,7 @@ class TestEndpoint(unittest.TestCase):
         self.test_options()
         self.test_post()
         self.test_get()
+        self.test_post_invalid_token()
 
     def test_options (self):
         """Validate OPTIONS response"""
@@ -111,3 +112,23 @@ class TestEndpoint(unittest.TestCase):
 
         # Update config file with received key for later tests
         config.update('snippet_id', body_json['key'])
+
+    def test_post_invalid_token (self):
+        print '\tTesting POST method'
+        headers = { 'Authorization' : 'vim is the best editor' }
+        r = requests.post(self.API_URL, headers=headers, data=self.SNIPPET)
+
+        print '\t\tStatus code is 401'
+        self.assertTrue(r.status_code, 401)
+
+        print '\t\tBody is valid JSON'
+        try:
+            body_json = r.json()
+        except ValueError as error:
+            self.fail('Body is not valid JSON')
+
+        print '\t\tBody contains "message" and "message" is correct'
+        try:
+            self.assertEqual(body_json['message'], 'Unauthorized')
+        except KeyError as error:
+            self.fail('"message" does not exist in response')
