@@ -3,6 +3,7 @@ import json
 import requests
 from jsonschema import validate, ValidationError
 import config
+import testfor
 
 class TestEndpoint(unittest.TestCase):
 
@@ -25,44 +26,23 @@ class TestEndpoint(unittest.TestCase):
         # is resolved, add test for it.
 
     def test_options (self):
-        """Validate OPTIONS response"""
         print '\tTesting OPTIONS method'
         r = requests.options(self.API_URL)
 
-        print '\t\tStatus code should be 200'
-        self.assertEqual(r.status_code, 200)
-
-        print '\t\tCORS headers should be present'
-        self.assertEqual(
-            r.headers['Access-Control-Allow-Headers'],
-            'Content-Type,X-Amz-Date,Authorization,x-api-key,x-amz-security-token'
-        )
-        self.assertEqual(
-            r.headers['Access-Control-Allow-Methods'],
-            'GET, POST'
-        )
-        self.assertEqual(
-            r.headers['Access-Control-Allow-Origin'],
-            '*'
-        )
-
-        print '\t\tBody should be empty'
-        self.assertEqual(r.text, '')
-
+        testfor.status_code(self, r, 200)
+        testfor.cors_headers(self, r, {
+            'Headers' : 'Content-Type,X-Amz-Date,Authorization,x-api-key,x-amz-security-token',
+            'Methods' : 'GET, POST',
+            'Origin'  : '*'
+        })
+        testfor.body(self, r, '')
 
     def test_get (self):
-        """GET user's index.json file"""
         print '\tTesting GET method'
         r = requests.get(self.API_URL)
 
-        print '\t\tStatus code should be 200'
-        self.assertEqual(r.status_code, 200)
-
-        print '\t\tBody should be valid JSON'
-        try:
-            body_json = r.json()
-        except ValueError as error:
-            self.fail('Body is not valid JSON')
+        testfor.status_code(self, r, 200)
+        testfor.valid_json(self, r)
 
         print '\t\tBody object keys should be valid snippet meta data'
         schema = {
@@ -75,89 +55,48 @@ class TestEndpoint(unittest.TestCase):
             },
             'required' : ['snippetTitle', 'language', 'lastEdited'],
         }
-        for key, value in body_json.items():
+        for key, value in r.json().items():
             try:
-                validate(body_json[key], schema)
+                validate(value, schema)
             except ValidationError as error:
                 self.fail("Body object keys not valid snippet meta data")
                 print error
 
     def test_post (self):
-        """POST a JSON snippet"""
         print '\tTesting POST method'
         headers = { 'Authorization' : self.ACCESS_TOKEN }
         r = requests.post(self.API_URL, headers=headers, data=self.SNIPPET)
 
-        print '\t\tResponse code is 200'
-        self.assertEqual(r.status_code, 200)
+        testfor.status_code(self, r, 200)
+        testfor.cors_headers(self, r, {
+            'Origin' : '*'
+        })
+        testfor.valid_json(self, r)
 
-        print '\t\tCORS headers are present'
-        self.assertEqual(r.headers['Access-Control-Allow-Origin'], '*')
-
-        print '\t\tBody is valid JSON'
-        try:
-            body_json = r.json()
-        except ValueError as error:
-            self.fail('Body is not valid JSON')
-
-        print '\t\tBody contains "key" and "key" is correct'
-        try:
-            # Received "key" should equal expected "key", up
-            # until possible postfix
-            snippet_dict = json.loads(self.SNIPPET)
-            expected_key = snippet_dict['snippetTitle'].replace(' ', '_').lower()
-            self.assertEqual(
-                body_json['key'][0:len(expected_key)],
-                expected_key
-            )
-        except KeyError as error:
-            self.fail('"key" does not exist in response')
+        expected_key = json.loads(self.SNIPPET) \
+                           ['snippetTitle']     \
+                           .replace(' ', '_')   \
+                           .lower()
+        testfor.key_val_start(self, r,'key', expected_key)
 
         # Update config file with received key for later tests
-        config.update('snippet_id', body_json['key'])
+        config.update('snippet_id', r.json()['key'])
 
     def test_post_invalid_token (self):
         print '\tTesting POST method (with invalid auth token)'
         headers = { 'Authorization' : 'vim is the best editor' }
         r = requests.post(self.API_URL, headers=headers, data=self.SNIPPET)
 
-        print '\t\tStatus code is 401'
-        self.assertEqual(r.status_code, 401)
-
-        print '\t\tBody is valid JSON'
-        try:
-            body_json = r.json()
-        except ValueError as error:
-            self.fail('Body is not valid JSON')
-
-        print '\t\tBody contains "message" and "message" is correct'
-        try:
-            self.assertEqual(body_json['message'], 'Unauthorized')
-        except KeyError as error:
-            self.fail('"message" does not exist in response')
+        testfor.status_code(self, r, 401)
+        testfor.valid_json(self, r)
+        testfor.key_val(self, r, 'message', 'Unauthorized')
 
     def test_post_no_body (self):
         print '\tTesting POST method (with no body)'
         headers = { 'Authorization' : self.ACCESS_TOKEN }
         r = requests.post(self.API_URL, headers=headers)
 
-        print '\t\tStatus code is 400'
-        self.assertEqual(r.status_code, 400)
-
-        print '\t\tCORS headers are present'
-        self.assertEqual(r.headers['Access-Control-Allow-Origin'], '*')
-
-        print '\t\tBody is valid JSON'
-        try:
-            body_json = r.json()
-        except ValueError as error:
-            self.fail('Body is not valid JSON')
-
-        print '\t\tBody contains "response" and "response" is correct'
-        try:
-            self.assertEqual(
-                body_json['response'],
-                'POST requests must not have empty bodies.'
-            )
-        except ValueError as error:
-            self.fail('Body is not valid JSON')
+        testfor.status_code(self, r, 400)
+        testfor.cors_headers(self, r, { 'Origin' : '*' })
+        testfor.valid_json(self, r)
+        testfor.key_val(self, r, 'response', 'POST requests must not have empty bodies.')
