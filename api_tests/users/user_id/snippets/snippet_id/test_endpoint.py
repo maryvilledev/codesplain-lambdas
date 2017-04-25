@@ -22,6 +22,11 @@ class TestEndpoint(unittest.TestCase):
         self.test_put('to existing snippet_id')
         self.test_delete()
         self.test_put('to a new snippet_id')
+        self.test_put_no_token()
+        self.test_put_invalid_token()
+        # Add test for invalid {{snippet_id}} when
+        # https://github.com/maryvilledev/codesplain-lambdas/issues/88
+        # is resolved.
 
         # Cleanup
         headers = { 'Authorization' : self.ACCESS_TOKEN }
@@ -123,3 +128,42 @@ class TestEndpoint(unittest.TestCase):
             self.assertEqual(body_json['response'], 'Successfully deleted.')
         except KeyError as error:
             self.fail('"response" does not exit in response')
+
+    def test_put_no_token (self):
+        print '\tTesting PUT method (with no auth token)'
+        r = requests.put(self.API_URL, data=self.SNIPPET)
+
+        print '\t\tResponse code is 401'
+        self.assertEqual(r.status_code, 401)
+
+        print '\t\tBody is valid JSON'
+        try:
+            body_json = r.json()
+        except ValueError as error:
+            self.fail('Body is not valid JSON')
+
+        print '\t\tBody contains "message" and "message" is correct'
+        try:
+            self.assertEqual(body_json['message'], 'Unauthorized')
+        except KeyError as error:
+            self.fail('"message" does not exist in response')
+
+    def test_put_invalid_token (self):
+        print '\tTesting PUT method (with invalid auth token)'
+        headers = { 'Authorization' : 'vim is the best editor' }
+        r = requests.put(self.API_URL, headers=headers, data=self.SNIPPET)
+
+        print '\t\tResponse code is 401'
+        self.assertEqual(r.status_code, 401)
+
+        print '\t\tBody is valid JSON'
+        try:
+            body_json = r.json()
+        except ValueError as error:
+            self.fail('Body is not valid JSON')
+
+        print '\t\tBody contains "message" and "message" is correct'
+        try:
+            self.assertEqual(body_json['message'], 'Unauthorized')
+        except KeyError as error:
+            self.fail('"message" does not exist in response')
