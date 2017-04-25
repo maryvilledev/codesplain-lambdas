@@ -464,8 +464,6 @@ Resources:
                     $ref: "#/definitions/Snippet"
                 "404":
                   description: "404 response"
-              security:
-              - GithubAuthorizer: []
               x-amazon-apigateway-integration:
                 credentials: !Ref Role
                 responses:
