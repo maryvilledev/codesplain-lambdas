@@ -1,5 +1,6 @@
 import unittest
 import requests
+import json
 import config
 
 class TestEndpoint(unittest.TestCase):
@@ -12,6 +13,7 @@ class TestEndpoint(unittest.TestCase):
     def run_tests (self):
         print '\nTesting /auth Endpoint:'
         self.test_options()
+        self.test_post_invalid_code()
 
     def test_options (self):
         print '\tTesting OPTIONS method'
@@ -36,3 +38,20 @@ class TestEndpoint(unittest.TestCase):
 
         print '\t\tBody should be empty'
         self.assertEqual(r.text, '')
+
+    def test_post_invalid_code (self):
+        print '\tTesting POST method (with no auth code)'
+        body = json.dumps({ 'code' : 'vim is the best text editor' })
+        r = requests.post(self.API_URL, data=body)
+
+        print '\t\tStatus code should be 400'
+        self.assertEqual(r.status_code, 400)
+
+        print '\t\tCORS headers are present'
+        self.assertEqual(
+            r.headers['Access-Control-Allow-Origin'],
+            '*'
+        )
+
+        print '\t\tBody  is correct'
+        self.assertEqual(r.text, 'The authorization code is invalid')
