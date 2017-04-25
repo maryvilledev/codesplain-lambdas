@@ -15,6 +15,10 @@ def authorize_token(acces_token, username):
         return {'statusCode': '200', 'body': 'Authorized to access this resource'}
     except ClientError as error:
         return {'statusCode': '400', 'body': 'Not authorized to access this resource'}
-    if 'statusCode' == '500':
-        except ClientError as error:
-            return {'statusCode': '500', 'body': json.dumps({'response': 'response'})}           #TODO:// Do better than this
+              #TODO:// Do better than this
+
+def lambda_handler(event, context):
+    try:
+        authorize_token(event['acces_token'], event['user_id'])
+    except Exception as error:
+        return {'statusCode': '500', 'body': json.dumps({'response': 'response'})}
