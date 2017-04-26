@@ -12,14 +12,13 @@ def verify_keys(dict, keys):
 # Get the JSON config from the file system as a dictionary
 def parse():
     config_path = dirname(abspath(__file__)) + '/config.json'
-    try:
-        config_file = open(config_path, 'r')
-        config_dict = json.load(config_file)
-    except IOError as error:
-        raise IOError('your config.json file is missing:\n' + str(error))
-    except ValueError as error:
-        raise ValueError('your config.json has invalid JSON in it:\n' + str(error))
-    config_file.close()
+    with open(config_path, 'r') as config_file:
+        try:
+            config_dict = json.load(config_file)
+        except IOError as error:
+            raise IOError('your config.json file is missing:\n' + str(error))
+        except ValueError as error:
+            raise ValueError('your config.json has invalid JSON in it:\n' + str(error))
 
     # Make sure config file has all required keys
     missing_key = verify_keys(config_dict, [
@@ -36,15 +35,14 @@ def parse():
 # Update the config file in the file system with the
 # given key-value pair
 def update(key, val):
-    # Generate new config with the key-val pair
     config_path = dirname(abspath(__file__)) + '/config.json'
-    config_file = open(config_path, 'r+w')
-    config_dict = json.load(config_file)
-    config_dict[key] = val
-    new_config = json.dumps(config_dict, indent=2)
+    with open(config_path, 'r+w') as config_file:
+        # Generate new config with the key-val pair
+        config_dict = json.load(config_file)
+        config_dict[key] = val
+        new_config = json.dumps(config_dict, indent=2)
 
-    # Empty file contents and write new config
-    config_file.seek(0)
-    config_file.truncate()
-    config_file.write(new_config)
-    config_file.close()
+        # Empty file contents and write new config
+        config_file.seek(0)
+        config_file.truncate()
+        config_file.write(new_config)

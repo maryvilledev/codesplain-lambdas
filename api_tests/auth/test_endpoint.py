@@ -6,12 +6,12 @@ import config
 class TestEndpoint(unittest.TestCase):
 
     @classmethod
-    def setUpClass (self):
+    def setUpClass (cls):
         config_dict  = config.parse()
-        self.API_URL = config_dict['url'] + '/auth'
+        cls.API_URL = config_dict['url'] + '/auth'
 
     def run_tests (self):
-        print '\nTesting /auth Endpoint:'
+        print '\nTesting /auth endpoint:'
         self.test_options()
         self.test_post_invalid_code()
 
@@ -41,7 +41,7 @@ class TestEndpoint(unittest.TestCase):
 
     def test_post_invalid_code (self):
         print '\tTesting POST method (with no auth code)'
-        body = json.dumps({ 'code' : 'vim is the best text editor' })
+        body = json.dumps({ 'code' : 'vim is a (nifty) text editor' })
         r = requests.post(self.API_URL, data=body)
 
         print '\t\tStatus code should be 400'

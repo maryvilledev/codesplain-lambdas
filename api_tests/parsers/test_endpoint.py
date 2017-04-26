@@ -5,9 +5,9 @@ import config
 class TestEndpoint(unittest.TestCase):
 
     @classmethod
-    def setUpClass (self):
+    def setUpClass (cls):
         config_dict  = config.parse()
-        self.API_URL = config_dict['url'] + '/parsers/'
+        cls.API_URL = config_dict['url'] + '/parsers/'
 
     def run_tests (self):
         print '\nTesting /parsers/{{language}} Endpoint:'

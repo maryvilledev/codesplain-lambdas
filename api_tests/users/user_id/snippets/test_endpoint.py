@@ -8,12 +8,12 @@ import testfor
 class TestEndpoint(unittest.TestCase):
 
     @classmethod
-    def setUpClass (self):
+    def setUpClass (cls):
         config_dict       = config.parse()
-        self.USER_ID      = config_dict['user_id']
-        self.API_URL      = config_dict['url'] + '/users/' + self.USER_ID + '/snippets'
-        self.ACCESS_TOKEN = config_dict['access_token']
-        self.SNIPPET      = json.dumps(config_dict['snippet'])
+        cls.USER_ID      = config_dict['user_id']
+        cls.API_URL      = config_dict['url'] + '/users/' + cls.USER_ID + '/snippets'
+        cls.ACCESS_TOKEN = config_dict['access_token']
+        cls.SNIPPET      = json.dumps(config_dict['snippet'])
 
     def run_tests (self):
         print '\nTesting /users/{{user_id}}/snippets Endpoint:'
