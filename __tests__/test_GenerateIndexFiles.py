@@ -14,7 +14,7 @@ class TestGenerateIndexFiles(unittest.TestCase):
         gif.s3 = Mock()
 
     def test_has_index (self):
-        """Should return True iff 'index.json' is a file"""
+        """Should return True if-and-only-if 'index.json' is a file"""
         self.assertTrue(gif.has_index(['index.json']))
         self.assertFalse(gif.has_index([]))
 

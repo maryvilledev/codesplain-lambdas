@@ -8,3 +8,6 @@
 
 ## Ignore the virtual environment
 codesplain-env/
+
+# Ignore test config
+config.json

@@ -1,0 +1,16 @@
+#!/bin/bash
+
+### Script to run the API tests ###
+
+# Work in same directory as this script
+cd "$(dirname "$0")"
+
+function run {
+  python -m unittest -v $1
+}
+
+run auth.test_endpoint.TestEndpoint.run_tests && \
+run parsers.test_endpoint.TestEndpoint.run_tests && \
+run mappings.test_endpoint.TestEndpoint.run_tests && \
+run users.user_id.snippets.test_endpoint.TestEndpoint.run_tests && \
+run users.user_id.snippets.snippet_id.test_endpoint.TestEndpoint.run_tests
