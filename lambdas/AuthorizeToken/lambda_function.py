@@ -21,4 +21,4 @@ def lambda_handler(event, context):
     try:
         authorize_token(event['acces_token'], event['user_id'])
     except Exception as error:
-        return {'statusCode': '500', 'body': json.dumps({'response': 'response'})}
+        return {'statusCode': '500', 'body': response.text()}
