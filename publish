@@ -52,7 +52,7 @@ function zipLambda {
     zip -r ../../zips/$1.zip index.js node_modules
   elif [[ -e "lambda_function.py" ]]; then
     zip -r ../../zips/$1.zip lambda_function.py
-    if [[ -d lib ]]; then  
+    if [[ -d lib ]]; then
       cd lib
       zip -r ../../../zips/$1.zip .
       cd ..
@@ -72,11 +72,11 @@ function pushZipsToS3 {
 makeZipsDir
 for lambdaDir in $(ls -F lambdas | grep '/' | cut -f1 -d'/');
 do
-  if ([[ "$lambdaDir" == "GitHubAccessCodeGetter" ]] ||
-      [[ "$lambdaDir" == "AuthorizeToken" ]]); then
+  if ([[ "$lambdaDir" == "GitHubAccessCodeGetter" ]]); then
     nodeInstall axios $lambdaDir
   fi
-  if ([[ "$lambdaDir" == "Authorize" ]]); then
+  if ([[ "$lambdaDir" == "Authorize" ]] ||
+      [[ "$lambdaDir" == "AuthorizeToken" ]]); then
     pythonInstall requests $lambdaDir
   fi
   if ([[ "$lambdaDir" == "GitHubAccessCodeGetter" ]]); then
