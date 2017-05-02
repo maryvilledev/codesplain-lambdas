@@ -17,7 +17,7 @@ $(zipdir):
 	mkdir -p $@
 $(zipdir)/%.zip:
 	mkdir -p tmp
-	if [[ -e $(lambdadir)/$*/index.js ]]; then \
+	if [ -e $(lambdadir)/$*/index.js ]; then \
 		cp $(lambdadir)/$*/index.js tmp && \
 		npm install --prefix=tmp $(packages); \
 	else \
