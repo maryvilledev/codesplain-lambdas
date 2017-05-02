@@ -5,68 +5,10 @@
 # to Amazon S3 buckets.                                                        #
 ################################################################################
 
-# Helper functions:
-function makeZipsDir {
-  printf "Making temporary /zips dir to hold .zip files\n"
-  mkdir zips
-}
-
-function removeZips {
-  printf "Cleaning up - removing .zip files\n"
-  rm -r zips
-}
-
-function nodeInstall {
-  printf "Installing $1 for $2 lambda\n"
-  cd lambdas/$2
-  npm install --prefix=$(pwd) $1 >/dev/null
-  cd ../.. # Go back to where we came from
-}
-
-function nodeCleanup {
-  printf "Removing node_modules and etc for $1 lambda\n"
-  cd lambdas/$1
-  rm -r node_modules etc
-  cd ../.. # Go back to where we came from
-}
-
-function zipLambda {
-  printf "Zipping up $1 lambda\n"
-  cd lambdas/$1
-  if [[ -e "index.js" ]]; then
-    zip -r ../../zips/$1.zip index.js node_modules >/dev/null
-  elif [[ -e "lambda_function.py" ]]; then
-    zip -r ../../zips/$1.zip lambda_function.py
-    if [[ -d lib ]]; then  
-      cd lib
-      zip -r ../../../zips/$1.zip .
-      cd ..
-    fi
-  else
-    printf "$1 is an unknown lambda type!\n"
-  fi
-  cd ../.. # Go back to where we came from
-}
-
 function pushZipsToS3 {
   printf "Pushing lambdas to S3 bucket: $1\n"
   aws s3 sync zips s3://$1
 }
 
-# Install dependencies and zip each lambda, then push to S3 and clean up:
-makeZipsDir
-for lambdaDir in $(ls -F lambdas | grep '/' | cut -f1 -d'/');
-do
-  if ([[ "$lambdaDir" == "GitHubAccessCodeGetter" ]] ||
-      [[ "$lambdaDir" == "Authorize" ]] ||
-      [[ "$lambdaDir" == "AuthorizeToken" ]]); then
-    nodeInstall axios $lambdaDir
-  fi
-  if ([[ "$lambdaDir" == "GitHubAccessCodeGetter" ]]); then
-    nodeInstall lodash $lambdaDir
-  fi
-  zipLambda $lambdaDir
-  nodeCleanup $lambdaDir
-done
+make all
 pushZipsToS3 $1
-removeZips
