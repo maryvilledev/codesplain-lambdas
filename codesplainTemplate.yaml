@@ -112,6 +112,27 @@ Resources:
         Variables:
           BucketName: !Ref Bucket
 
+  GetIndexes:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      FunctionName: !Sub
+       - GetIndexes-${lambda_version}
+       - { lambda_version: !Ref EnvVersion }
+      Handler: lambda_function.lambda_handler
+      Runtime: python2.7
+      CodeUri:
+        Bucket: codesplain-lambda-functions
+        Key:  !Sub
+         - ${lambda_version}/GetIndexes.zip
+         - { lambda_version: !Ref S3Version }
+      Description: Returns JSON object of user/org index files
+      MemorySize: 192
+      Timeout: 3
+      Role: !Ref Role
+      Environment:
+        Variables:
+          BucketName: !Ref Bucket
+
   PutSnippet:
     Type: 'AWS::Serverless::Function'
     Properties:
@@ -341,6 +362,57 @@ Resources:
                     statusCode: "200"
                     responseParameters:
                       method.response.header.Access-Control-Allow-Methods: "'GET'"
+                      method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,x-api-key,x-amz-security-token'"
+                      method.response.header.Access-Control-Allow-Origin: "'*'"
+                requestTemplates:
+                  application/json: "{\"statusCode\": 200}"
+                passthroughBehavior: "when_no_match"
+                type: "mock"
+          "/users":
+            get:
+              produces:
+                - "application/json"
+              responses:
+                "200":
+                  description: "200 response"
+                  headers:
+                    Access-Control-Allow-Origin:
+                      type: "string"
+              x-amazon-apigateway-integration:
+                credentials: !Ref Role
+                responses:
+                  default:
+                    statusCode: "200"
+                    responseParameters:
+                      method.response.header.Access-Control-Allow-Origin: "'*'"
+                uri: !Sub
+                  - "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:296636357169:function:GetIndexes-${version}/invocations"
+                  - { version: !Ref EnvVersion}
+                passthroughBehavior: "when_no_match"
+                httpMethod: "GET"
+                contentHandling: "CONVERT_TO_TEXT"
+                type: "aws_proxy"
+            options:
+              consumes:
+              - "application/json"
+              produces:
+              - "application/json"
+              responses:
+                "200":
+                  description: "200 response"
+                  headers:
+                    Access-Control-Allow-Origin:
+                      type: "string"
+                    Access-Control-Allow-Methods:
+                      type: "string"
+                    Access-Control-Allow-Headers:
+                      type: "string"
+              x-amazon-apigateway-integration:
+                responses:
+                  default:
+                    statusCode: "200"
+                    responseParameters:
+                      method.response.header.Access-Control-Allow-Methods: "'GET, POST'"
                       method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,x-api-key,x-amz-security-token'"
                       method.response.header.Access-Control-Allow-Origin: "'*'"
                 requestTemplates:
