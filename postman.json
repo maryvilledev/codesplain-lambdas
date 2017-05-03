@@ -117,6 +117,23 @@
 			]
 		},
 		{
+			"name": "/users",
+			"description": "",
+			"item": [
+				{
+					"name": "Users/Roles index.json",
+					"request": {
+						"url": "{{url}}/users?users={{user_id}}",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "/users/{user_id}}/snippets",
 			"description": "Folder for users",
 			"item": [
