@@ -11,3 +11,8 @@ codesplain-env/
 
 # Ignore test config
 config.json
+
+# Ignore zips directory
+zips/
+
+.DS_Store
