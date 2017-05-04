@@ -8,7 +8,7 @@ all: $(lambdas)
 #Set package variables for lambdas that need them
 Authorize: packages = axios
 AuthorizeToken: packages = axios
-GithubAccessCodeGetter: packages = axios lodash
+GitHubAccessCodeGetter: packages = axios lodash
 
 
 #Nice alias so only the lambda name need be invoked
@@ -30,6 +30,3 @@ $(zipdir)/%.zip:
 
 clean:
 	rm -rf $(zipdir)
-
-
-
