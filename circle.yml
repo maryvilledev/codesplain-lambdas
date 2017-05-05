@@ -101,11 +101,12 @@ deployment:
 
       # Deploy or update feature stack based on new lambda code and template
       - >
+        EnvVersion=$CIRCLE_BRANCH && EnvVersion=${EnvVersion//-/} &&
         aws cloudformation deploy
         --stack-name "CodesplainFeature-$CIRCLE_BRANCH"
         --template-file ./serverless-output-sandbox.yaml
         --parameter-overrides
-        EnvVersion="$CIRCLE_BRANCH"
+        EnvVersion="$EnvVersion"
         S3Version="sandbox/$CIRCLE_BRANCH/$CIRCLE_SHA1"
         ClientSecret="$AuthSecret"
         ClientID="$AuthId"
