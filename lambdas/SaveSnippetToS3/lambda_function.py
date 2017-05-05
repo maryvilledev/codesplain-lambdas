@@ -13,6 +13,8 @@ from schema import snippet_schema
 s3     = boto3.client('s3', 'us-west-2')
 client = boto3.client('lambda')
 
+snippetValidator = Validator(snippet_schema)
+
 # Returns the snippet key with the lowest possible unused postfix value.
 def generate_snippet_id(bucket, user_id, snippet_title):
     snippet_id = urllib.quote_plus(string.lower(re.sub(r'\s+', '_', snippet_title)))
@@ -99,13 +101,14 @@ def lambda_handler(event, context):
             })
         }
     body             = json.loads(event['body'])
-    if not Validator(snippet_schema).validate(body):
+    if not snippetValidator.validate(body):
         print 'Invalid snippet data'
         return {
             'statusCode': '400',
             'headers':    { 'Access-Control-Allow-Origin': '*' },
             'body':       json.dumps({
-               'response': 'Invalid POST body supplied.'
+               'response': 'Invalid POST body supplied.',
+               'errors': snippetValidator.errors
             })
         }
     snippet_title    = body['snippetTitle']

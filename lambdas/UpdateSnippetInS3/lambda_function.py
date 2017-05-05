@@ -6,8 +6,12 @@ from datetime import datetime
 from boto3.s3.transfer import ClientError
 import boto3 # AWS SDK for Python
 
+from schema import snippet_schema
+
 s3     = boto3.client('s3', 'us-west-2')
 client = boto3.client('lambda')
+
+snippetValidator = Validator(snippet_schema)
 
 # Updates index file and writes to S3. Creates new one if needed.
 def update_index_file(bucket, user_id, snippet_key, entry):
@@ -68,9 +72,16 @@ def lambda_handler(event, context):
             })
         }
     body   = json.loads(event['body'])
-    if not Validator(snippet_schema).validate(body):
+    if not snippetValidator.validate(body):
         print 'Invalid snippet data'
-        raise ValueError
+        return {
+            'statusCode': '400',
+            'headers':    { 'Access-Control-Allow-Origin': '*' },
+            'body':       json.dumps({
+               'response': 'Invalid PUT body supplied.',
+               'errors': snippetValidator.errors
+            })
+        }
     bucket = os.environ['BucketName']
     if(bucket == None):
         print 'Must specify "BucketName" env var!'
