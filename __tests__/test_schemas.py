@@ -21,8 +21,8 @@ class TestSnippetSchema(unittest.TestCase):
             "filters": {},
             "readOnly": True,
             "snippet": "",
-            "snippetLanguage": "",
-            "snippetTitle": ""
+            "snippetLanguage": "python3",
+            "snippetTitle": "title"
         }
         self.validator.validate(snippet)
         self.assertEqual(len(self.validator.errors), 0)
@@ -31,6 +31,26 @@ class TestSnippetSchema(unittest.TestCase):
         """Should load an invalid snippet dict with errors"""
         snippet = {
             'snippet': [],
+        }
+        self.validator.validate(snippet)
+        self.assertNotEqual(len(self.validator.errors), 0)
+
+    def test_invalid_snippet_invalid_language(self):
+        """Should load an invalid snippet dict with errors"""
+        snippet = {
+            "annotations": {},
+            "AST": {
+                "begin": 0,
+                "end": 1,
+                "tags": [],
+                "type": "",
+                "children": [],
+            },
+            "filters": {},
+            "readOnly": True,
+            "snippet": "",
+            "snippetLanguage": "not a real language",
+            "snippetTitle": "title"
         }
         self.validator.validate(snippet)
         self.assertNotEqual(len(self.validator.errors), 0)
