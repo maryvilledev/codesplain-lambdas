@@ -1,5 +1,7 @@
-# Codesplain Lambdas
+## Codesplain Lambdas
 Lambda code for the Codesplain API.
+
+[![CircleCI](https://circleci.com/gh/maryvilledev/codesplain-lambdas.svg?style=svg)](https://circleci.com/gh/maryvilledev/codesplain-lambdas)
 
 ### Auth
 - [Authorize](https://github.com/maryvilledev/codesplain-lambdas/blob/master/lambdas/Authorize)

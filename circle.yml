@@ -1,6 +1,9 @@
 machine:
   node:
     version: 7.7.2
+  environment:
+    # Which version of the parser you want to deploy into qa/prod
+    RELEASED_PARSER: v0.5
 
 dependencies:
   override:
@@ -38,6 +41,7 @@ deployment:
         ClientID="$CLIENT_ID_PROD"
         Title="CodesplainAPI: $CIRCLE_TAG"
         CircleBuild="$CIRCLE_BUILD_NUM"
+        ParserPath="$RELEASED_PARSER"
         --region us-west-2
 
   master:
@@ -97,11 +101,12 @@ deployment:
 
       # Deploy or update feature stack based on new lambda code and template
       - >
+        EnvVersion=$CIRCLE_BRANCH && EnvVersion=${EnvVersion//-/} &&
         aws cloudformation deploy
         --stack-name "CodesplainFeature-$CIRCLE_BRANCH"
         --template-file ./serverless-output-sandbox.yaml
         --parameter-overrides
-        EnvVersion="$CIRCLE_BRANCH"
+        EnvVersion="$EnvVersion"
         S3Version="sandbox/$CIRCLE_BRANCH/$CIRCLE_SHA1"
         ClientSecret="$AuthSecret"
         ClientID="$AuthId"

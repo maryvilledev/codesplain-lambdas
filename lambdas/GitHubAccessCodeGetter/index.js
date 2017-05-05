@@ -71,7 +71,7 @@ exports.handler = (event, context, callback) => {
                     headers: {
                         'Access-Control-Allow-Origin': '*',
                     },
-                    body: JSON.stringify({ token }),
+                    body: JSON.stringify({ token, orgs }),
                 });
               } else {
                 //Delete the token
