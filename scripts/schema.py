@@ -1,8 +1,9 @@
 from cerberus import Validator, schema_registry
 
-requiredBoolField = { 'type': 'boolean', 'required': True }
-requiredIntField = { 'type': 'integer', 'required': True }
-requiredStringField = { 'type': 'string', 'required': True }
+ALLOWED_LANGUAGES = [
+    'python3',
+    'java'
+]
 
 annotation_schema = {
     'annotation': {
@@ -85,8 +86,23 @@ snippet_schema = {
         'schema': 'ast_schema',
         'required': True
     },
-    'readOnly': requiredBoolField,
-    'snippet': requiredStringField,
-    'snippetLanguage': requiredStringField,
-    'snippetTitle': requiredStringField,
+    'readOnly': {
+        'type': 'boolean',
+        'required': True
+    },
+    'snippet': {
+        'type': 'string',
+        'required': True
+    },
+    'snippetLanguage': {
+        'type': 'string',
+        'required': True,
+        'empty': False,
+        'allowed': ALLOWED_LANGUAGES
+    },
+    'snippetTitle': {
+        'type': 'string',
+        'required': True,
+        'empty': False
+    },
 }
