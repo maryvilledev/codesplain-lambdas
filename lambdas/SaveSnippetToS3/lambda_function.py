@@ -101,7 +101,13 @@ def lambda_handler(event, context):
     body             = json.loads(event['body'])
     if not Validator(snippet_schema).validate(body):
         print 'Invalid snippet data'
-        raise ValueError
+        return {
+            'statusCode': '400',
+            'headers':    { 'Access-Control-Allow-Origin': '*' },
+            'body':       json.dumps({
+               'response': 'Invalid POST body supplied.'
+            })
+        }
     snippet_title    = body['snippetTitle']
     snippet_language = body['snippetLanguage']
     bucket           = os.environ['BucketName']

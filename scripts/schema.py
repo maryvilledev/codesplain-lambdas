@@ -87,7 +87,6 @@ snippet_schema = {
     },
     'readOnly': requiredBoolField,
     'snippet': requiredStringField,
-    'snippetKey': requiredStringField,
     'snippetLanguage': requiredStringField,
     'snippetTitle': requiredStringField,
 }
