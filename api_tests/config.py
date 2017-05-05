@@ -22,10 +22,11 @@ def parse():
 
     # Make sure config file has all required keys
     missing_key = verify_keys(config_dict, [
-      'url',
-      'access_token',
-      'snippet',
-      'user_id',
+        'url',
+        'access_token',
+        'snippet',
+        'user_id',
+        'invalid_snippet_key',
     ])
     if missing_key:
         raise ValueError('"%s" entry is missing from config.json' % missing_key)

@@ -13,6 +13,8 @@ class TestEndpoint(unittest.TestCase):
         cls.USER_ID      = config_dict['user_id']
         cls.SNIPPET_ID   = config_dict['snippet_id']
         cls.API_URL      = config_dict['url'] + '/users/' + cls.USER_ID + '/snippets/' + cls.SNIPPET_ID
+        cls.INVALID_SNIPPET_KEY = config_dict['invalid_snippet_key']
+        cls.INVALID_SNIPPET_URL = '%s/users/%s/snippets/%s' % (config_dict['url'], cls.USER_ID, cls.INVALID_SNIPPET_KEY) 
         cls.ACCESS_TOKEN = config_dict['access_token']
         cls.SNIPPET      = json.dumps(config_dict['snippet'])
 
@@ -20,14 +22,12 @@ class TestEndpoint(unittest.TestCase):
         print '\nTesting /users/{{user_id}}/snippets/{{snippet_id}} Endpoint:'
         self.test_options()
         self.test_get()
+        self.test_get_invalid_snippet()
         self.test_put('to existing snippet_id')
         self.test_delete()
         self.test_put('to a new snippet_id')
         self.test_put_no_token()
         self.test_put_invalid_token()
-        # TODO: Add test for invalid {{snippet_id}} when
-        # https://github.com/maryvilledev/codesplain-lambdas/issues/88
-        # is resolved.
 
         # Cleanup
         headers = { 'Authorization' : self.ACCESS_TOKEN }
@@ -52,6 +52,15 @@ class TestEndpoint(unittest.TestCase):
         testfor.status_code(self, r, 200)
         testfor.valid_json(self, r)
         testfor.body(self, r, self.SNIPPET)
+
+    def test_get_invalid_snippet(self):
+        print '\tTesting GET method (with invalid snippet id)'
+        r = requests.get(self.INVALID_SNIPPET_URL)
+
+        testfor.status_code(self, r, 404)
+        testfor.cors_headers(self, r, {'Origin': '*'})
+        testfor.body(self, r, 'No snippet exists with key "%s/%s"' % (TestEndpoint.USER_ID, TestEndpoint.INVALID_SNIPPET_KEY))
+    
 
     def test_put (self, note):
         print '\tTesting PUT method (' + note + ')'
