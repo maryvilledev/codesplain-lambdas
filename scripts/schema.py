@@ -1,8 +1,8 @@
 from cerberus import Validator, schema_registry
 
-requiredBoolField = { 'type': 'bool', 'required': True }
+requiredBoolField = { 'type': 'boolean', 'required': True }
 requiredIntField = { 'type': 'integer', 'required': True }
-requiredStringField = { 'type': 'boolean', 'required': True }
+requiredStringField = { 'type': 'string', 'required': True }
 
 annotation_schema = {
     'annotation': {
