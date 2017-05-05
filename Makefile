@@ -1,7 +1,7 @@
 lambdas := Authorize AuthorizeToken DeleteSnippetFromS3 GetSnippetFromS3 SaveSnippetToS3 GenerateIndexFiles GitHubAccessCodeGetter UpdateSnippetInS3
 zipdir := zips
 lambdadir := lambdas
-.PHONY = all clean publish $(lambdas)
+.PHONY = all clean publish test $(lambdas)
 
 all: $(lambdas)
 
@@ -31,5 +31,5 @@ $(zipdir)/%.zip:
 clean:
 	rm -rf $(zipdir)
 
-
-
+test:
+	python -m unittest discover -t . -s __tests__

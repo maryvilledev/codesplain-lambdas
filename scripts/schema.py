@@ -1,70 +1,61 @@
-from cerberus import schema_registy
+from cerberus import Validator, schema_registry
 
-filter_schema = {
-    'color': {
-        'type': 'string',
-        'required': True,
-    },
-    'count': {
-        'type': 'integer',
-        'required': True,
-    },
-    'prettyTokenName': {
-        'type': 'string',
-        'required': True,
-    },
-    'selected': {
-        'type': 'boolean',
-        'required': True,
-    }
-}
-schema_registy.add('filter', filter_schema)
+requiredBoolField = { 'type': 'bool', 'required': True }
+requiredIntField = { 'type': 'integer', 'required': True }
+requiredStringField = { 'type': 'boolean', 'required': True }
 
 annotation_schema = {
     'annotation': {
         'type': 'string',
-        'required': True,
     },
     'lineNumber': {
         'type': 'integer',
-        'required': True,
     },
     'lineText': {
         'type': 'string',
-        'required': True,
     },
 }
-
-schema_registy.add('annotation', annotation_schema)
 
 ast_schema = {
     'begin': {
         'type': 'integer',
-        'required': True,
     },
     'end': {
         'type': 'integer',
-        'required': True,
     },
     'type': {
         'type': 'string',
-        'required': True,
     },
     'tags': {
         'type': 'list',
         'schema': {
             'type': 'string'
         },
-        'required': True,
     },
     'children': {
         'type': 'list',
         'schema': 'ast_schema',
-        'required': True,
     }
 }
 
-schema_registy.add('ast', ast_schema)
+filter_schema = {
+    'color': {
+        'type': 'string',
+    },
+    'count': {
+        'type': 'integer',
+    },
+    'prettyTokenName': {
+        'type': 'string',
+    },
+    'selected': {
+        'type': 'boolean',
+    }
+}
+
+schema_registry.add('annotation_schema', annotation_schema)
+schema_registry.add('ast_schema', ast_schema)
+schema_registry.add('filter_schema', filter_schema)
 
 snippet_schema = {
     'annotations': {
@@ -72,37 +63,31 @@ snippet_schema = {
         'keyschema': {
             'type': 'integer',
         },
-        'valueschema': 'annotation_schema',
-        'required': True,
+        'valueschema': {
+            'type': 'dict',
+            'schema': 'annotation_schema',
+        },
+        'required': True
     },
     'filters': {
         'type': 'dict',
         'keyschema': {
             'type': 'string'
         },
-        'valueschema': 'filter_schema',
-        'required': True,
-    },
-    'readOnly': {
-        'type': 'boolean',
-        'required': True,
-    },
-    'snippet': {
-        'type': 'string',
-        'required': True,
-    },
-    'snippetKey': {
-        'type': 'string',
+        'valueschema': {
+            'type': 'dict',
+            'schema': 'filter_schema'
+        },
         'required': True
     },
-    'snippetLanguage': {
-        'type': 'string',
+    'AST': {
+        'type': 'dict',
+        'schema': 'ast_schema',
         'required': True
     },
-    'snippetTitle': {
-        'type': 'string',
-        'required': True
-    },
+    'readOnly': requiredBoolField,
+    'snippet': requiredStringField,
+    'snippetKey': requiredStringField,
+    'snippetLanguage': requiredStringField,
+    'snippetTitle': requiredStringField,
 }
-
-schema_registy.add('snippet', snippet_schema)
