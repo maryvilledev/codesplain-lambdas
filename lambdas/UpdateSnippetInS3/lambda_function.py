@@ -67,6 +67,9 @@ def lambda_handler(event, context):
             })
         }
     body   = json.loads(event['body'])
+    if not Validator(snippet_schema).validate(body):
+        print 'Invalid snippet data'
+        raise ValueError
     bucket = os.environ['BucketName']
     if(bucket == None):
         print 'Must specify "BucketName" env var!'

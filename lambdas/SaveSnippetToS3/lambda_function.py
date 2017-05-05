@@ -2,10 +2,13 @@ import json
 import urllib
 import re
 import os
+from cerberus import Validator
 from datetime import datetime
 from boto3.s3.transfer import ClientError
 import string
 import boto3 # AWS SDK for Python
+
+from schema import snippet_schema
 
 s3     = boto3.client('s3', 'us-west-2')
 client = boto3.client('lambda')
@@ -96,6 +99,9 @@ def lambda_handler(event, context):
             })
         }
     body             = json.loads(event['body'])
+    if not Validator(snippet_schema).validate(body):
+        print 'Invalid snippet data'
+        raise ValueError
     snippet_title    = body['snippetTitle']
     snippet_language = body['snippetLanguage']
     bucket           = os.environ['BucketName']
