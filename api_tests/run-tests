@@ -12,5 +12,6 @@ function run {
 run auth.test_endpoint.TestEndpoint.run_tests && \
 run parsers.test_endpoint.TestEndpoint.run_tests && \
 run mappings.test_endpoint.TestEndpoint.run_tests && \
+run users.test_endpoint.TestEndpoint.run_tests && \
 run users.user_id.snippets.test_endpoint.TestEndpoint.run_tests && \
 run users.user_id.snippets.snippet_id.test_endpoint.TestEndpoint.run_tests
