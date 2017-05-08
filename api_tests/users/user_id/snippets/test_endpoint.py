@@ -59,7 +59,7 @@ class TestEndpoint(unittest.TestCase):
             try:
                 validate(value, schema)
             except ValidationError as error:
-                self.fail("Body object keys not valid snippet meta data")
+                self.fail('Body object keys not valid snippet meta data')
                 print error
 
     def test_post (self):
