@@ -9,7 +9,7 @@ all: $(lambdas)
 #Set package variables for lambdas that need them
 Authorize: packages = axios
 AuthorizeToken: packages = axios
-GithubAccessCodeGetter: packages = axios lodash
+GitHubAccessCodeGetter: packages = axios lodash
 SaveSnippetToS3: scripts = schema
 SaveSnippetToS3: packages = cerberus
 UpdateSnippetInS3: scripts = schema
