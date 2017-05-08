@@ -7,7 +7,7 @@ scriptsdir := scripts
 all: $(lambdas)
 
 #Set package variables for lambdas that need them
-Authorize: packages = axios
+Authorize: packages = requests
 AuthorizeToken: packages = axios
 GitHubAccessCodeGetter: packages = requests
 SaveSnippetToS3: scripts = schema
