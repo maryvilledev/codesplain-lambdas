@@ -2,13 +2,18 @@ import json
 import urllib
 import re
 import os
+from cerberus import Validator
 from datetime import datetime
 from boto3.s3.transfer import ClientError
 import string
 import boto3 # AWS SDK for Python
 
+from schema import snippet_schema
+
 s3     = boto3.client('s3', 'us-west-2')
 client = boto3.client('lambda')
+
+snippetValidator = Validator(snippet_schema)
 
 # Returns the snippet key with the lowest possible unused postfix value.
 def generate_snippet_id(bucket, user_id, snippet_title):
@@ -96,6 +101,16 @@ def lambda_handler(event, context):
             })
         }
     body             = json.loads(event['body'])
+    if not snippetValidator.validate(body):
+        print 'Invalid snippet data'
+        return {
+            'statusCode': '400',
+            'headers':    { 'Access-Control-Allow-Origin': '*' },
+            'body':       json.dumps({
+               'response': 'Invalid POST body supplied.',
+               'errors': snippetValidator.errors
+            })
+        }
     snippet_title    = body['snippetTitle']
     snippet_language = body['snippetLanguage']
     bucket           = os.environ['BucketName']
