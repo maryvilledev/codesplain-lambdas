@@ -9,7 +9,7 @@ class TestEndpoint(unittest.TestCase):
 
     @classmethod
     def setUpClass (cls):
-        config_dict       = config.parse()
+        config_dict      = config.parse()
         cls.USER_ID      = config_dict['user_id']
         cls.SNIPPET_ID   = config_dict['snippet_id']
         cls.API_URL      = config_dict['url'] + '/users/' + cls.USER_ID + '/snippets/' + cls.SNIPPET_ID

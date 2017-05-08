@@ -1,4 +1,4 @@
-lambdas := Authorize AuthorizeToken DeleteSnippetFromS3 GetSnippetFromS3 SaveSnippetToS3 GenerateIndexFiles GitHubAccessCodeGetter UpdateSnippetInS3
+lambdas := Authorize AuthorizeToken DeleteSnippetFromS3 GetSnippetFromS3 GetIndexes SaveSnippetToS3 GenerateIndexFiles GitHubAccessCodeGetter UpdateSnippetInS3
 zipdir := zips
 lambdadir := lambdas
 .PHONY = all clean publish $(lambdas)
