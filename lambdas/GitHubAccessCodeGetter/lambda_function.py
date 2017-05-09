@@ -31,7 +31,7 @@ def lambda_handler(event, context):
         headers = {'Authorization': 'token'}
         r = requests.get(url, headers=headers)
         user_orgs = map(lambda x: x['login'], r.json())
-        if len(intersecttion(set(user_orgs), set(whitelist)) > 0:
+        if len(intersection(set(user_orgs), set(whitelist)) > 0:
             return generate_resp(403, 'You are not a member of an organization authorized to use this application.')
 
     #Return token and orgs to  user with code 200
