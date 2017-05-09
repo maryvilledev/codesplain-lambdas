@@ -16,7 +16,7 @@ def generate_resp(code, body):
 
 def lambda_handler(event, context):
     #Get the code from event body
-    code = json.loads(event)['body']['code']
+    code = event['body']['code']
 
     #Get the token from GitHub
     url = 'https://github.com/login/oauth.access_token'
