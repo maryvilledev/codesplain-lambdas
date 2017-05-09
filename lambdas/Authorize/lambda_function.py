@@ -23,7 +23,7 @@ def lambda_handler(event, context):
     token = event['authorizationToken']
     url = 'https://api.github.com/applications/{client_id}/tokens/{token}'.format(client_id, token)
     try:
-        requests.get(url, auth=(client_id, client_secret))
+        requests.get(url, auth=(client_id, client_secret)).raise_for_status()
     except ClientError as error:
         return {'body': 'Unauthorized'}
     return generate_policy('user', 'Allow', event['methodArn'])
