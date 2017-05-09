@@ -15,23 +15,20 @@ def generate_resp(code, body):
     }
 
 def lambda_handler(event, context):
-    #Get the code from event body
-    code = json.loads(event)['body']['code']
+    code = json.loads(event['body'])['code']
 
-    #Get the token from GitHub
     url = 'https://github.com/login/oauth.access_token'
     data = {'client_id': client_id, 'client_secret': client_secret, 'code': code}
     r = requests.get(url, data=data)
     if r.status_code != 200:
         return generate_resp(400, 'The authorization code is invalid')
 
-    #Get the user orgs
     if ignore_whitelist.lower() != 'true':
         url = 'https://api.github.com/user/orgs'
         headers = {'Authorization': 'token'}
         r = requests.get(url, headers=headers)
         user_orgs = map(lambda x: x['login'], r.json())
-        if len(intersecttion(set(user_orgs), set(whitelist)) > 0:
+        if len(set(user_orgs) & set(whitelist)) > 0:
             return generate_resp(403, 'You are not a member of an organization authorized to use this application.')
 
     #Return token and orgs to  user with code 200
