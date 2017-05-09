@@ -15,6 +15,7 @@ def generate_resp(code, body):
     }
 
 def lambda_handler(event, context):
+    print event
     #Get the code from event body
     code = event['body']['code']
 
