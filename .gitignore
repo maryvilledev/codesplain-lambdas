@@ -6,7 +6,6 @@
 
 ## Ignore compiled python files
 *.pyc
-tmp/
 
 ## Ignore the virtual environment
 codesplain-env/

@@ -1,8 +1,7 @@
 lambdas := Authorize AuthorizeToken DeleteSnippetFromS3 GetSnippetFromS3 GetIndexes SaveSnippetToS3 GenerateIndexFiles GitHubAccessCodeGetter UpdateSnippetInS3
 zipdir := zips
 lambdadir := lambdas
-scriptsdir := scripts
-.PHONY = all clean publish test $(lambdas)
+.PHONY = all clean publish $(lambdas)
 
 all: $(lambdas)
 
@@ -29,15 +28,9 @@ $(zipdir)/%.zip:
 		cp $(lambdadir)/$*/lambda_function.py tmp && \
 		pip install -t tmp $(packages); \
 	fi
-	for script in $(scripts); do \
-		cp $(scriptsdir)/$$script.py tmp; \
-	done
 	cd tmp && zip -r $* .
 	mv tmp/$*.zip $(zipdir)
 	rm -rf tmp
 
 clean:
 	rm -rf $(zipdir)
-
-test:
-	python -m unittest discover -t . -s __tests__
