@@ -9,10 +9,6 @@ all: $(lambdas)
 Authorize: packages = requests
 AuthorizeToken: packages = requests
 GitHubAccessCodeGetter: packages = requests
-SaveSnippetToS3: scripts = schema
-SaveSnippetToS3: packages = cerberus
-UpdateSnippetInS3: scripts = schema
-UpdateSnippetInS3: packages = cerberus
 
 
 #Nice alias so only the lambda name need be invoked
