@@ -10,7 +10,7 @@ def generate_policy(prinicipal_id, effect, resource):
     return {
         'prinicipal_id': prinicipal_id,
         'policy_document': {
-            'Version': '2012-10-17'
+            'Version': '2012-10-17',
             'Statements': [{
             'Action': 'execute-api:Invoke',
             'Effect': effect,
