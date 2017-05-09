@@ -21,7 +21,7 @@ def lambda_handler(event, context):
     data = {'client_id': client_id, 'client_secret': client_secret, 'code': code}
     headers = {'Accept': 'application/json'}
     r = requests.post(url, data=data, headers=headers)
-    if r.status_code != 200:
+    if 'error' in r.json():
         return generate_resp(400, 'The authorization code is invalid')
     token = r.json()['access_token']
 
