@@ -1,5 +1,4 @@
 import os
-import json
 from boto3.s3.transfer import ClientError
 import requests
 
@@ -24,6 +23,6 @@ def lambda_handler(event, context):
     url = 'https://api.github.com/applications/{client_id}/tokens/{token}'.format(client_id, token)
     try:
         requests.get(url, auth=(client_id, client_secret)).raise_for_status()
-    except ClientError as error:
+    except ClientError:
         return {'body': 'Unauthorized'}
     return generate_policy('user', 'Allow', event['methodArn'])

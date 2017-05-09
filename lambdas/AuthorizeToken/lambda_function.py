@@ -1,4 +1,3 @@
-import os
 import requests
 
 user_url = 'https://api.github.com/user'
