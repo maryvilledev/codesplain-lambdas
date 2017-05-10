@@ -24,5 +24,5 @@ def lambda_handler(event, context):
     try:
         requests.get(url, auth=(client_id, client_secret)).raise_for_status()
     except HTTPError:
-        return {"errorMessage": "Unauthorized"} 
+        raise Exception("Unauthorized")
     return generate_policy('user', 'Allow', event['methodArn'])
