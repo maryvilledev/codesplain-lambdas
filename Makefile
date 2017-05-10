@@ -25,3 +25,7 @@ $(zipdir)/%.zip:
 
 clean:
 	rm -rf $(zipdir)
+test:
+	python -m unittest discover -v -s __tests__
+test-api:
+	bash api_tests/run-tests
