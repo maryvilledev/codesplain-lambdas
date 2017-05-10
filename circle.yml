@@ -29,7 +29,6 @@ deployment:
 
       # Deploy a new stack for this version
       - >
-        IgnoreWhitelist="true" &&
         EnvVersion=$CIRCLE_TAG && EnvVersion=${EnvVersion//./_} &&
         CloudFormationVersion=$CIRCLE_TAG && CloudFormationVersion=${CloudFormationVersion//./-} &&
         aws cloudformation deploy
@@ -43,6 +42,7 @@ deployment:
         Title="CodesplainAPI: $CIRCLE_TAG"
         CircleBuild="$CIRCLE_BUILD_NUM"
         ParserPath="$RELEASED_PARSER"
+        IgnoreWhitelist="true"
         --region us-west-2
 
   master:
@@ -102,7 +102,6 @@ deployment:
 
       # Deploy or update feature stack based on new lambda code and template
       - >
-        IgnoreWhitelist="true" &&
         EnvVersion=$CIRCLE_BRANCH && EnvVersion=${EnvVersion//-/} &&
         aws cloudformation deploy
         --stack-name "CodesplainFeature-$CIRCLE_BRANCH"
@@ -114,4 +113,5 @@ deployment:
         ClientID="$AuthId"
         Title="Codesplain Feature:$CIRCLE_BRANCH-$CIRCLE_BUILD_NUM"
         CircleBuild="$CIRCLE_BUILD_NUM"
+        IgnoreWhitelist="true"
         --region us-west-2
