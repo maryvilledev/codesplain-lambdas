@@ -17,13 +17,8 @@ $(zipdir):
 	mkdir -p $@
 $(zipdir)/%.zip:
 	mkdir -p tmp
-	if [ -e $(lambdadir)/$*/index.js ]; then \
-		cp $(lambdadir)/$*/index.js tmp && \
-		npm install --prefix=tmp $(packages); \
-	else \
-		cp $(lambdadir)/$*/lambda_function.py tmp && \
-		pip install -t tmp $(packages); \
-	fi
+	cp $(lambdadir)/$*/lambda_function.py tmp && \
+	pip install -t tmp $(packages)
 	cd tmp && zip -r $* .
 	mv tmp/$*.zip $(zipdir)
 	rm -rf tmp
