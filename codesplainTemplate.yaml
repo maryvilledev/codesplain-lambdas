@@ -105,7 +105,7 @@ Resources:
          - { lambda_version: !Ref S3Version }
       Description: Converts API Gateway POST/PUT to S3 Request
       MemorySize: 192
-      Timeout: 3
+      Timeout: 5
       Role: !Ref Role
       Environment:
         Variables:
