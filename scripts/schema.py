@@ -24,8 +24,11 @@ ast_schema = {
     'end': {
         'type': 'integer',
     },
-    'type': {
+    'ast_type': {
         'type': 'string',
+    },
+    'details': {
+        'type': 'list',
     },
     'tags': {
         'type': 'list',
