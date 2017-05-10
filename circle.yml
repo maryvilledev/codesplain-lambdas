@@ -113,5 +113,4 @@ deployment:
         ClientID="$AuthId"
         Title="Codesplain Feature:$CIRCLE_BRANCH-$CIRCLE_BUILD_NUM"
         CircleBuild="$CIRCLE_BUILD_NUM"
-        IgnoreWhitelist="true"
         --region us-west-2
