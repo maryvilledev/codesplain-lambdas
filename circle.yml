@@ -9,7 +9,7 @@ dependencies:
 
 test:
   override:
-    - npm test
+    - make test
 
 deployment:
   release:
