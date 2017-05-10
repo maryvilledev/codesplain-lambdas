@@ -27,7 +27,7 @@ ast_schema = {
     'ast_type': {
         'type': 'string',
     },
-    'details': {
+    'detail': {
         'type': 'list',
     },
     'tags': {
