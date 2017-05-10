@@ -18,7 +18,7 @@ def is_valid(role, user, orgs):
 def lambda_handler(event, context):
     role = event['userID']
     access_token = event['accessToken']
-    headers = {'Accept': 'application/json', 'Authorization': access_token}
+    headers = {'Accept': 'application/json', 'Authorization': 'token %s' % access_token}
 
     try:
         r = requests.get(user_url, headers=headers)
@@ -32,6 +32,6 @@ def lambda_handler(event, context):
         return generate_resp(500, error)
 
     if is_valid(role, user, orgs):
-        return generate_resp(200, 'Authorized')
+        return generate_resp(200, 'authorized')
 
-    return generate_resp(400, 'Not Authorized to acces this resource')
+    return generate_resp(400, 'not authorized to acces this resource')
