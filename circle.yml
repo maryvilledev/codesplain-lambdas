@@ -29,6 +29,7 @@ deployment:
 
       # Deploy a new stack for this version
       - >
+        IgnoreWhitelist="true" &&
         EnvVersion=$CIRCLE_TAG && EnvVersion=${EnvVersion//./_} &&
         CloudFormationVersion=$CIRCLE_TAG && CloudFormationVersion=${CloudFormationVersion//./-} &&
         aws cloudformation deploy
@@ -101,6 +102,7 @@ deployment:
 
       # Deploy or update feature stack based on new lambda code and template
       - >
+        IgnoreWhitelist="true" &&
         EnvVersion=$CIRCLE_BRANCH && EnvVersion=${EnvVersion//-/} &&
         aws cloudformation deploy
         --stack-name "CodesplainFeature-$CIRCLE_BRANCH"
