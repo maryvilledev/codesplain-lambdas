@@ -81,7 +81,7 @@ Resources:
         Key:  !Sub
          - ${lambda_version}/SaveSnippetToS3.zip
          - { lambda_version: !Ref S3Version }
-      Description: Converts API Gateway POST/PUT to S3 Request
+      Description: Converts API Gateway POST to S3 Request
       MemorySize: 192
       Timeout: 4
       Role: !Ref Role
@@ -103,7 +103,7 @@ Resources:
         Key:  !Sub
          - ${lambda_version}/GetSnippetFromS3.zip
          - { lambda_version: !Ref S3Version }
-      Description: Converts API Gateway POST/PUT to S3 Request
+      Description: Converts API Gateway GET to S3 Request
       MemorySize: 192
       Timeout: 3
       Role: !Ref Role
@@ -145,7 +145,7 @@ Resources:
         Key:  !Sub
          - ${lambda_version}/UpdateSnippetInS3.zip
          - { lambda_version: !Ref S3Version }
-      Description: Converts API Gateway POST/PUT to S3 Request
+      Description: Converts API Gateway PUT to S3 Request
       MemorySize: 192
       Timeout: 5
       Role: !Ref Role
@@ -167,7 +167,7 @@ Resources:
         Key:  !Sub
          - ${lambda_version}/DeleteSnippetFromS3.zip
          - { lambda_version: !Ref S3Version }
-      Description: Converts API Gateway POST/PUT to S3 Request
+      Description: Converts API Gateway DELETE to S3 Request
       MemorySize: 192
       Timeout: 3
       Role: !Ref Role
@@ -687,7 +687,7 @@ Resources:
         Key:  !Sub
          - ${lambda_version}/GenerateIndexFiles.zip
          - { lambda_version: !Ref S3Version }
-      Description: Converts API Gateway POST/PUT to S3 Request 2
+      Description: Generates index files based on the snippets in each user\'s directory
       MemorySize: 192
       Timeout: 30
       Role: !Ref Role
