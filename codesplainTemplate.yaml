@@ -63,7 +63,7 @@ Resources:
       Role: !Ref Role
       Environment:
         Variables:
-          IGNORE_WHITELIST: false
+          IGNORE_WHITELIST: !Ref IgnoreWhitelist
           CLIENT_ID: !Ref ClientID
           CLIENT_SECRET: !Ref ClientSecret
           ORG_WHITELIST: "maryvilledev"
@@ -730,3 +730,7 @@ Parameters:
     Description: Build number that deployed API
     Type: String
     Default: "CircleBuildUnknown"
+  IgnoreWhitelist:
+    Description: Flag for limiting Github auth to whitelisted ORGs
+    Type: String
+    Default: "false"
