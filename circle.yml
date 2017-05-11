@@ -39,6 +39,7 @@ deployment:
         Title="CodesplainAPI: $CIRCLE_TAG"
         CircleBuild="$CIRCLE_BUILD_NUM"
         ParserPath="$RELEASED_PARSER"
+        IgnoreWhitelist="true"
         --region us-west-2
 
   master:
