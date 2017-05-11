@@ -1,18 +1,15 @@
 machine:
-  node:
-    version: 7.7.2
   environment:
     # Which version of the parser you want to deploy into qa/prod
     RELEASED_PARSER: v0.5
 
 dependencies:
   override:
-    - npm install
     - pip install -r requirements.txt
 
 test:
   override:
-    - npm test
+    - make test
 
 deployment:
   release:
@@ -42,6 +39,7 @@ deployment:
         Title="CodesplainAPI: $CIRCLE_TAG"
         CircleBuild="$CIRCLE_BUILD_NUM"
         ParserPath="$RELEASED_PARSER"
+        IgnoreWhitelist="true"
         --region us-west-2
 
   master:

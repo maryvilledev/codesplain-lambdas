@@ -10,8 +10,8 @@ Resources:
       FunctionName: !Sub
        - Authorize-${lambda_version}
        - { lambda_version: !Ref EnvVersion }
-      Handler: index.handler
-      Runtime: nodejs4.3
+      Handler: lambda_function.lambda_handler
+      Runtime: python2.7
       CodeUri:
         Bucket: codesplain-lambda-functions
         Key:  !Sub
@@ -32,8 +32,8 @@ Resources:
       FunctionName: !Sub
        - AuthorizeToken-${lambda_version}
        - { lambda_version: !Ref EnvVersion }
-      Handler: index.handler
-      Runtime: nodejs4.3
+      Handler: lambda_function.lambda_handler
+      Runtime: python2.7
       CodeUri:
         Bucket: codesplain-lambda-functions
         Key:  !Sub
@@ -50,9 +50,8 @@ Resources:
       FunctionName: !Sub
        - GithubAccessCodeGetter-${lambda_version}
        - { lambda_version: !Ref EnvVersion }
-      Handler: index.handler
-      Handler: index.handler
-      Runtime: nodejs4.3
+      Handler: lambda_function.lambda_handler
+      Runtime: python2.7
       CodeUri:
         Bucket: codesplain-lambda-functions
         Key:  !Sub
@@ -64,7 +63,7 @@ Resources:
       Role: !Ref Role
       Environment:
         Variables:
-          IGNORE_WHITELIST: false
+          IGNORE_WHITELIST: !Ref IgnoreWhitelist
           CLIENT_ID: !Ref ClientID
           CLIENT_SECRET: !Ref ClientSecret
           ORG_WHITELIST: "maryvilledev"
@@ -82,7 +81,7 @@ Resources:
         Key:  !Sub
          - ${lambda_version}/SaveSnippetToS3.zip
          - { lambda_version: !Ref S3Version }
-      Description: Converts API Gateway POST/PUT to S3 Request
+      Description: Converts API Gateway POST to S3 Request
       MemorySize: 192
       Timeout: 4
       Role: !Ref Role
@@ -104,7 +103,7 @@ Resources:
         Key:  !Sub
          - ${lambda_version}/GetSnippetFromS3.zip
          - { lambda_version: !Ref S3Version }
-      Description: Converts API Gateway POST/PUT to S3 Request
+      Description: Converts API Gateway GET to S3 Request
       MemorySize: 192
       Timeout: 3
       Role: !Ref Role
@@ -146,9 +145,9 @@ Resources:
         Key:  !Sub
          - ${lambda_version}/UpdateSnippetInS3.zip
          - { lambda_version: !Ref S3Version }
-      Description: Converts API Gateway POST/PUT to S3 Request
+      Description: Converts API Gateway PUT to S3 Request
       MemorySize: 192
-      Timeout: 3
+      Timeout: 5
       Role: !Ref Role
       Environment:
         Variables:
@@ -168,7 +167,7 @@ Resources:
         Key:  !Sub
          - ${lambda_version}/DeleteSnippetFromS3.zip
          - { lambda_version: !Ref S3Version }
-      Description: Converts API Gateway POST/PUT to S3 Request
+      Description: Converts API Gateway DELETE to S3 Request
       MemorySize: 192
       Timeout: 3
       Role: !Ref Role
@@ -688,7 +687,7 @@ Resources:
         Key:  !Sub
          - ${lambda_version}/GenerateIndexFiles.zip
          - { lambda_version: !Ref S3Version }
-      Description: Converts API Gateway POST/PUT to S3 Request 2
+      Description: Generates index files based on the snippets in each user\'s directory
       MemorySize: 192
       Timeout: 30
       Role: !Ref Role
@@ -731,3 +730,7 @@ Parameters:
     Description: Build number that deployed API
     Type: String
     Default: "CircleBuildUnknown"
+  IgnoreWhitelist:
+    Description: Flag for limiting Github auth to whitelisted ORGs
+    Type: String
+    Default: "false"
