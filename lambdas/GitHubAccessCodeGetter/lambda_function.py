@@ -30,9 +30,8 @@ def lambda_handler(event, context):
     r = requests.get(url, headers=headers)
     user_orgs = map(lambda x: x['login'], r.json())
     
-    if ignore_whitelist.lower() != 'true':
-        if len(set(user_orgs) & set(org_whitelist)) <= 0:
-            return generate_resp(403, 'You are not a member of an organization authorized to use this application.')
+    if ignore_whitelist.lower() != 'true' and len(set(user_orgs) & set(org_whitelist)) <= 0:
+        return generate_resp(403, 'You are not a member of an organization authorized to use this application.')
 
     #Return token and orgs to  user with code 200
     return generate_resp(200, json.dumps({'token': token, 'orgs': user_orgs}))
