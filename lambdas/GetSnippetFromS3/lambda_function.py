@@ -19,7 +19,8 @@ def lambda_handler(event, context):
     except ClientError as error:
         print 'Error getting object %s from bucket %s' % (key, bucket)
         return {
-                'statusCode': '400',
+                'statusCode': '404',
+                'body': 'No snippet exists with key "%s"' % key,
                 'headers': {'Access-Control-Allow-Origin': '*'}
         }
     return {
