@@ -40,6 +40,7 @@ deployment:
         CircleBuild="$CIRCLE_BUILD_NUM"
         ParserPath="$RELEASED_PARSER"
         IgnoreWhitelist="true"
+        Bucket="codesplain-snippets-prod"
         --region us-west-2
 
   master:
