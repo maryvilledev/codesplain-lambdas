@@ -25,11 +25,12 @@ def lambda_handler(event, context):
         return generate_resp(400, 'The authorization code is invalid')
     token = r.json()['access_token']
 
+    url = 'https://api.github.com/user/orgs'
+    headers = {'Authorization': 'token %s' % token }
+    r = requests.get(url, headers=headers)
+    user_orgs = map(lambda x: x['login'], r.json())
+    
     if ignore_whitelist.lower() != 'true':
-        url = 'https://api.github.com/user/orgs'
-        headers = {'Authorization': 'token %s' % token }
-        r = requests.get(url, headers=headers)
-        user_orgs = map(lambda x: x['login'], r.json())
         if len(set(user_orgs) & set(org_whitelist)) <= 0:
             return generate_resp(403, 'You are not a member of an organization authorized to use this application.')
 
