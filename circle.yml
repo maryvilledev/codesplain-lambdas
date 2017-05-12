@@ -41,6 +41,7 @@ deployment:
         ParserPath="$RELEASED_PARSER"
         IgnoreWhitelist="true"
         Bucket="codesplain-snippets-prod"
+        Role="arn:aws:iam::296636357169:role/CodesplainProd"
         --region us-west-2
 
   master:
