@@ -9,6 +9,7 @@ all: $(lambdas)
 Authorize: packages = requests
 AuthorizeToken: packages = requests
 GitHubAccessCodeGetter: packages = requests
+CleanUp: packages = requests
 
 
 #Nice alias so only the lambda name need be invoked
