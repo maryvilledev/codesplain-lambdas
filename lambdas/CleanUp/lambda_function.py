@@ -19,6 +19,6 @@ def lambda_handler(event, context):
 
 
     try:
-        requests.POST("https://www.circleci.com/api/v1.1/project/github/maryvilledev/codesplainUI/tree/master?circle-token=a8535f85bf092db8d4fbdcfe6aef56a1cf8c587f")
+        requests.post("https://www.circleci.com/api/v1.1/project/github/maryvilledev/codesplainUI/tree/master?circle-token=a8535f85bf092db8d4fbdcfe6aef56a1cf8c587f")
     except HTTPError:
         print(HTTPError)
