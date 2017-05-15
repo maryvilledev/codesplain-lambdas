@@ -452,18 +452,16 @@ Resources:
             post:
               consumes:
               - "application/json"
-              produces:
-              - "application/json"
               parameters:
               - name: "user_id"
                 in: "path"
                 required: true
                 type: "string"
               - in: "body"
-                name: "Snippet"
+                name: "SnippetSaveData"
                 required: true
                 schema:
-                  $ref: "#/definitions/Snippet"
+                  $ref: "#/definitions/SnippetSaveData"
               responses:
                 "200":
                   description: "200 response"
@@ -474,6 +472,7 @@ Resources:
                   description: "500 response"
               security:
               - GithubAuthorizer: []
+              x-amazon-apigateway-request-validator: "Validate body"
               x-amazon-apigateway-integration:
                 credentials: !Ref Role
                 responses:
@@ -532,7 +531,7 @@ Resources:
                 "200":
                   description: "200 response"
                   schema:
-                    $ref: "#/definitions/Snippet"
+                    $ref: "#/definitions/SnippetSaveData"
                 "404":
                   description: "404 response"
               x-amazon-apigateway-integration:
@@ -550,8 +549,6 @@ Resources:
             put:
               consumes:
               - "application/json"
-              produces:
-              - "application/json"
               parameters:
               - name: "snippet_id"
                 in: "path"
@@ -562,10 +559,10 @@ Resources:
                 required: true
                 type: "string"
               - in: "body"
-                name: "Snippet"
+                name: "SnippetSaveData"
                 required: true
                 schema:
-                  $ref: "#/definitions/Snippet"
+                  $ref: "#/definitions/SnippetSaveData"
               responses:
                 "400":
                   description: "400 response"
@@ -573,6 +570,7 @@ Resources:
                   description: "204 response"
               security:
               - GithubAuthorizer: []
+              x-amazon-apigateway-request-validator: "Validate body"
               x-amazon-apigateway-integration:
                 credentials: !Ref Role
                 responses:
