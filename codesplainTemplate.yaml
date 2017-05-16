@@ -459,8 +459,8 @@ Resources:
                 in: "path"
                 required: true
                 type: "string"
-              - in: "body"
-                name: "SnippetSaveData"
+              - name: "SnippetSaveData"
+                in: "body"
                 required: true
                 schema:
                   $ref: "#/Resources/CodesplainAPI/Properties/DefinitionBody/definitions/SnippetSaveData"
@@ -562,8 +562,8 @@ Resources:
                 in: "path"
                 required: true
                 type: "string"
-              - in: "body"
-                name: "SnippetSaveData"
+              - name: "SnippetSaveData"
+                in: "body"
                 required: true
                 schema:
                   $ref: "#/Resources/CodesplainAPI/Properties/DefinitionBody/definitions/SnippetSaveData"
