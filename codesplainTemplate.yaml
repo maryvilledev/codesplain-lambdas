@@ -724,7 +724,10 @@ Resources:
                   - "prettyTokenName"
                   - "selected"
             title: "Snippet"
-
+        x-amazon-apigateway-request-validators:
+          Validate body:
+            validateRequestParameters: false
+            validateRequestBody: true
   GenerateIndexFiles:
     Type: 'AWS::Serverless::Function'
     Properties:
