@@ -1,4 +1,4 @@
-lambdas := Authorize AuthorizeToken DeleteSnippetFromS3 GetSnippetFromS3 GetIndexes SaveSnippetToS3 GenerateIndexFiles GitHubAccessCodeGetter UpdateSnippetInS3
+lambdas := Authorize AuthorizeToken DeleteSnippetFromS3 GetSnippetFromS3 GetIndexes SaveSnippetToS3 GenerateIndexFiles GitHubAccessCodeGetter UpdateSnippetInS3 #CleanUp
 zipdir := zips
 lambdadir := lambdas
 .PHONY = all clean test test-api $(lambdas)
@@ -9,6 +9,7 @@ all: $(lambdas)
 Authorize: packages = requests
 AuthorizeToken: packages = requests
 GitHubAccessCodeGetter: packages = requests
+CleanUp: packages = requests
 
 
 #Nice alias so only the lambda name need be invoked
