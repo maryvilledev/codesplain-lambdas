@@ -461,7 +461,7 @@ Resources:
                 name: "SnippetSaveData"
                 required: true
                 schema:
-                  $ref: "#/definitions/SnippetSaveData"
+                  $ref: "#/CodesplainAPI/definitions/SnippetSaveData"
               responses:
                 "200":
                   description: "200 response"
@@ -531,7 +531,7 @@ Resources:
                 "200":
                   description: "200 response"
                   schema:
-                    $ref: "#/definitions/SnippetSaveData"
+                    $ref: "#/CodesplainAPI/definitions/SnippetSaveData"
                 "404":
                   description: "404 response"
               x-amazon-apigateway-integration:
@@ -562,7 +562,7 @@ Resources:
                 name: "SnippetSaveData"
                 required: true
                 schema:
-                  $ref: "#/definitions/SnippetSaveData"
+                  $ref: "#/CodesplainAPI/definitions/SnippetSaveData"
               responses:
                 "400":
                   description: "400 response"
