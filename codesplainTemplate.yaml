@@ -660,17 +660,104 @@ Resources:
             name: "x-api-key"
             in: "header"
         definitions:
-          Snippet:
+          SnippetSaveDataAST:
             type: "object"
             required:
+            - "ast_type"
+            - "begin"
+            - "children"
+            - "end"
+            - "tags"
+            properties:
+              ast_type:
+                type: "string"
+                title: "Token type"
+              begin:
+                type: "number"
+                title: "Beginning position"
+              end:
+                type: "number"
+                title: "End position"
+              tags:
+                type: "array"
+                items:
+                  type: "string"
+              children:
+                type: "array"
+                items:
+                  $ref: "#/definitions/SnippetSaveDataAST"
+              detail:
+                type: "array"
+                items:
+                  type: "object"
+                  properties:
+                    handler:
+                      type: "string"
+                      title: "Handler function name"
+            title: "Abstract Syntax Tree"
+          SnippetSaveData:
+            type: "object"
+            required:
+            - "AST"
+            - "annotations"
+            - "filters"
+            - "readOnly"
             - "snippet"
+            - "snippetLanguage"
             - "snippetTitle"
             properties:
-              snippet:
-                type: "string"
               snippetTitle:
                 type: "string"
-
+                description: "Title of the snippet"
+                title: "Snippet Title"
+                minLength: 1
+                default: "Snippet title"
+              snippet:
+                type: "string"
+                description: "Contents of the snippet"
+                title: "Snippet Contents"
+                default: "Snippet contents"
+              snippetLanguage:
+                type: "string"
+                title: "Snippet Language"
+                enum:
+                - "python3"
+                - "java"
+                default: "python3"
+              readOnly:
+                type: "boolean"
+                title: "Is read-only"
+                default: false
+              annotations:
+                type: "object"
+                title: "Annotations"
+                properties: {}
+              filters:
+                type: "object"
+                title: "Filters"
+                additionalProperties:
+                  type: "object"
+                  properties:
+                    color:
+                      type: "string"
+                      title: "Color"
+                    count:
+                      type: "number"
+                      title: "Number of Occurrences"
+                    prettyTokenName:
+                      type: "string"
+                      title: "Token display name"
+                    selected:
+                      type: "boolean"
+                      title: "Filter is selected"
+                  required:
+                  - "color"
+                  - "count"
+                  - "prettyTokenName"
+                  - "selected"
+              AST:
+                $ref: "#/definitions/SnippetSaveDataAST"
+            title: "Snippet"
 
   GenerateIndexFiles:
     Type: 'AWS::Serverless::Function'
