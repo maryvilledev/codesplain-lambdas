@@ -452,6 +452,8 @@ Resources:
             post:
               consumes:
               - "application/json"
+              produces:
+              - "application/json"
               parameters:
               - name: "user_id"
                 in: "path"
@@ -548,6 +550,8 @@ Resources:
                 type: "aws_proxy"
             put:
               consumes:
+              - "application/json"
+              produces:
               - "application/json"
               parameters:
               - name: "snippet_id"
