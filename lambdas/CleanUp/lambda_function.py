@@ -15,6 +15,6 @@ def lambda_handler(event, context):
         print(object)
         object.delete()
 
-    circleURL = "https://circleci.com/api/v1.1/project/github/maryvilledev/codesplainUI/tree/master?circle-token=" + os.environ['CircleCIToken']
-    r = requests.post(circleURL)
+    circle_URL = "https://circleci.com/api/v1.1/project/github/maryvilledev/codesplainUI/tree/master?circle-token=" + os.environ['CircleCIToken']
+    r = requests.post(circle_URL)
     print(r.status_code)
