@@ -682,10 +682,6 @@ Resources:
                 type: "array"
                 items:
                   type: "string"
-              children:
-                type: "array"
-                items:
-                  $ref: "#/CodesplainAPI/Properties/DefinitionBody/definitions/SnippetSaveDataAST"
               detail:
                 type: "array"
                 items:
