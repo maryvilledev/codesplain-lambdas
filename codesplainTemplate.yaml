@@ -685,7 +685,7 @@ Resources:
               children:
                 type: "array"
                 items:
-                  $ref: "#/definitions/SnippetSaveDataAST"
+                  $ref: "#/CodesplainAPI/definitions/SnippetSaveDataAST"
               detail:
                 type: "array"
                 items:
@@ -756,7 +756,7 @@ Resources:
                   - "prettyTokenName"
                   - "selected"
               AST:
-                $ref: "#/definitions/SnippetSaveDataAST"
+                $ref: "#/CodesplainAPI/definitions/SnippetSaveDataAST"
             title: "Snippet"
 
   GenerateIndexFiles:
