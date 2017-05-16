@@ -660,41 +660,9 @@ Resources:
             name: "x-api-key"
             in: "header"
         definitions:
-          SnippetSaveDataAST:
-            type: "object"
-            required:
-            - "ast_type"
-            - "begin"
-            - "children"
-            - "end"
-            - "tags"
-            properties:
-              ast_type:
-                type: "string"
-                title: "Token type"
-              begin:
-                type: "number"
-                title: "Beginning position"
-              end:
-                type: "number"
-                title: "End position"
-              tags:
-                type: "array"
-                items:
-                  type: "string"
-              detail:
-                type: "array"
-                items:
-                  type: "object"
-                  properties:
-                    handler:
-                      type: "string"
-                      title: "Handler function name"
-            title: "Abstract Syntax Tree"
           SnippetSaveData:
             type: "object"
             required:
-            - "AST"
             - "annotations"
             - "filters"
             - "readOnly"
@@ -751,8 +719,6 @@ Resources:
                   - "count"
                   - "prettyTokenName"
                   - "selected"
-              AST:
-                $ref: "#/CodesplainAPI/Properties/DefinitionBody/definitions/SnippetSaveDataAST"
             title: "Snippet"
 
   GenerateIndexFiles:
