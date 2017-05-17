@@ -459,11 +459,11 @@ Resources:
                 in: "path"
                 required: true
                 type: "string"
-              - in: "body"
-                name: "Snippet"
+              - name: "SnippetSaveData"
+                in: "body"
                 required: true
                 schema:
-                  $ref: "#/definitions/Snippet"
+                  $ref: "#/definitions/SnippetSaveData"
               responses:
                 "200":
                   description: "200 response"
@@ -474,6 +474,7 @@ Resources:
                   description: "500 response"
               security:
               - GithubAuthorizer: []
+              x-amazon-apigateway-request-validator: "Validate body"
               x-amazon-apigateway-integration:
                 credentials: !Ref Role
                 responses:
@@ -532,7 +533,7 @@ Resources:
                 "200":
                   description: "200 response"
                   schema:
-                    $ref: "#/definitions/Snippet"
+                    $ref: "#/definitions/SnippetSaveData"
                 "404":
                   description: "404 response"
               x-amazon-apigateway-integration:
@@ -561,11 +562,11 @@ Resources:
                 in: "path"
                 required: true
                 type: "string"
-              - in: "body"
-                name: "Snippet"
+              - name: "SnippetSaveData"
+                in: "body"
                 required: true
                 schema:
-                  $ref: "#/definitions/Snippet"
+                  $ref: "#/definitions/SnippetSaveData"
               responses:
                 "400":
                   description: "400 response"
@@ -573,6 +574,7 @@ Resources:
                   description: "204 response"
               security:
               - GithubAuthorizer: []
+              x-amazon-apigateway-request-validator: "Validate body"
               x-amazon-apigateway-integration:
                 credentials: !Ref Role
                 responses:
@@ -662,18 +664,70 @@ Resources:
             name: "x-api-key"
             in: "header"
         definitions:
-          Snippet:
+          SnippetSaveData:
             type: "object"
             required:
+            - "annotations"
+            - "filters"
+            - "readOnly"
             - "snippet"
+            - "snippetLanguage"
             - "snippetTitle"
             properties:
-              snippet:
-                type: "string"
               snippetTitle:
                 type: "string"
-
-
+                description: "Title of the snippet"
+                title: "Snippet Title"
+                minLength: 1
+                default: "Snippet title"
+              snippet:
+                type: "string"
+                description: "Contents of the snippet"
+                title: "Snippet Contents"
+                default: "Snippet contents"
+              snippetLanguage:
+                type: "string"
+                title: "Snippet Language"
+                enum:
+                - "python3"
+                - "java"
+                default: "python3"
+              readOnly:
+                type: "boolean"
+                title: "Is read-only"
+                default: false
+              annotations:
+                type: "object"
+                title: "Annotations"
+                properties: {}
+              filters:
+                type: "object"
+                title: "Filters"
+                additionalProperties:
+                  type: "object"
+                  properties:
+                    color:
+                      type: "string"
+                      title: "Color"
+                    count:
+                      type: "number"
+                      title: "Number of Occurrences"
+                    prettyTokenName:
+                      type: "string"
+                      title: "Token display name"
+                    selected:
+                      type: "boolean"
+                      title: "Filter is selected"
+                  required:
+                  - "color"
+                  - "count"
+                  - "prettyTokenName"
+                  - "selected"
+            title: "Snippet"
+        x-amazon-apigateway-request-validators:
+          Validate body:
+            validateRequestParameters: false
+            validateRequestBody: true
   GenerateIndexFiles:
     Type: 'AWS::Serverless::Function'
     Properties:

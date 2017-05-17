@@ -1,0 +1,158 @@
+{
+  "title": "Snippet",
+  "type": "object",
+  "required": [
+    "snippetTitle",
+    "snippet",
+    "readOnly",
+    "snippetLanguage",
+    "annotations",
+    "filters",
+    "AST"
+  ],
+  "definitions": {
+    "AST": {
+      "type": "object",
+      "title": "Abstract Syntax Tree",
+      "required": [
+        "ast_type",
+        "begin",
+        "end",
+        "tags",
+        "children"
+      ],
+      "properties": {
+        "ast_type": {
+          "type": "string",
+          "title": "Token type"
+        },
+        "begin": {
+          "type": "number",
+          "title": "Beginning position"
+        },
+        "end": {
+          "type": "number",
+          "title": "End position"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AST"
+          }
+        },
+        "detail": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "handler": {
+                "type": "string",
+                "title": "Handler function name"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "properties": {
+    "snippetTitle": {
+      "type": "string",
+      "title": "Snippet Title",
+      "description": "Title of the snippet",
+      "minLength": 1,
+      "default": "Snippet title"
+    },
+    "snippet": {
+      "type": "string",
+      "title": "Snippet Contents",
+      "description": "Contents of the snippet",
+      "default": "Snippet contents"
+    },
+    "snippetLanguage": {
+      "type": "string",
+      "title": "Snippet Language",
+      "enum": [
+        "python3",
+        "java"
+      ],
+      "default": "python3"
+    },
+    "readOnly": {
+      "type": "boolean",
+      "title": "Is read-only",
+      "default": false
+    },
+    "annotations": {
+      "type": "object",
+      "title": "Annotations",
+      "properties": {},
+      "additionalProperties": false,
+      "patternProperties": {
+        "\\b[0-9]+\\b": {
+          "type": "object",
+          "required": [
+            "annotation",
+            "lineNumber",
+            "lineText"
+          ],
+          "properties": {
+            "annotation": {
+              "type": "string",
+              "title": "Annotation"
+            },
+            "lineNumber": {
+              "type": "number",
+              "title": "Line Annotated"
+            },
+            "lineText": {
+              "type": "string",
+              "title": "Text Content of Line Annotated"
+            }
+          }
+        }
+      }
+    },
+    "filters": {
+      "type": "object",
+      "title": "Filters",
+      "properties": {},
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "color",
+          "count",
+          "prettyTokenName",
+          "selected"
+        ],
+        "properties": {
+          "color": {
+            "type": "string",
+            "title": "Color"
+          },
+          "count": {
+            "type": "number",
+            "title": "Number of Occurrences"
+          },
+          "prettyTokenName": {
+            "type": "string",
+            "title": "Token display name"
+          },
+          "selected": {
+            "type": "boolean",
+            "title": "Filter is selected"
+          }
+        }
+      }
+    },
+    "AST": {
+      "$ref": "#/definitions/AST"
+    }
+  }
+}
