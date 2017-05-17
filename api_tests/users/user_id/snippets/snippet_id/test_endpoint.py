@@ -1,7 +1,6 @@
 import unittest
 import json
 import requests
-from jsonschema import validate, ValidationError
 import config
 import testfor
 
@@ -14,7 +13,7 @@ class TestEndpoint(unittest.TestCase):
         cls.SNIPPET_ID   = config_dict['snippet_id']
         cls.API_URL      = config_dict['url'] + '/users/' + cls.USER_ID + '/snippets/' + cls.SNIPPET_ID
         cls.INVALID_SNIPPET_KEY = config_dict['invalid_snippet_key']
-        cls.INVALID_SNIPPET_URL = '%s/users/%s/snippets/%s' % (config_dict['url'], cls.USER_ID, cls.INVALID_SNIPPET_KEY) 
+        cls.INVALID_SNIPPET_URL = '%s/users/%s/snippets/%s' % (config_dict['url'], cls.USER_ID, cls.INVALID_SNIPPET_KEY)
         cls.ACCESS_TOKEN = config_dict['access_token']
         cls.SNIPPET      = json.dumps(config_dict['snippet'])
 
@@ -60,7 +59,7 @@ class TestEndpoint(unittest.TestCase):
         testfor.status_code(self, r, 404)
         testfor.cors_headers(self, r, {'Origin': '*'})
         testfor.body(self, r, 'No snippet exists with key "%s/%s"' % (TestEndpoint.USER_ID, TestEndpoint.INVALID_SNIPPET_KEY))
-    
+
 
     def test_put (self, note):
         print '\tTesting PUT method (' + note + ')'
@@ -103,3 +102,39 @@ class TestEndpoint(unittest.TestCase):
         testfor.status_code(self, r, 401)
         testfor.valid_json(self, r)
         testfor.key_val(self, r, 'message', 'Unauthorized')
+
+    def test_put_no_title (self):
+        print '\tTesting PUT method (with no snippet title)'
+        headers = { 'Authorization' : self.ACCESS_TOKEN }
+        data = {
+            "snippetLanguage": "python3",
+            "AST": {},
+            "snippetTitle": "",
+            "snippet": "",
+            "readOnly": False,
+            "filters": {},
+            "annotations": {}
+          }
+        r = requests.put(self.API_URL, headers=headers, data=self.SNIPPET_NO_TITLE)
+
+        testfor.status_code(self, r, 400)
+        testfor.valid_json(self, r)
+        testfor.key_val(self, r, 'message', 'Invalid request body')
+
+    def test_put_invalid_language (self):
+        print '\tTesting PUT method (with invalid snippet language)'
+        headers = { 'Authorization' : self.ACCESS_TOKEN }
+        data = {
+            "snippetLanguage": "python2",
+            "AST": {},
+            "snippetTitle": "title",
+            "snippet": "",
+            "readOnly": False,
+            "filters": {},
+            "annotations": {}
+        }
+        r = requests.put(self.API_URL, headers=headers, data=self.SNIPPET_INVALID_LANG)
+
+        testfor.status_code(self, r, 400)
+        testfor.valid_json(self, r)
+        testfor.key_val(self, r, 'message', 'Invalid request body')

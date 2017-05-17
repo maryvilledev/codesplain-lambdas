@@ -100,3 +100,39 @@ class TestEndpoint(unittest.TestCase):
         testfor.cors_headers(self, r, { 'Origin' : '*' })
         testfor.valid_json(self, r)
         testfor.key_val(self, r, 'response', 'POST requests must not have empty bodies.')
+
+    def test_post_no_title (self):
+        print '\tTesting POSTT method (with no snippet title)'
+        headers = { 'Authorization' : self.ACCESS_TOKEN }
+        data = {
+            "snippetLanguage": "python3",
+            "AST": {},
+            "snippetTitle": "",
+            "snippet": "",
+            "readOnly": False,
+            "filters": {},
+            "annotations": {}
+          }
+        r = requests.post(self.API_URL, headers=headers, data=self.SNIPPET_NO_TITLE)
+
+        testfor.status_code(self, r, 400)
+        testfor.valid_json(self, r)
+        testfor.key_val(self, r, 'message', 'Invalid request body')
+
+    def test_post_invalid_language (self):
+        print '\tTesting POSTT method (with invalid snippet language)'
+        headers = { 'Authorization' : self.ACCESS_TOKEN }
+        data = {
+            "snippetLanguage": "python2",
+            "AST": {},
+            "snippetTitle": "title",
+            "snippet": "",
+            "readOnly": False,
+            "filters": {},
+            "annotations": {}
+        }
+        r = requests.post(self.API_URL, headers=headers, data=self.SNIPPET_INVALID_LANG)
+
+        testfor.status_code(self, r, 400)
+        testfor.valid_json(self, r)
+        testfor.key_val(self, r, 'message', 'Invalid request body')
