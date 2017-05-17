@@ -1,0 +1,11 @@
+
+python scripts/cfn.py
+# CSENVIRONMENT="CodesplainDev"
+# aws cloudformation describe-stack-events --stack-name $CSENVIRONMENT --max-items 25 > stack_event.txt
+
+# slackcli \
+# -h codesplain-bots \
+# -m "Stack Event: $CSENVIRONMENT" \
+# -u "Cloudformation Bot" \
+# -i "http://mannanlive.com/wp-content/uploads/2014/04/cloud-formation.png" \
+# -f stack_event.txt
