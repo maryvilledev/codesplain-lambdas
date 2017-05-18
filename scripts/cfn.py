@@ -19,10 +19,10 @@ def main(arg1):
         # The beginning of the current Stack Event
         if event['ResourceType'] == 'AWS::CloudFormation::Stack':
             if event['ResourceStatus']  ==  'REVIEW_IN_PROGRESS' or event['ResourceStatus']  ==  'UPDATE_IN_PROGRESS':
-            if rollback:
-                print 'Deleting Stack'
-                client.delete_stack(
-                    StackName=arg1
+                if rollback:
+                    print 'Deleting Stack'
+                    client.delete_stack(
+                        StackName=arg1
                 )
             return
         # Delet Stacks that were Rolled Back
