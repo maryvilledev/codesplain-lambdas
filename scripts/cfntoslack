@@ -2,7 +2,7 @@
 # CSENVIRONMENT="CodesplainFeature-forceCFNError"
 # CSENVIRONMENT=CodesplainDev
 
-message=$(python cfn.py $1)
+message=$(python scripts/cfn.py $1)
 echo $message
 
 slackcli \
