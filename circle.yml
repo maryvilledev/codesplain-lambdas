@@ -96,6 +96,8 @@ deployment:
       # Zip and push lambda code to S3 bucket under sandbox/branch
       - bash publish codesplain-lambda-functions/sandbox/$CIRCLE_BRANCH/$CIRCLE_SHA1
 
+      - bash scripts/deploy
+
       # Package template for deploying to feature branch API
       - >
         aws cloudformation package --template-file codesplainTemplate.yaml
