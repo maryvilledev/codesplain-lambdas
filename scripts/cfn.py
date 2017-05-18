@@ -45,6 +45,3 @@ def main(arg1):
 
 if __name__=='__main__':
     main(sys.argv[1])
-
-
-# {u'StackId': 'arn:aws:cloudformation:us-west-2:296636357169:stack/CodesplainDev/c1b753a0-2110-11e7-9f8f-503ac9316835', u'EventId': '18a28ce0-3b09-11e7-9c59-50a68d01a629', u'ResourceStatus': 'UPDATE_COMPLETE_CLEANUP_IN_PROGRESS', u'ResourceType': 'AWS::CloudFormation::Stack', u'Timestamp': datetime.datetime(2017, 5, 17, 13, 59, 51, 169000, tzinfo=tzutc()), u'StackName': 'CodesplainDev', u'PhysicalResourceId': 'arn:aws:cloudformation:us-west-2:296636357169:stack/CodesplainDev/c1b753a0-2110-11e7-9f8f-503ac9316835', u'LogicalResourceId': 'CodesplainDev'}
