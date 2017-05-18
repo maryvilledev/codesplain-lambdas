@@ -463,7 +463,7 @@ Resources:
                 in: "body"
                 required: true
                 schema:
-                  $ref: "#/definitions/SnippetSaveDa"
+                  $ref: "#/definitions/SnippetSaveData"
               responses:
                 "200":
                   description: "200 response"

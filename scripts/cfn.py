@@ -5,7 +5,6 @@ import json
 import sys
 
 def main(arg1):
-    print "Running cfn.py" + arg1
     dateFormat = "[%H:%M %m.%d.%y]"
     rollback = False
 
