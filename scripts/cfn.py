@@ -14,10 +14,7 @@ def main(arg1):
     response = client.describe_stack_events(
         StackName=arg1
     )
-    i=0
     for event in response['StackEvents']:
-        i += 1
-        print i
         # The beginning of the current Stack Event
         if event['ResourceType'] == 'AWS::CloudFormation::Stack':
             if event['ResourceStatus']  ==  'REVIEW_IN_PROGRESS' or event['ResourceStatus']  ==  'UPDATE_IN_PROGRESS':
