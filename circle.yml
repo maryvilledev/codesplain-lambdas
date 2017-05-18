@@ -113,3 +113,5 @@ deployment:
         Title="Codesplain Feature:$CIRCLE_BRANCH-$CIRCLE_BUILD_NUM"
         CircleBuild="$CIRCLE_BUILD_NUM"
         --region us-west-2
+      - sleep 5
+      - bash testSlackCLI "CodesplainFeature-$CIRCLE_BRANCH"
