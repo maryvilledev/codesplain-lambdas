@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# Package template for deploying to feature branch API
+aws cloudformation package --template-file codesplainTemplate.yaml \
+  --s3-bucket codesplain-lambda-functions \
+  --output-template-file serverless-output-sandbox.yaml
+
+
+# Deploy or update feature stack based on new lambda code and template
+{
+  EnvVersion=$CIRCLE_BRANCH && EnvVersion=${EnvVersion//-/} && \
+  aws cloudformation deploy \
+  --stack-name "CodesplainFeature-$CIRCLE_BRANCH" \
+  --template-file ./serverless-output-sandbox.yaml \
+  --parameter-overrides \
+  EnvVersion="$EnvVersion" \
+  S3Version="sandbox/$CIRCLE_BRANCH/$CIRCLE_SHA1" \
+  ClientSecret="$AuthSecret" \
+  ClientID="$AuthId" \
+  Title="Codesplain Feature:$CIRCLE_BRANCH-$CIRCLE_BUILD_NUM" \
+  CircleBuild="$CIRCLE_BUILD_NUM" \
+  --region us-west-2
+} || {
+  sleep 5
+}
+
+bash cfntoslack "CodesplainFeature-$CIRCLE_BRANCH"

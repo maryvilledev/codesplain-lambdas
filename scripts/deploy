@@ -1,5 +1,0 @@
-#!/bin/bash
-
-
-echo "Branch: $CIRCLE_BRANCH"
-echo "Sha: $CIRCLE_SHA1"
