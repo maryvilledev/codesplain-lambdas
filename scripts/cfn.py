@@ -14,7 +14,7 @@ def main(arg1):
     response = client.describe_stack_events(
         StackName=arg1
     )
-    print "Stack Events: " + str(len(response['StackEvents0']))
+    print "Stack Events: " + str(len(response['StackEvents']))
     for event in response['StackEvents']:
         # The beginning of the current Stack Event
         if event['ResourceType'] == 'AWS::CloudFormation::Stack':
