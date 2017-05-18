@@ -6,6 +6,7 @@ machine:
 dependencies:
   override:
     - pip install -r requirements.txt
+    - npm --version
     - npm install -g slackcli
 
 test:
