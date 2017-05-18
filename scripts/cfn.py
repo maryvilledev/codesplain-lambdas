@@ -9,7 +9,7 @@ def main(arg1):
     rollback = False
 
 
-    client = boto3.client('cloudformation')
+    client = boto3.client('cloudformation', region_name='us-west-2')
     response = client.describe_stack_events(
         StackName=arg1
     )
