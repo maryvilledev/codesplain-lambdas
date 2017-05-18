@@ -3,7 +3,7 @@
 # CSENVIRONMENT=CodesplainDev
 
 message=$(python scripts/cfn.py $1)
-
+echo $message
 
 slackcli \
 -h codesplain-bots \
