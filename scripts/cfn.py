@@ -34,7 +34,7 @@ def main(arg1):
             print event['ResourceType'] + ': ' + event['ResourceStatusReason']
         # If Cloudformation Stack Complete or Update Complete, log and return
         if event['ResourceType'] == 'AWS::CloudFormation::Stack':
-            if event['ResourceStatus']  == 'UPDATE_COMPLETE'
+            if event['ResourceStatus']  == 'UPDATE_COMPLETE':
                 print event['LogicalResourceId'] + " updated " + event['Timestamp'].strftime(dateFormat)
                 return
 
