@@ -14,10 +14,13 @@ def main(arg1):
     response = client.describe_stack_events(
         StackName=arg1
     )
-    print "Stack Events: " + str(len(response['StackEvents']))
+    i=0
     for event in response['StackEvents']:
+        i += 1
+        print i
         # The beginning of the current Stack Event
         if event['ResourceType'] == 'AWS::CloudFormation::Stack':
+            print 'Stack Deploy Failed'
             if event['ResourceStatus']  ==  'REVIEW_IN_PROGRESS' or event['ResourceStatus']  ==  'UPDATE_IN_PROGRESS':
                 if rollback:
                     print 'Deleting Stack'
@@ -29,7 +32,7 @@ def main(arg1):
         if event['ResourceStatus'] == 'ROLLBACK_COMPLETE':
             rollback = True
         # Catch and log stack failures
-        if event['ResourceStatus'] == 'CREATE_FAILED' or ['ResourceStatus']  == 'UPDATE_FAILED':
+        if event['ResourceStatus'] == 'CREATE_FAILED' or event['ResourceStatus']  == 'UPDATE_FAILED':
             print 'Stack Event failed ' + event['Timestamp'].strftime(dateFormat)
             print event['ResourceType'] + ': ' + event['ResourceStatusReason']
         # If Cloudformation Stack Complete or Update Complete, log and return
