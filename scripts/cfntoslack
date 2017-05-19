@@ -1,0 +1,12 @@
+
+# CSENVIRONMENT="CodesplainFeature-forceCFNError"
+# CSENVIRONMENT=CodesplainDev
+
+message=$(python scripts/cfn.py $1)
+echo $message
+
+slackcli \
+-h codesplain-bots \
+-m "$message" \
+-u "$1" \
+-i "http://mannanlive.com/wp-content/uploads/2014/04/cloud-formation.png"
