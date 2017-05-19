@@ -50,7 +50,12 @@ def lambda_handler(event, context):
     lambda_payload_resp = json.loads(lambda_auth['Payload'].read())
 
     if(lambda_payload_resp['statusCode'] == '400'):
-        return {'statusCode': '400', 'body': json.dumps({'response': lambda_payload_resp['body']})}
+        return {
+            'statusCode': '401',
+            'body': json.dumps({
+                'response': lambda_payload_resp['body']
+            })
+        }
 
     # -------- Otherwise, delete from S3 -------- #
     snippet_key = event['pathParameters']['snippet_id']
@@ -58,14 +63,20 @@ def lambda_handler(event, context):
     bucket = os.environ['BucketName']
 
     if (not object_exists(bucket, key)):
-        return {'statusCode': '400', 'body':json.dumps({'response': snippet_key + ' does not exist'})}
+        return {
+            'statusCode': '404',
+            'body': json.dumps({
+                'response': snippet_key + ' does not exist'
+            })
+        }
     else:
         delete_obj_from_s3(bucket, key)
 
     update_index_file(
         snippet_key,
         bucket,
-        user_id)
+        user_id
+    )
     return {
         'statusCode': '200',
         'headers': {'Access-Control-Allow-Origin': '*'},
