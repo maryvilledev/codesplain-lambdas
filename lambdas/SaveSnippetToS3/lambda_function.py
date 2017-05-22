@@ -15,7 +15,7 @@ s3_resource = boto3.resource('s3')
 def get_last_modified(bucket, user_id, snippet_key):
     key = user_id + '/' + snippet_key
     obj = s3_resource.Object(bucket, key)
-    return obj.last_modified
+    return obj.last_modified.isoformat()
 
 # Returns the snippet key with the lowest possible unused postfix value.
 def generate_snippet_id(bucket, user_id, snippet_title):
