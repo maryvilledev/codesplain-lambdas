@@ -19,7 +19,7 @@ aws cloudformation package --template-file codesplainTemplate.yaml \
   ClientID="$AuthId" \
   Title="Codesplain Feature:$CIRCLE_BRANCH-$CIRCLE_BUILD_NUM" \
   CircleBuild="$CIRCLE_BUILD_NUM" \
-  ParserPath="v0.5.1" \
+  ParserPath="v0.5.2" \
   --region us-west-2
 } || {
   sleep 5
