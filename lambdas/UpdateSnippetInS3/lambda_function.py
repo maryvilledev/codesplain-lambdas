@@ -5,8 +5,15 @@ from datetime import datetime
 from boto3.s3.transfer import ClientError
 import boto3 # AWS SDK for Python
 
-s3     = boto3.client('s3', 'us-west-2')
+s3 = boto3.client('s3', 'us-west-2')
 client = boto3.client('lambda')
+s3_resource = boto3.resource('s3')
+
+# Returns time the snippet was last modified
+def get_last_modified(bucket, user_id, snippet_key):
+    key = user_id + '/' + snippet_key
+    obj = s3_resource.Object(bucket, key)
+    return obj.last_modified.isoformat()
 
 # Updates index file and writes to S3. Creates new one if needed.
 def update_index_file(bucket, user_id, snippet_key, entry):
