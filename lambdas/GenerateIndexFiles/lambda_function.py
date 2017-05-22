@@ -41,7 +41,7 @@ def get_snippet_info(snippet_key):
     return {
         'snippetTitle': content['snippetTitle'],
         'language': content['snippetLanguage'] if 'snippetLanguage' in content else 'python3',
-        'lastEdited': obj.last_modified.utcnow().isoformat()
+        'lastEdited': obj.last_modified.isoformat()
     }
 
 def delete_index_file(dirname):
