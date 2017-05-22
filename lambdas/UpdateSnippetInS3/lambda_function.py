@@ -75,7 +75,7 @@ def lambda_handler(event, context):
     new_entry = {
         'snippetTitle': body['snippetTitle'],
         'language':     body['snippetLanguage'],
-        'lastEdited':   datetime.utcnow().isoformat()
+        'lastEdited':   get_last_modified(bucket, user_id, snippet_id)
     }
     update_index_file(bucket, user_id, snippet_id, new_entry)
     return {
