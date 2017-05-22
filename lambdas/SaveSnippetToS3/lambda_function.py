@@ -10,6 +10,12 @@ import boto3 # AWS SDK for Python
 s3     = boto3.client('s3', 'us-west-2')
 client = boto3.client('lambda')
 
+# Returns time the snippet was last modified
+def get_last_modified(bucket, user_id, snippet_key):
+    key = user_id + '/' + snippet_key
+    obj = s3.Object(bucket, key)
+    return obj.last_modified
+
 # Returns the snippet key with the lowest possible unused postfix value.
 def generate_snippet_id(bucket, user_id, snippet_title):
     snippet_id = urllib.quote_plus(string.lower(re.sub(r'\s+', '_', snippet_title)))
@@ -100,7 +106,7 @@ def lambda_handler(event, context):
     new_entry = {
         'snippetTitle': snippet_title,
         'language':     snippet_language,
-        'lastEdited':   datetime.utcnow().isoformat()
+        'lastEdited':   get_last_modified(bucket, user_id, snippet_id),
     }
     update_index_file(bucket, user_id, snippet_id, new_entry)
     return {
