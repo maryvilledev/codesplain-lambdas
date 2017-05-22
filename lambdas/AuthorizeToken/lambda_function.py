@@ -34,4 +34,4 @@ def lambda_handler(event, context):
     if is_valid(role, user, orgs):
         return generate_resp(200, 'authorized')
 
-    return generate_resp(400, 'not authorized to acces this resource')
+    return generate_resp(400, 'not authorized to access this resource')

@@ -47,25 +47,17 @@ def lambda_handler(event, context):
             'userID': user_id
         }))
 
-    # Respond with 400 if user is not authorized
+    # Respond with 401 if user is not authorized
     resp_payload = json.loads(resp['Payload'].read())
     if(resp_payload['statusCode'] == '400'):
         return {
-            'statusCode': '400',
+            'statusCode': '401',
             'body': json.dumps({
                 'response': resp_payload['body']
             })
         }
 
     # ----- Otherwise, user is authorized, so save to S3 ----- #
-    if(event['body'] == None):
-        return {
-            'statusCode': '400',
-            'headers':    { 'Access-Control-Allow-Origin': '*' },
-            'body':       json.dumps({
-               'response': 'PUT requests must not have empty bodies.'
-            })
-        }
     body   = json.loads(event['body'])
     bucket = os.environ['BucketName']
     if(bucket == None):
