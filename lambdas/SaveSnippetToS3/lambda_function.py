@@ -11,11 +11,9 @@ s3 = boto3.client('s3', 'us-west-2')
 client = boto3.client('lambda')
 s3_resource = boto3.resource('s3')
 
-# Returns time the snippet was last modified
-def get_last_modified(bucket, user_id, snippet_key):
-    key = user_id + '/' + snippet_key
-    obj = s3_resource.Object(bucket, key)
-    return obj.last_modified.isoformat()
+# Returns time the s3 Object was last modified
+def get_last_modified(s3Object):
+    return s3Object.last_modified.isoformat()
 
 # Returns the snippet key with the lowest possible unused postfix value.
 def generate_snippet_id(bucket, user_id, snippet_title):
@@ -62,11 +60,12 @@ def update_index_file(bucket, user_id, snippet_key, entry):
 def save_to_s3(bucket, user_id, snippet_key, body):
     key = user_id + '/' + snippet_key
     try:
-        s3.put_object(Body=body, Bucket=bucket, Key=key)
+        s3Obj = s3.put_object(Body=body, Bucket=bucket, Key=key)
     except ClientError as error:
         print 'Error putting object %s into bucket %s. Make sure your bucket ' \
         'exists and is in the same region as this function.' % (key, bucket)
         raise error
+    return s3Obj
 
 # Lambda handler function
 def lambda_handler(event, context):
@@ -103,11 +102,11 @@ def lambda_handler(event, context):
         raise error
     snippet_id = generate_snippet_id(bucket, user_id, snippet_title)
 
-    save_to_s3(bucket, user_id, snippet_id, event['body'])
+    s3Obj = save_to_s3(bucket, user_id, snippet_id, event['body'])
     new_entry = {
         'snippetTitle': snippet_title,
         'language':     snippet_language,
-        'lastEdited':   get_last_modified(bucket, user_id, snippet_id),
+        'lastEdited':   get_last_modified(s3Obj),
     }
     update_index_file(bucket, user_id, snippet_id, new_entry)
     return {
