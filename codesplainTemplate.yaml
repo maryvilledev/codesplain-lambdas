@@ -439,6 +439,59 @@ Resources:
                   application/json: "{\"statusCode\": 200}"
                 passthroughBehavior: "when_no_match"
                 type: "mock"
+          "/users/{user_id}/snippets/dump":
+            get:
+              produces:
+              - "application/json"
+              parameters:
+              - name: "user_id"
+                in: "path"
+                required: true
+                type: "string"
+              responses:
+                "200":
+                  description: "200 response"
+                "404":
+                  description: "404 response"
+              x-amazon-apigateway-integration:
+                credentials: !Ref Role
+                responses:
+                  default:
+                    statusCode: "200"
+                uri: !Sub
+                  - "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:296636357169:function:DumpSnippets-${version}/invocations"
+                  - { version: !Ref EnvVersion}
+                passthroughBehavior: "when_no_match"
+                httpMethod: "POST"
+                contentHandling: "CONVERT_TO_TEXT"
+                type: "aws_proxy"
+            options:
+              consumes:
+              - "application/json"
+              produces:
+              - "application/json"
+              responses:
+                "200":
+                  description: "200 response"
+                  headers:
+                    Access-Control-Allow-Origin:
+                      type: "string"
+                    Access-Control-Allow-Methods:
+                      type: "string"
+                    Access-Control-Allow-Headers:
+                      type: "string"
+              x-amazon-apigateway-integration:
+                responses:
+                  default:
+                    statusCode: "200"
+                    responseParameters:
+                      method.response.header.Access-Control-Allow-Methods: "'GET'"
+                      method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,x-api-key,x-amz-security-token'"
+                      method.response.header.Access-Control-Allow-Origin: "'*'"
+                requestTemplates:
+                  application/json: "{\"statusCode\": 200}"
+                passthroughBehavior: "when_no_match"
+                type: "mock"
           "/users/{user_id}/snippets":
             get:
               produces:
@@ -660,59 +713,6 @@ Resources:
                     statusCode: "200"
                     responseParameters:
                       method.response.header.Access-Control-Allow-Methods: "'GET,PUT,DELETE'"
-                      method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,x-api-key,x-amz-security-token'"
-                      method.response.header.Access-Control-Allow-Origin: "'*'"
-                requestTemplates:
-                  application/json: "{\"statusCode\": 200}"
-                passthroughBehavior: "when_no_match"
-                type: "mock"
-          "/users/{user_id}/snippets/dump":
-            get:
-              produces:
-              - "application/json"
-              parameters:
-              - name: "user_id"
-                in: "path"
-                required: true
-                type: "string"
-              responses:
-                "200":
-                  description: "200 response"
-                "404":
-                  description: "404 response"
-              x-amazon-apigateway-integration:
-                credentials: !Ref Role
-                responses:
-                  default:
-                    statusCode: "200"
-                uri: !Sub
-                  - "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:296636357169:function:DumpSnippets-${version}/invocations"
-                  - { version: !Ref EnvVersion}
-                passthroughBehavior: "when_no_match"
-                httpMethod: "POST"
-                contentHandling: "CONVERT_TO_TEXT"
-                type: "aws_proxy"
-            options:
-              consumes:
-              - "application/json"
-              produces:
-              - "application/json"
-              responses:
-                "200":
-                  description: "200 response"
-                  headers:
-                    Access-Control-Allow-Origin:
-                      type: "string"
-                    Access-Control-Allow-Methods:
-                      type: "string"
-                    Access-Control-Allow-Headers:
-                      type: "string"
-              x-amazon-apigateway-integration:
-                responses:
-                  default:
-                    statusCode: "200"
-                    responseParameters:
-                      method.response.header.Access-Control-Allow-Methods: "'GET'"
                       method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,x-api-key,x-amz-security-token'"
                       method.response.header.Access-Control-Allow-Origin: "'*'"
                 requestTemplates:
