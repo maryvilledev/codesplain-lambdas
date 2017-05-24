@@ -12,8 +12,8 @@ client = boto3.client('lambda')
 s3_resource = boto3.resource('s3')
 
 # Returns time the s3 Object was last modified
-def get_last_modified(s3Object):
-    return s3Object.last_modified.isoformat()
+def get_last_modified(s3_object):
+    return s3_object.last_modified.isoformat()
 
 # Returns the snippet key with the lowest possible unused postfix value.
 def generate_snippet_id(bucket, user_id, snippet_title):
@@ -103,11 +103,11 @@ def lambda_handler(event, context):
         raise error
     snippet_id = generate_snippet_id(bucket, user_id, snippet_title)
 
-    s3Obj = save_to_s3(bucket, user_id, snippet_id, event['body'])
+    s3_object = save_to_s3(bucket, user_id, snippet_id, event['body'])
     new_entry = {
         'snippetTitle': snippet_title,
         'language':     snippet_language,
-        'lastEdited':   get_last_modified(s3Obj),
+        'lastEdited':   get_last_modified(s3_object),
     }
     update_index_file(bucket, user_id, snippet_id, new_entry)
     return {
