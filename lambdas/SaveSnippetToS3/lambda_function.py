@@ -58,9 +58,10 @@ def update_index_file(bucket, user_id, snippet_key, entry):
 
 # Saves the given body to the given bucket under the given key
 def save_to_s3(bucket, user_id, snippet_key, body):
+    s3Bucket = s3.Bucket(bucket)
     key = user_id + '/' + snippet_key
     try:
-        s3Obj = s3.put_object(Body=body, Bucket=bucket, Key=key)
+        s3Obj = s3Bucket.put_object(Body=body, Bucket=bucket, Key=key)
     except ClientError as error:
         print 'Error putting object %s into bucket %s. Make sure your bucket ' \
         'exists and is in the same region as this function.' % (key, bucket)
