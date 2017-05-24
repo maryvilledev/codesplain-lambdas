@@ -439,7 +439,7 @@ Resources:
                   application/json: "{\"statusCode\": 200}"
                 passthroughBehavior: "when_no_match"
                 type: "mock"
-          "/users/{user_id}/snippets/dump":
+          "/users/{user_id}/dump":
             get:
               produces:
               - "application/json"
