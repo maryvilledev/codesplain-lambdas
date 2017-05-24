@@ -81,6 +81,7 @@ def lambda_handler(event, context):
     if(resp_payload['statusCode'] == '400'):
         return {
             'statusCode': '401',
+            'headers': { 'Access-Control-Allow-Origin': '*' },
             'body': json.dumps({
                 'response': lambda_payload_resp['body']
             })
