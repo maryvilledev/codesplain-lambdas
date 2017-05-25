@@ -1,15 +1,34 @@
 import os
 import json
 import boto3
-from boto3.s3.transfer import ClientError
+import zipfile
+import base64
 
+# Initialization
 s3 = boto3.client('s3', 'us-west-2')
+bucket_name = os.environ['BucketName']
+if bucket_name == None:
+    print 'Must specify "BucketName" env var!'
+    raise error
+s3_bucket = boto3.resource('s3').Bucket(bucket_name)
 
-def snippet_contents(bucket, key):
+def b64_zip_snippets(snippet_keys):
+    """Writes the contents of the snippets with given keys to a zip file
+       and returns the raw base64 encoded zip file"""
+    zip_path = '/tmp/dump.zip'
+    with zipfile.ZipFile(zip_path, 'w') as dump_zip:
+        for key in snippet_keys:
+            snippet = snippet_contents(key)
+            fs_key = os.path.basename(key)
+            dump_zip.writestr(fs_key, snippet)
+    with open(zip_path, 'r') as dump_zip:
+        return base64.b64encode(dump_zip.read())
+
+def snippet_contents(key):
     """Returns contentnts of specified snippet as string"""
-    return s3.get_object(Bucket=bucket, Key=key)['Body'].read()
+    return s3.get_object(Bucket=bucket_name, Key=key)['Body'].read()
 
-def user_snippet_keys(s3_bucket, user):
+def user_snippet_keys(user):
     """Returns the object keys ("absolute paths") to each of
        a user's snippets, including their index.json file"""
     keys = []
@@ -26,26 +45,16 @@ def owner(snippet_path):
 
 def lambda_handler(event, context):
     """Called by AWS"""
+    user    = event['pathParameters']['user_id']
+    keys    = user_snippet_keys(user)
+    b64_zip = b64_zip_snippets(keys)
 
-    # Initialization
-    user = event['pathParameters']['user_id']
-    bucket = os.environ['BucketName']
-    if bucket == None:
-        print 'Must specify "BucketName" env var!'
-        raise error
-    s3_bucket = boto3.resource('s3').Bucket(bucket)
-
-    # Generate the dump JSON
-    dump = {}
-    for key in user_snippet_keys(s3_bucket, user):
-        print 'adding to dump: ' + key
-        dump[key] = snippet_contents(bucket, key)
-    print 'completed dump: '
-    print dump
-
-    # Send response
+    headers = {
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/octet-stream',
+    }
     return {
         'statusCode': 200,
-        'headers':    { 'Access-Control-Allow-Origin': '*' },
-        'body':       json.dumps(dump),
+        'headers':    headers,
+        'body':       b64_zip,
     }
