@@ -20,8 +20,6 @@ def b64_zip_snippets(snippet_keys):
         for key in snippet_keys:
             snippet  = snippet_contents(key)
             filename = os.path.basename(key)
-            if (filename != 'index.json')
-                filename = filename + '.json'
             dump_zip.writestr(filename, snippet)
     with open(zip_path, 'r') as dump_zip:
         return base64.b64encode(dump_zip.read())
