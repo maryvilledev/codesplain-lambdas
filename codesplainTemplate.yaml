@@ -176,7 +176,7 @@ Resources:
           authorizeTokenName: !Ref AuthorizeToken
           BucketName: !Ref Bucket
 
-  GetIndexes:
+  DumpSnippets:
     Type: 'AWS::Serverless::Function'
     Properties:
       FunctionName: !Sub
@@ -191,7 +191,7 @@ Resources:
          - { lambda_version: !Ref S3Version }
       Description: Returns JSON object of users index.json and all snippets
       MemorySize: 192
-      Timeout: 3
+      Timeout: 30
       Role: !Ref Role
       Environment:
         Variables:
