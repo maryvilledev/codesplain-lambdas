@@ -16,22 +16,25 @@ def status_code(test_case, response, code):
 
 # Verify that the response has the given "Access-Control-Allow-" headers
 def cors_headers(test_case, response, dict):
-    for key, value in dict.items():
-        if key == 'Headers' or key == 'Access-Control-Allow-Headers':
-            test_case.assertEqual(
-                response.headers['Access-Control-Allow-Headers'],
-                value
-            )
-        elif key == 'Methods' or key == 'Access-Control-Allow-Methods':
-            test_case.assertEqual(
-                response.headers['Access-Control-Allow-Methods'],
-                value
-            )
-        elif key == 'Origin' or key == 'Access-Control-Allow-Origin':
-            test_case.assertEqual(
-                response.headers['Access-Control-Allow-Origin'],
-                value
-            )
+    try:
+        for key, value in dict.items():
+            if key == 'Headers' or key == 'Access-Control-Allow-Headers':
+                test_case.assertEqual(
+                    response.headers['Access-Control-Allow-Headers'],
+                    value
+                )
+            elif key == 'Methods' or key == 'Access-Control-Allow-Methods':
+                test_case.assertEqual(
+                    response.headers['Access-Control-Allow-Methods'],
+                    value
+                )
+            elif key == 'Origin' or key == 'Access-Control-Allow-Origin':
+                test_case.assertEqual(
+                    response.headers['Access-Control-Allow-Origin'],
+                    value
+                )
+    except KeyError as error:
+        test_case.fail('Response is missing header: ' + str(error))
 
 # Verify that the given key exists in the response and has the given value
 def key_val(test_case, response, key, val):
