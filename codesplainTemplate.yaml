@@ -485,7 +485,7 @@ Resources:
                   default:
                     statusCode: "200"
                     responseParameters:
-                      method.response.header.Access-Control-Allow-Methods: "'GET'"
+                      method.response.header.Access-Control-Allow-Methods: "'POST'"
                       method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,x-api-key,x-amz-security-token'"
                       method.response.header.Access-Control-Allow-Origin: "'*'"
                 requestTemplates:
