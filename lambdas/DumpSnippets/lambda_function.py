@@ -8,7 +8,7 @@ import base64
 s3 = boto3.client('s3', 'us-west-2')
 try:
     bn = os.environ['BucketName']
-except:
+except KeyError as error:
     print 'Must specify "BucketName" env var!'
     raise error
 try:
