@@ -18,9 +18,11 @@ def b64_zip_snippets(snippet_keys):
     zip_path = '/tmp/dump.zip'
     with zipfile.ZipFile(zip_path, 'w') as dump_zip:
         for key in snippet_keys:
-            snippet = snippet_contents(key)
-            fs_key = os.path.basename(key)
-            dump_zip.writestr(fs_key, snippet)
+            snippet  = snippet_contents(key)
+            filename = os.path.basename(key)
+            if (filename != 'index.json')
+                filename = filename + '.json'
+            dump_zip.writestr(filename, snippet)
     with open(zip_path, 'r') as dump_zip:
         return base64.b64encode(dump_zip.read())
 
@@ -51,7 +53,7 @@ def lambda_handler(event, context):
 
     headers = {
         'Access-Control-Allow-Origin': '*',
-        'Content-Type': 'application/octet-stream',
+        'Content-Type': 'application/zip',
     }
     return {
         'statusCode': 200,
