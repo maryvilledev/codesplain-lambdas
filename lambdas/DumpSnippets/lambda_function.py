@@ -8,7 +8,7 @@ import base64
 s3 = boto3.client('s3', 'us-west-2')
 try:
     bn = os.environ['BucketName']
-except:
+except KeyError as error:
     print 'Must specify "BucketName" env var!'
     raise error
 try:
@@ -40,7 +40,7 @@ def move_to_zips_bucket(source, dest):
     })
 
 def snippet_contents(key):
-    """Returns contentnts of specified snippet as string"""
+    """Returns contents of specified snippet as string"""
     return s3.get_object(Bucket=snippets_bucket.name, Key=key)['Body'].read()
 
 def user_snippet_keys(user):
