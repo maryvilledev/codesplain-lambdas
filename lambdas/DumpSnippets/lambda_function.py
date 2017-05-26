@@ -34,7 +34,7 @@ def move_to_zips_bucket(source, dest):
     """Copies the source file to the zips_bucket under dest path, returns
        publicly-accessible URL for that new resource."""
     zips_bucket.upload_file(source, dest)
-    return s3.generate_presigned_url('get_object', Params = {
+    return s3.generate_presigned_url('get_object', Params={
         'Bucket': zips_bucket.name,
         'Key': dest,
     })

@@ -196,6 +196,7 @@ Resources:
       Environment:
         Variables:
           BucketName: !Ref Bucket
+          ZipsBucket: !Ref ZipsBucket
 
   CodesplainAPI:
     Type: AWS::Serverless::Api
@@ -850,6 +851,10 @@ Parameters:
     Description: Bucket to Save Snippets in
     Type: String
     Default: "codesplain-snippets-dev"
+  ZipsBucket:
+    Description: Bucket to Save User Zips in
+    Type: String
+    Default: "codesplain-zips"
   Role:
     Description: Role for developer access
     Type: String
