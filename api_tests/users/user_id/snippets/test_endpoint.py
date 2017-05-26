@@ -97,9 +97,8 @@ class TestEndpoint(unittest.TestCase):
         r = requests.post(self.API_URL, headers=headers)
 
         testfor.status_code(self, r, 400)
-        testfor.cors_headers(self, r, { 'Origin' : '*' })
         testfor.valid_json(self, r)
-        testfor.key_val(self, r, 'response', 'POST requests must not have empty bodies.')
+        testfor.key_val(self, r, 'message', 'Invalid request body')
 
     def test_post_no_title (self):
         print '\tTesting POSTT method (with no snippet title)'
