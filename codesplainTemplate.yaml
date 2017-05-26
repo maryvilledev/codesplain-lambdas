@@ -674,6 +674,10 @@ Resources:
             - "snippetLanguage"
             - "snippetTitle"
             properties:
+              version:
+                type: "string"
+                description: "What version of the parser was used to genetate this snippet."
+                title: "Version"
               snippetTitle:
                 type: "string"
                 description: "Title of the snippet"
