@@ -8,13 +8,10 @@ import base64
 s3 = boto3.client('s3', 'us-west-2')
 try:
     bn = os.environ['BucketName']
-except KeyError as error:
-    print 'Must specify "BucketName" env var!'
-    raise error
-try:
     zb = os.environ['ZipsBucket']
-except KeyError:
-    zb = 'codesplain-zips'
+except KeyError as error:
+    print 'Must specify "BucketName" and "ZipsBucket" env vars!'
+    raise error
 snippets_bucket = boto3.resource('s3').Bucket(bn)
 zips_bucket     = boto3.resource('s3').Bucket(zb)
 
