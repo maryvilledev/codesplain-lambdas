@@ -8,7 +8,8 @@ parsers['python3'] = require('./python3.min');
 parsers['java8'] = require('./java8.min');
 
 function updateSnippet (data) {
-  data.AST = parsers[data.snippetLanguage](data.snippet, () => {}, {});
+  language = data.snippetLanguage || 'python3';
+  data.AST = parsers[language](data.snippet, () => {}, {});
 }
 
 exports.myHandler = function (event, context) {
