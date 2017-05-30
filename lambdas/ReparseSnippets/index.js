@@ -24,7 +24,7 @@ exports.myHandler = function (event, context) {
         Key: key,
       };
       s3.getObject(params, (_, data) => {
-        const snippet = JSON.parse(data.body);
+        const snippet = JSON.parse(data.Body);
         updateSnippet(snippet);
         const params = {
           Bucket: bucketName,
