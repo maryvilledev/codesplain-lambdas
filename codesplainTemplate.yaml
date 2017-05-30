@@ -213,7 +213,7 @@ Resources:
          - { lambda_version: !Ref S3Version }
       Description: Reparses all snippets with the newest cut of the parsers
       MemorySize: 192
-      Timeout: 600
+      Timeout: 300
       Role: !Ref Role
       Environment:
         Variables:
