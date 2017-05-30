@@ -11,9 +11,6 @@ AuthorizeToken: packages = requests
 GitHubAccessCodeGetter: packages = requests
 CleanUp: packages = requests
 
-#Set parser variables for packages that need them
-ReparseSnippets: parsers = java8.min.js python3.min.js
-
 #Nice alias so only the lambda name need be invoked
 $(lambdas): % : $(zipdir) $(zipdir)/%.zip
 $(zipdir):
