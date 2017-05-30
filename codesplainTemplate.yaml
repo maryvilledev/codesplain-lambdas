@@ -217,7 +217,7 @@ Resources:
       Role: !Ref Role
       Environment:
         Variables:
-          BucketName: codesplain-test-migrations
+          BucketName: !Ref Bucket
 
   CodesplainAPI:
     Type: AWS::Serverless::Api
@@ -875,7 +875,7 @@ Parameters:
   Bucket:
     Description: Bucket to Save Snippets in
     Type: String
-    Default: "codesplain-snippets-dev"
+    Default: "codesplain-test-migrations"
   ZipsBucket:
     Description: Bucket to Save User Zips in
     Type: String
