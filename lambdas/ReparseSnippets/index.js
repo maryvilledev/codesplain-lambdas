@@ -11,23 +11,23 @@ function updateSnippet (data) {
   data.AST = parsers[data.snippetLanguage](data.snippet, () => {}, {});
 }
 
-async function listAllKeys () {
+function listAllKeys () {
   var params = {
     Bucket: bucketName,
   }
-  const keys = await s3.listObjects(params, (_, data) => (
+  const keys = s3.listObjects(params, (_, data) => (
     //Remember to ignore index files
     data.map(o => o.Contents.Key).filter(k => k.indexOf("index.json") < 0)
   ));
   return keys;
 }
 
-async function getData (key) {
+function getData (key) {
   var params = {
     Bucket: bucketName,
     Key: key
   }
-  const data = await s3.getObject(params, (_, data) => (
+  const data = s3.getObject(params, (_, data) => (
     JSON.parse(data.body)
   ));
   return data
@@ -42,10 +42,10 @@ function saveData(key, data) {
   s3.putObject(params);
 }
 
-exports.myHandler = async function (event, context) {
+exports.myHandler = function (event, context) {
   listAllKeys().forEach(key => {
-    let data = await getData(key);
-    await updateSnippet(data);
-    await saveData(key, data);
+    let data = getData(key);
+    updateSnippet(data);
+    saveData(key, data);
   })
 }
