@@ -2,6 +2,7 @@
 **/lib/**
 **/etc/**
 *.zip
+node_modules
 
 ## Ignore compiled python files
 *.pyc

@@ -1,4 +1,4 @@
-lambdas := Authorize AuthorizeToken DeleteSnippetFromS3 GetSnippetFromS3 GetIndexes SaveSnippetToS3 GenerateIndexFiles GitHubAccessCodeGetter UpdateSnippetInS3 ReparseSnippets #CleanUp
+lambdas := Authorize AuthorizeToken DeleteSnippetFromS3 GetSnippetFromS3 GetIndexes SaveSnippetToS3 GenerateIndexFiles GitHubAccessCodeGetter UpdateSnippetInS3 ReparseSnippets DumpSnippets #CleanUp
 zipdir := zips
 lambdadir := lambdas
 .PHONY = all clean test test-api $(lambdas)
