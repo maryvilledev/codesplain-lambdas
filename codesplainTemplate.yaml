@@ -205,7 +205,7 @@ Resources:
        - ReparseSnippets-${lambda_version}
        - { lambda_version: !Ref EnvVersion }
       Handler: index.myHandler
-      Runtime: node6.10
+      Runtime: nodejs6.10
       CodeUri:
         Bucket: codesplain-lambda-functions
         Key:  !Sub
