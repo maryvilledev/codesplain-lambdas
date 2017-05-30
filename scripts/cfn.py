@@ -28,7 +28,7 @@ def main(stack_name):
                     client.delete_stack(
                         StackName=stack_name
                         )
-                return
+                sys.exit(1)
         # Delet Stacks that were Rolled Back
         if event['ResourceStatus'] == 'ROLLBACK_COMPLETE':
             rollback = True
