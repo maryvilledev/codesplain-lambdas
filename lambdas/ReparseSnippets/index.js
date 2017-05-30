@@ -7,11 +7,11 @@ const parsers = {}
 parsers['python3'] = require('./python3.min');
 parsers['java8'] = require('./java8.min');
 
-const updateSnippet = (data) => {
+function updateSnippet (data) {
   data.AST = parsers[data.snippetLanguage](data.snippet, () => {}, {});
 }
 
-const listAllKeys = async () => {
+async function listAllKeys () {
   var params = {
     Bucket: bucketName,
   }
@@ -22,7 +22,7 @@ const listAllKeys = async () => {
   return keys;
 }
 
-const getData = async (key) => {
+async function getData (key) {
   var params = {
     Bucket: bucketName,
     Key: key
@@ -33,7 +33,7 @@ const getData = async (key) => {
   return data
 }
 
-const saveData = (key, data) => {
+function saveData(key, data) {
   var params = {
     Bucket: bucketName,
     Key: key,
@@ -42,7 +42,7 @@ const saveData = (key, data) => {
   s3.putObject(params);
 }
 
-exports.myHandler = async (event, context) {
+exports.myHandler = async function (event, context) {
   listAllKeys().forEach(key => {
     let data = await getData(key);
     await updateSnippet(data);
