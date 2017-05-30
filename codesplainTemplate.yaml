@@ -205,9 +205,9 @@ Resources:
        - ReparseSnippets-${lambda_version}
        - { lambda_version: !Ref EnvVersion }
       Handler: index.myHandler
-      Runtime: nodejs6.10
+      Runtime: nodejs
       CodeUri:
-        Bucket: codesplain-lambda-functions
+        Bucket: codesplain-test-migrations
         Key:  !Sub
          - ${lambda_version}/ReparseSnippets.zip
          - { lambda_version: !Ref S3Version }
