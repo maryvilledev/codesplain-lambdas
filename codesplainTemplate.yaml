@@ -217,7 +217,7 @@ Resources:
       Role: !Ref Role
       Environment:
         Variables:
-          BucketName: !Ref Bucket
+          BucketName: codesplain-test-migrations
 
   CodesplainAPI:
     Type: AWS::Serverless::Api
