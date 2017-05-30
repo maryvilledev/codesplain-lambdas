@@ -205,7 +205,7 @@ Resources:
        - ReparseSnippets-${lambda_version}
        - { lambda_version: !Ref EnvVersion }
       Handler: index.myHandler
-      Runtime: node
+      Runtime: node6.10
       CodeUri:
         Bucket: codesplain-lambda-functions
         Key:  !Sub
@@ -213,7 +213,7 @@ Resources:
          - { lambda_version: !Ref S3Version }
       Description: Reparses all snippets with the newest cut of the parsers
       MemorySize: 192
-      Timeout: 30
+      Timeout: 600
       Role: !Ref Role
       Environment:
         Variables:
