@@ -16,7 +16,7 @@ exports.myHandler = function (event, context) {
     Bucket: bucketName,
   }
   s3.listObjects(params, (err, data) => {
-    if (error) console.log(error);
+    if (err) console.log(err);
     keys = data.map(o => o.Contents.Key).filter(k => k.indexOf("index.json") < 0);
     keys.forEach(key => {
       const params = {
