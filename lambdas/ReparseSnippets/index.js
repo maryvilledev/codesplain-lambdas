@@ -4,7 +4,8 @@ const s3 = new aws.S3({ apiVersion: '2006-03-01'});
 const bucketName = process.env.BucketName;
 
 const parsers = {}
-parsers['python3'] = require('./python3');
+parsers['python3'] = require('./python3.min');
+parsers['java8'] = require('./java8.min');
 
 const updateSnippet = (data) => {
   data.AST = parsers[data.snippetLanguage](data.snippet, () => {}, {});
