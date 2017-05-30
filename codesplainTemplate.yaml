@@ -207,7 +207,7 @@ Resources:
       Handler: index.myHandler
       Runtime: nodejs6.10
       CodeUri:
-        Bucket: codesplain-test-migrations
+        Bucket: codesplain-lambda-functions
         Key:  !Sub
          - ${lambda_version}/ReparseSnippets.zip
          - { lambda_version: !Ref S3Version }
