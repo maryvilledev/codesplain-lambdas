@@ -28,13 +28,13 @@ def main(stack_name):
                     client.delete_stack(
                         StackName=stack_name
                         )
-                return
+                sys.exit(1)
         # Delet Stacks that were Rolled Back
         if event['ResourceStatus'] == 'ROLLBACK_COMPLETE':
             rollback = True
         # Catch and log stack failures
         if event['ResourceStatus'] == 'CREATE_FAILED' or event['ResourceStatus']  == 'UPDATE_FAILED':
-            print 'Stack Event failed ' + printTime(vent['Timestamp'])
+            print 'Stack Event failed ' + printTime(event['Timestamp'])
             print event['ResourceType'] + ': ' + event['ResourceStatusReason']
         # If Cloudformation Stack Complete or Update Complete, log and return
         if event['ResourceType'] == 'AWS::CloudFormation::Stack':

@@ -198,6 +198,27 @@ Resources:
           BucketName: !Ref Bucket
           ZipsBucket: !Ref ZipsBucket
 
+  ReparseSnippets:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      FunctionName: !Sub
+       - ReparseSnippets-${lambda_version}
+       - { lambda_version: !Ref EnvVersion }
+      Handler: index.myHandler
+      Runtime: nodejs6.10
+      CodeUri:
+        Bucket: codesplain-lambda-functions
+        Key:  !Sub
+         - ${lambda_version}/ReparseSnippets.zip
+         - { lambda_version: !Ref S3Version }
+      Description: Reparses all snippets with the newest cut of the parsers
+      MemorySize: 192
+      Timeout: 300
+      Role: !Ref Role
+      Environment:
+        Variables:
+          BucketName: !Ref Bucket
+
   CodesplainAPI:
     Type: AWS::Serverless::Api
     Metadata:
@@ -749,6 +770,10 @@ Resources:
             - "snippetLanguage"
             - "snippetTitle"
             properties:
+              version:
+                type: "string"
+                description: "What version of the parser was used to genetate this snippet."
+                title: "Version"
               snippetTitle:
                 type: "string"
                 description: "Title of the snippet"
