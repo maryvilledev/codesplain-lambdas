@@ -24,4 +24,4 @@ aws cloudformation package --template-file codesplainTemplate.yaml \
   sleep 5
 }
 
-bash scripts/cfntoslack "CodesplainFeature-$CIRCLE_BRANCH"
+# bash scripts/cfntoslack "CodesplainFeature-$CIRCLE_BRANCH"
