@@ -8,7 +8,7 @@ dependencies:
     - npm i -g npm
     - pip install -r requirements.txt
     - npm --version
-    - npm install -g slack-cli
+    # - npm install -g slack-cli
 
 test:
   override:
